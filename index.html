@@ -1180,9 +1180,6 @@
                         <td><span class="price-tag">1.5 mil.</span></td>
                         <td><input type="checkbox" data-name="Bortoleto" data-price="1.5" data-flag="🇧🇷"></td>
                     </tr>
-                        <td><span class="price-tag">3.0 mil.</span></td>
-                        <td><input type="checkbox" data-name="Bearman" data-price="3.0" data-flag="🇬🇧"></td>
-                    </tr>
                 </table>
             </div>
             
@@ -1669,19 +1666,43 @@
                 const totalCost = driversTotal + teamTotal;
                 const remainingBudget = BUDGET_LIMIT - totalCost;
                 
-                // Aktualizace náhledu jezdců - POUŽITÍ SPRÁVNÝCH FUNKCÍ
+                // OPRAVENÉ - aktualizace náhledu s malými fotkami
                 const previewDriversElement = document.getElementById('preview-drivers');
                 previewDriversElement.innerHTML = '';
                 
                 selectedDrivers.forEach(driver => {
-                    previewDriversElement.innerHTML += createPreviewDriverCard(driver);
+                    const photoUrl = driverPhotos[driver.name];
+                    const cardHTML = `
+                        <div class="preview-card">
+                            <div class="preview-photo">
+                                <img src="${photoUrl}" alt="${driver.name}" style="width: 120px !important; height: 84px !important; object-fit: cover !important;">
+                            </div>
+                            <div class="preview-card-content">
+                                <div class="driver-name">${driver.name}</div>
+                                <div class="price-tag">${Number(driver.price).toFixed(1)} mil.</div>
+                            </div>
+                        </div>
+                    `;
+                    previewDriversElement.innerHTML += cardHTML;
                 });
                 
-                // Aktualizace náhledu týmu - POUŽITÍ SPRÁVNÉ FUNKCE
+                // OPRAVENÉ - aktualizace náhledu týmu
                 const previewTeamElement = document.getElementById('preview-team');
                 previewTeamElement.innerHTML = '';
                 
-                previewTeamElement.innerHTML += createPreviewTeamCard(selectedTeam);
+                const carUrl = teamCars[selectedTeam.name];
+                const teamCardHTML = `
+                    <div class="preview-card">
+                        <div class="preview-photo">
+                            <img src="${carUrl}" alt="${selectedTeam.name}" style="width: 120px !important; height: 84px !important; object-fit: cover !important;">
+                        </div>
+                        <div class="preview-card-content">
+                            <div class="driver-name">${selectedTeam.name}</div>
+                            <div class="price-tag">${Number(selectedTeam.price).toFixed(1)} mil.</div>
+                        </div>
+                    </div>
+                `;
+                previewTeamElement.innerHTML += teamCardHTML;
                 
                 // Aktualizace rozpočtu v náhledu
                 document.getElementById('preview-used').textContent = `${totalCost.toFixed(1)} mil.`;
