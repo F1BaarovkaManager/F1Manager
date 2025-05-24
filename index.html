@@ -398,16 +398,16 @@
             transform: translateY(-2px);
         }
         
-        /* Velká fotka pro náhled - upraveno */
+        /* Velká fotka pro náhled - upraveno pro obdélníkové fotky */
         .preview-photo {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
+            width: 120px;
+            height: 84px;
+            border-radius: 0;
             margin: 0 auto 15px;
             position: relative;
             overflow: hidden;
-            border: 4px solid #e10600;
-            background: linear-gradient(135deg, #15151e, #e10600);
+            border: 2px solid #e10600;
+            background: linear-gradient(135deg, #f5f5f5, #e0e0e0);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -416,8 +416,9 @@
         .preview-photo img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
+            object-fit: contain;
+            border-radius: 0;
+            display: block;
         }
         
         .preview-photo .fallback-avatar {
@@ -1161,19 +1162,6 @@
                                 Bortoleto
                             </div>
                         </td>
-                        <td><span class="price-tag">1.5 mil.</span></td>
-                        <td><input type="checkbox" data-name="Bortoleto" data-price="1.5" data-flag="🇧🇷"></td>
-                    </tr>
-                        <td><span class="price-tag">3.0 mil.</span></td>
-                        <td><input type="checkbox" data-name="Bearman" data-price="3.0" data-flag="🇬🇧"></td>
-                    </tr>
-                    <tr data-driver="Hulkenberg" data-price="2.0" data-flag="🇩🇪">
-                        <td><span class="flag">🇩🇪</span> Hulkenberg</td>
-                        <td><span class="price-tag">2.0 mil.</span></td>
-                        <td><input type="checkbox" data-name="Hulkenberg" data-price="2.0" data-flag="🇩🇪"></td>
-                    </tr>
-                    <tr data-driver="Bortoleto" data-price="1.5" data-flag="🇧🇷">
-                        <td><span class="flag">🇧🇷</span> Bortoleto</td>
                         <td><span class="price-tag">1.5 mil.</span></td>
                         <td><input type="checkbox" data-name="Bortoleto" data-price="1.5" data-flag="🇧🇷"></td>
                     </tr>
