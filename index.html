@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
     <style>
+        /* Import F1-like font */
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@400;700;900&display=swap');
+        
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
             margin: 0;
@@ -377,43 +380,37 @@
             margin-top: 0;
         }
         
+        /* IMPROVED PREVIEW GRID - Better spacing and layout */
         .preview-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 24px 18px;
+            margin-top: 18px;
+            justify-items: center;
         }
         
-        .preview-card {
-            background-color: #f9f9f9;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            border: 2px solid #e10600;
-            transition: transform 0.2s ease;
-        }
-        
-        .preview-card:hover {
-            transform: translateY(-2px);
-        }
-        
-        /* Karty s fotkami jako pozadí */
+        /* IMPROVED PREVIEW CARDS - Better dimensions and readability */
         .preview-card {
             position: relative;
-            width: 100%;
-            height: 200px;
+            width: 280px;
+            height: 140px;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border: 1px solid #e10600;
-            max-width: 250px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            border: 2px solid #e10600;
+            margin: 0 auto;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
         
-        /* Obsah (jméno + cena) překrývá pozadí */
+        .preview-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+        
+        /* IMPROVED TEXT OVERLAY - Better contrast and readability */
         .preview-card-content {
             position: absolute;
             top: 0;
@@ -423,23 +420,28 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            padding: 12px;
-            background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.0));
-            color: white;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            padding: 16px 14px 12px 14px;
+            background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.1) 65%);
+            color: #fff !important;
         }
         
-        .preview-card-content .driver-name {
-            font-size: 1.2em;
+        .preview-card-content .driver-name,
+        .preview-card .driver-name {
+            font-size: 1.3em;
             font-weight: bold;
             margin-bottom: 4px;
-            color: white;
+            color: #fff !important;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+            line-height: 1.2;
         }
         
-        .preview-card-content .price-tag {
-            font-size: 1em;
-            color: #ffeb3b;
+        .preview-card-content .price-tag,
+        .preview-card .price-tag {
+            font-size: 1.1em;
+            color: #ffeb3b !important;
             font-weight: bold;
+            margin-top: 2px;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.6);
         }
         
         /* Skrýt starý kontejner pro fotky */
@@ -469,18 +471,6 @@
             height: auto;
             object-fit: contain;
             border-radius: 10px;
-        }
-        
-        .preview-card .driver-name {
-            font-weight: bold;
-            margin-bottom: 8px;
-            font-size: 1.2em;
-            color: #15151e;
-        }
-        
-        .preview-card .price-tag {
-            font-size: 1.1em;
-            margin-top: 8px;
         }
         
         .preview-footer {
@@ -634,7 +624,7 @@
                 grid-template-columns: repeat(2, 1fr);
             }
             
-            /* Mobilní optimalizace pro náhled - 2 karty na řádek */
+            /* MOBILE PREVIEW IMPROVEMENTS */
             .preview-content {
                 max-height: 90vh;
                 overflow-y: auto;
@@ -653,38 +643,30 @@
             
             .preview-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 8px;
+                gap: 12px;
             }
             
             .preview-card {
-                height: 65px;
-                border-radius: 6px;
-            }
-            
-            .preview-card-photo {
-                width: 65px;
-                height: 37px;
-            }
-            
-            .preview-team-logo {
-                width: 45px;
-                height: 45px;
+                width: 100%;
+                height: 100px;
+                border-radius: 8px;
+                max-width: none;
             }
             
             .preview-card-content {
-                padding: 0 8px;
+                padding: 8px 10px;
             }
             
+            .preview-card-content .driver-name,
             .preview-card .driver-name {
-                font-size: 0.85em;
-                margin: 0;
-                line-height: 1.2;
+                font-size: 1em;
+                margin-bottom: 2px;
             }
             
+            .preview-card-content .price-tag,
             .preview-card .price-tag {
-                font-size: 0.85em;
-                margin: 0;
-                line-height: 1.2;
+                font-size: 0.9em;
+                margin-top: 0;
             }
             
             /* Mobilní footer pro náhled */
@@ -714,20 +696,6 @@
             
             .preview-budget-item .value {
                 font-size: 1em;
-            }
-            
-            .preview-footer {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .preview-budget-item {
-                padding: 10px;
-                border-bottom: 1px solid #ddd;
-            }
-            
-            .preview-budget-item:last-child {
-                border-bottom: none;
             }
             
             /* Zvětšení interaktivních prvků pro mobilní dotyky */
@@ -834,6 +802,28 @@
                 font-size: 1em;
                 margin-right: 4px;
             }
+        }
+        
+        /* F1 TOTAL CARD EXTRA STYLING */
+        .f1-total-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .f1-total-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
         
         /* Zvýraznění vybraných řádků */
@@ -1191,19 +1181,6 @@
                         <td><span class="price-tag">1.5 mil.</span></td>
                         <td><input type="checkbox" data-name="Bortoleto" data-price="1.5" data-flag="🇧🇷"></td>
                     </tr>
-                        <td><span class="price-tag">3.0 mil.</span></td>
-                        <td><input type="checkbox" data-name="Bearman" data-price="3.0" data-flag="🇬🇧"></td>
-                    </tr>
-                    <tr data-driver="Hulkenberg" data-price="2.0" data-flag="🇩🇪">
-                        <td><span class="flag">🇩🇪</span> Hulkenberg</td>
-                        <td><span class="price-tag">2.0 mil.</span></td>
-                        <td><input type="checkbox" data-name="Hulkenberg" data-price="2.0" data-flag="🇩🇪"></td>
-                    </tr>
-                    <tr data-driver="Bortoleto" data-price="1.5" data-flag="🇧🇷">
-                        <td><span class="flag">🇧🇷</span> Bortoleto</td>
-                        <td><span class="price-tag">1.5 mil.</span></td>
-                        <td><input type="checkbox" data-name="Bortoleto" data-price="1.5" data-flag="🇧🇷"></td>
-                    </tr>
                 </table>
             </div>
             
@@ -1400,37 +1377,6 @@
                     <div class="card-content">
                         <p><span class="flag">${team.flag}</span> ${team.name}</p>
                         <p><span class="price-tag">${Number(team.price).toFixed(1)} mil.</span></p>
-                    </div>
-                </div>
-            `;
-        }
-        
-        // Funkce pro vytvoření preview karty jezdce - horizontální
-        function createPreviewDriverCard(driver) {
-            const photoUrl = driverPhotos[driver.name];
-            return `
-                <div class="preview-card">
-                    <div class="preview-card-photo">
-                        <img src="${photoUrl}" alt="${driver.name}" class="preview-driver-photo">
-                    </div>
-                    <div class="preview-card-content">
-                        <div class="driver-name">${driver.name}</div>
-                        <div class="price-tag">${Number(driver.price).toFixed(1)} mil.</div>
-                    </div>
-                </div>
-            `;
-        }
-        
-        // Funkce pro vytvoření preview karty týmu - bez loga, jen text
-        function createPreviewTeamCard(team) {
-            return `
-                <div class="preview-card">
-                    <div class="preview-card-photo">
-                        <div style="display: flex; align-items: center; justify-content: center; font-size: 2em; color: #e10600;">🏎️</div>
-                    </div>
-                    <div class="preview-card-content">
-                        <div class="driver-name">${team.name}</div>
-                        <div class="price-tag">${Number(team.price).toFixed(1)} mil.</div>
                     </div>
                 </div>
             `;
@@ -1677,7 +1623,7 @@
                 }
             }
             
-            // Funkce pro zobrazení náhledu - OPRAVENÁ
+            // Funkce pro zobrazení náhledu - OPRAVENÁ s vylepšenými kartami
             function showPreview() {
                 // Kontrola, zda je sestava kompletní
                 if (selectedDrivers.length !== 5 || !selectedTeam) {
@@ -1691,7 +1637,7 @@
                 const totalCost = driversTotal + teamTotal;
                 const remainingBudget = BUDGET_LIMIT - totalCost;
                 
-                // FINÁLNÍ ŘEŠENÍ - fotky jako pozadí karet
+                // VYLEPŠENÉ KARTY JEZDCŮ - širší, nižší, lepší čitelnost
                 const previewDriversElement = document.getElementById('preview-drivers');
                 previewDriversElement.innerHTML = '';
                 
@@ -1708,7 +1654,7 @@
                     previewDriversElement.innerHTML += cardHTML;
                 });
                 
-                // FINÁLNÍ ŘEŠENÍ - auta jako pozadí karet
+                // VYLEPŠENÉ KARTY TÝMŮ - širší, nižší, lepší čitelnost
                 const previewTeamElement = document.getElementById('preview-team');
                 previewTeamElement.innerHTML = '';
                 
@@ -1722,6 +1668,17 @@
                     </div>
                 `;
                 previewTeamElement.innerHTML += teamCardHTML;
+                
+                // PŘIDÁNÍ KARTY S CELKOVÝMI NÁKLADY - F1 STYL
+                const totalCostCardHTML = `
+                    <div class="preview-card f1-total-card" style="background: linear-gradient(135deg, #000000 0%, #1a0000 50%, #cc0000 100%); border: 3px solid #ff0000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.4), 0 4px 16px rgba(0,0,0,0.3);">
+                        <div class="preview-card-content" style="background: none; justify-content: center; text-align: center;">
+                            <div style="font-family: 'Orbitron', 'Exo 2', monospace; font-size: 1.3em; font-weight: 900; margin-bottom: 8px; color: #ffffff; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);">CELKEM</div>
+                            <div style="font-family: 'Orbitron', 'Exo 2', monospace; font-size: 2.8em; font-weight: 900; color: #ff0000 !important; text-shadow: 0 0 15px rgba(255, 0, 0, 0.9), 0 2px 8px rgba(0,0,0,0.8); letter-spacing: 2px; text-transform: uppercase;">${totalCost.toFixed(1)} MIL</div>
+                        </div>
+                    </div>
+                `;
+                previewTeamElement.innerHTML += totalCostCardHTML;
                 
                 // Aktualizace rozpočtu v náhledu
                 document.getElementById('preview-used').textContent = `${totalCost.toFixed(1)} mil.`;
