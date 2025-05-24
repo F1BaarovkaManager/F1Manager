@@ -398,41 +398,53 @@
             transform: translateY(-2px);
         }
         
-        /* Kontejner pro fotky v náhledu - bez ořezávání */
-        .preview-card-photo {
+        /* Karty s fotkami jako pozadí */
+        .preview-card {
+            position: relative;
             width: 100%;
-            height: 150px;
-            overflow: visible;
-            margin: 0 0 15px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid #e10600;
+            max-width: 250px;
         }
         
-        /* Fotky vyplní prostor a zachovají poměr stran */
-        .preview-card-photo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-        }
-        
+        /* Obsah (jméno + cena) překrývá pozadí */
         .preview-card-content {
-            text-align: center;
-            padding: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 12px;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.0));
+            color: white;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
         }
         
         .preview-card-content .driver-name {
+            font-size: 1.2em;
             font-weight: bold;
-            font-size: 1.1em;
-            color: #15151e;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
+            color: white;
         }
         
         .preview-card-content .price-tag {
-            font-size: 1.1em;
-            color: #e10600;
+            font-size: 1em;
+            color: #ffeb3b;
             font-weight: bold;
+        }
+        
+        /* Skrýt starý kontejner pro fotky */
+        .preview-card-photo {
+            display: none;
         }
         
         .preview-photo .fallback-avatar {
@@ -1179,19 +1191,6 @@
                         <td><span class="price-tag">1.5 mil.</span></td>
                         <td><input type="checkbox" data-name="Bortoleto" data-price="1.5" data-flag="🇧🇷"></td>
                     </tr>
-                        <td><span class="price-tag">3.0 mil.</span></td>
-                        <td><input type="checkbox" data-name="Bearman" data-price="3.0" data-flag="🇬🇧"></td>
-                    </tr>
-                    <tr data-driver="Hulkenberg" data-price="2.0" data-flag="🇩🇪">
-                        <td><span class="flag">🇩🇪</span> Hulkenberg</td>
-                        <td><span class="price-tag">2.0 mil.</span></td>
-                        <td><input type="checkbox" data-name="Hulkenberg" data-price="2.0" data-flag="🇩🇪"></td>
-                    </tr>
-                    <tr data-driver="Bortoleto" data-price="1.5" data-flag="🇧🇷">
-                        <td><span class="flag">🇧🇷</span> Bortoleto</td>
-                        <td><span class="price-tag">1.5 mil.</span></td>
-                        <td><input type="checkbox" data-name="Bortoleto" data-price="1.5" data-flag="🇧🇷"></td>
-                    </tr>
                 </table>
             </div>
             
@@ -1678,17 +1677,14 @@
                 const totalCost = driversTotal + teamTotal;
                 const remainingBudget = BUDGET_LIMIT - totalCost;
                 
-                // FINÁLNÍ ŘEŠENÍ - fotky bez ořezávání
+                // FINÁLNÍ ŘEŠENÍ - fotky jako pozadí karet
                 const previewDriversElement = document.getElementById('preview-drivers');
                 previewDriversElement.innerHTML = '';
                 
                 selectedDrivers.forEach(driver => {
                     const photoUrl = driverPhotos[driver.name];
                     const cardHTML = `
-                        <div class="preview-card">
-                            <div class="preview-card-photo">
-                                <img src="${photoUrl}" alt="${driver.name}">
-                            </div>
+                        <div class="preview-card" style="background-image: url('${photoUrl}');">
                             <div class="preview-card-content">
                                 <div class="driver-name">${driver.name}</div>
                                 <div class="price-tag">${Number(driver.price).toFixed(1)} mil.</div>
@@ -1698,16 +1694,13 @@
                     previewDriversElement.innerHTML += cardHTML;
                 });
                 
-                // FINÁLNÍ ŘEŠENÍ - auta bez ořezávání
+                // FINÁLNÍ ŘEŠENÍ - auta jako pozadí karet
                 const previewTeamElement = document.getElementById('preview-team');
                 previewTeamElement.innerHTML = '';
                 
                 const carUrl = teamCars[selectedTeam.name];
                 const teamCardHTML = `
-                    <div class="preview-card">
-                        <div class="preview-card-photo">
-                            <img src="${carUrl}" alt="${selectedTeam.name}">
-                        </div>
+                    <div class="preview-card" style="background-image: url('${carUrl}');">
                         <div class="preview-card-content">
                             <div class="driver-name">${selectedTeam.name}</div>
                             <div class="price-tag">${Number(selectedTeam.price).toFixed(1)} mil.</div>
