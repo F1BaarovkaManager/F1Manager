@@ -1309,16 +1309,10 @@
                     <div id="preview-remaining" class="value remaining">30.0 mil.</div>
                 </div>
             </div>
-            <div class="preview-actions">
-                <button id="save-image-btn" class="save-btn">📷 Uložit jako obrázek</button>
-            </div>
         </div>
         <div id="preview-close" class="preview-close">✕</div>
     </div>
 
-    <!-- html2canvas knihovna pro export obrázků -->
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    
     <script>
         // Základní nastavení
         const BUDGET_LIMIT = 30.0;
@@ -1590,126 +1584,6 @@
                 }
             });
             
-            // FUNKCE PRO ULOŽENÍ OBRÁZKU - s iOS optimalizací
-            document.getElementById('save-image-btn').addEventListener('click', function() {
-                const previewContent = document.querySelector('.preview-content');
-                
-                // Nastavení pro html2canvas
-                const options = {
-                    backgroundColor: '#ffffff',
-                    scale: 2, // Vyšší kvalita
-                    useCORS: true,
-                    allowTaint: true,
-                    scrollX: 0,
-                    scrollY: 0,
-                    width: previewContent.offsetWidth,
-                    height: previewContent.offsetHeight
-                };
-                
-                // Změna textu tlačítka během generování
-                this.textContent = '📷 Generuji obrázek...';
-                this.disabled = true;
-                
-                html2canvas(previewContent, options).then(canvas => {
-                    // Detekce iOS
-                    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                    
-                    if (isIOS) {
-                        // iOS řešení - otevře obrázek v novém okně
-                        const dataURL = canvas.toDataURL('image/png');
-                        const newWindow = window.open();
-                        newWindow.document.write(`
-                            <html>
-                                <head>
-                                    <title>F1 Sestava</title>
-                                    <meta name="viewport" content="width=device-width, initial-scale=1">
-                                    <style>
-                                        body { 
-                                            margin: 0; 
-                                            padding: 20px; 
-                                            background: #000; 
-                                            text-align: center;
-                                            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-                                        }
-                                        img { 
-                                            max-width: 100%; 
-                                            height: auto; 
-                                            border-radius: 10px;
-                                            box-shadow: 0 4px 20px rgba(255,255,255,0.1);
-                                        }
-                                        .instructions {
-                                            color: white;
-                                            margin-top: 20px;
-                                            padding: 15px;
-                                            background: rgba(255,255,255,0.1);
-                                            border-radius: 10px;
-                                            font-size: 16px;
-                                            line-height: 1.4;
-                                        }
-                                        .step {
-                                            margin: 10px 0;
-                                            display: flex;
-                                            align-items: center;
-                                            justify-content: center;
-                                            gap: 10px;
-                                        }
-                                        .emoji { font-size: 20px; }
-                                    </style>
-                                </head>
-                                <body>
-                                    <img src="${dataURL}" alt="F1 Sestava">
-                                    <div class="instructions">
-                                        <div class="step">
-                                            <span class="emoji">📱</span>
-                                            <span>Podržte obrázek prstem</span>
-                                        </div>
-                                        <div class="step">
-                                            <span class="emoji">💾</span>
-                                            <span>Vyberte "Uložit do Fotek"</span>
-                                        </div>
-                                        <div class="step">
-                                            <span class="emoji">✅</span>
-                                            <span>Obrázek se uloží do galerie!</span>
-                                        </div>
-                                    </div>
-                                </body>
-                            </html>
-                        `);
-                        
-                        // Potvrzení pro iOS uživatele
-                        setTimeout(() => {
-                            alert('📱 iOS: Obrázek se otevřel v novém okně.\n\n✅ Podržte obrázek prstem a vyberte "Uložit do Fotek" pro uložení do galerie.');
-                        }, 500);
-                        
-                    } else {
-                        // Standardní stažení pro ostatní platformy
-                        const link = document.createElement('a');
-                        link.download = `F1-Baarovka-Sestava-${new Date().toISOString().slice(0, 10)}.png`;
-                        link.href = canvas.toDataURL('image/png');
-                        
-                        // Stažení souboru
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        
-                        // Potvrzení uživateli
-                        alert('✅ Obrázek sestavy byl úspěšně uložen!');
-                    }
-                    
-                    // Reset tlačítka
-                    this.textContent = '📷 Uložit jako obrázek';
-                    this.disabled = false;
-                    
-                }).catch(error => {
-                    console.error('Chyba při generování obrázku:', error);
-                    alert('❌ Došlo k chybě při generování obrázku. Zkuste to znovu.');
-                    
-                    // Reset tlačítka
-                    this.textContent = '📷 Uložit jako obrázek';
-                    this.disabled = false;
-                });
-            });
-            
             // Funkce pro výpočet celkové ceny jezdců
             function calculateDriversTotal() {
                 let total = 0;
@@ -1839,7 +1713,7 @@
                     <div class="preview-card f1-total-card" style="background: linear-gradient(135deg, #000000 0%, #1a0000 50%, #cc0000 100%); border: 3px solid #ff0000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.4), 0 4px 16px rgba(0,0,0,0.3);">
                         <div class="preview-card-content" style="background: none; justify-content: center; text-align: center;">
                             <div style="font-family: 'Orbitron', 'Exo 2', monospace; font-size: 1.3em; font-weight: 900; margin-bottom: 8px; color: #ffffff; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);">CELKEM</div>
-                            <div style="font-family: 'Orbitron', 'Exo 2', monospace; font-size: 2.8em; font-weight: 900; color: #ff0000 !important; text-shadow: 0 0 15px rgba(255, 0, 0, 0.9), 0 2px 8px rgba(0,0,0,0.8); letter-spacing: 2px; text-transform: uppercase;">${totalCost.toFixed(1)} MIL</div>
+                            <div style="font-family: 'Orbitron', 'Exo 2', monospace; font-size: 2.8em; font-weight: 900; color: #ff0000 !important; text-shadow: 0 0 15px rgba(255, 0, 0, 0.9), 0 2px 8px rgba(0,0,0,0.8); letter-spacing: 2px; text-transform: uppercase;">${totalCost.toFixed(1)}</div>
                         </div>
                     </div>
                 `;
