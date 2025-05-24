@@ -1580,9 +1580,10 @@
                 updateSelectedRows();
             });
             
-            // Přidání listeneru na tlačítko náhledu
+            // Přidání listeneru na tlačítko náhledu - POUZE při kliknutí
             previewButton.addEventListener('click', function(e) {
                 e.preventDefault();
+                e.stopPropagation();
                 showPreview();
             });
             
@@ -1730,9 +1731,12 @@
                 previewContainer.style.display = 'block';
             }
             
-            // Inicializace
+            // Inicializace - ZAJISTIT že náhled je skrytý
             updateDisplay();
             updateSelectedRows();
+            
+            // Explicitně skrýt náhled při načtení
+            previewContainer.style.display = 'none';
         });
     </script>
 </body>
