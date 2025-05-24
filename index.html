@@ -481,6 +481,38 @@
             justify-content: space-between;
         }
         
+        /* PREVIEW ACTIONS - tlačítka pro export */
+        .preview-actions {
+            background-color: #15151e;
+            padding: 20px;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            border-top: 2px solid #e10600;
+        }
+        
+        .save-btn {
+            background: linear-gradient(135deg, #e10600, #ff4444);
+            border: none;
+            color: white;
+            padding: 15px 25px;
+            cursor: pointer;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.1em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(225, 6, 0, 0.3);
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', 'Exo 2', sans-serif;
+        }
+        
+        .save-btn:hover {
+            background: linear-gradient(135deg, #ff4444, #e10600);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(225, 6, 0, 0.4);
+        }
+        
         .preview-budget-item {
             text-align: center;
             flex: 1;
@@ -797,10 +829,17 @@
                 max-height: none;
             }
             
-            /* Flag optimalizace pro mobil */
-            .flag {
+            /* Mobilní optimalizace pro export tlačítka */
+            .preview-actions {
+                flex-direction: column;
+                gap: 10px;
+                padding: 15px;
+            }
+            
+            .save-btn {
+                width: 100%;
+                padding: 12px 20px;
                 font-size: 1em;
-                margin-right: 4px;
             }
         }
         
@@ -1270,10 +1309,16 @@
                     <div id="preview-remaining" class="value remaining">30.0 mil.</div>
                 </div>
             </div>
+            <div class="preview-actions">
+                <button id="save-image-btn" class="save-btn">📷 Uložit jako obrázek</button>
+            </div>
         </div>
         <div id="preview-close" class="preview-close">✕</div>
     </div>
 
+    <!-- html2canvas knihovna pro export obrázků -->
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    
     <script>
         // Základní nastavení
         const BUDGET_LIMIT = 30.0;
@@ -1545,6 +1590,53 @@
                 }
             });
             
+            // FUNKCE PRO ULOŽENÍ OBRÁZKU
+            document.getElementById('save-image-btn').addEventListener('click', function() {
+                const previewContent = document.querySelector('.preview-content');
+                
+                // Nastavení pro html2canvas
+                const options = {
+                    backgroundColor: '#ffffff',
+                    scale: 2, // Vyšší kvalita
+                    useCORS: true,
+                    allowTaint: true,
+                    scrollX: 0,
+                    scrollY: 0,
+                    width: previewContent.offsetWidth,
+                    height: previewContent.offsetHeight
+                };
+                
+                // Změna textu tlačítka během generování
+                this.textContent = '📷 Generuji obrázek...';
+                this.disabled = true;
+                
+                html2canvas(previewContent, options).then(canvas => {
+                    // Vytvoření odkazu pro stažení
+                    const link = document.createElement('a');
+                    link.download = `F1-Baarovka-Sestava-${new Date().toISOString().slice(0, 10)}.png`;
+                    link.href = canvas.toDataURL('image/png');
+                    
+                    // Stažení souboru
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    // Reset tlačítka
+                    this.textContent = '📷 Uložit jako obrázek';
+                    this.disabled = false;
+                    
+                    // Potvrzení uživateli
+                    alert('✅ Obrázek sestavy byl úspěšně uložen!');
+                }).catch(error => {
+                    console.error('Chyba při generování obrázku:', error);
+                    alert('❌ Došlo k chybě při generování obrázku. Zkuste to znovu.');
+                    
+                    // Reset tlačítka
+                    this.textContent = '📷 Uložit jako obrázek';
+                    this.disabled = false;
+                });
+            });
+            
             // Funkce pro výpočet celkové ceny jezdců
             function calculateDriversTotal() {
                 let total = 0;
@@ -1674,7 +1766,7 @@
                     <div class="preview-card f1-total-card" style="background: linear-gradient(135deg, #000000 0%, #1a0000 50%, #cc0000 100%); border: 3px solid #ff0000; box-shadow: 0 0 20px rgba(255, 0, 0, 0.4), 0 4px 16px rgba(0,0,0,0.3);">
                         <div class="preview-card-content" style="background: none; justify-content: center; text-align: center;">
                             <div style="font-family: 'Orbitron', 'Exo 2', monospace; font-size: 1.3em; font-weight: 900; margin-bottom: 8px; color: #ffffff; text-transform: uppercase; letter-spacing: 3px; text-shadow: 0 0 10px rgba(255, 0, 0, 0.8);">CELKEM</div>
-                            <div style="font-family: 'Orbitron', 'Exo 2', monospace; font-size: 2.8em; font-weight: 900; color: #ff0000 !important; text-shadow: 0 0 15px rgba(255, 0, 0, 0.9), 0 2px 8px rgba(0,0,0,0.8); letter-spacing: 2px; text-transform: uppercase;">${totalCost.toFixed(1)}</div>
+                            <div style="font-family: 'Orbitron', 'Exo 2', monospace; font-size: 2.8em; font-weight: 900; color: #ff0000 !important; text-shadow: 0 0 15px rgba(255, 0, 0, 0.9), 0 2px 8px rgba(0,0,0,0.8); letter-spacing: 2px; text-transform: uppercase;">${totalCost.toFixed(1)} MIL</div>
                         </div>
                     </div>
                 `;
