@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>F1 Baarovka Manager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            color: #333;
+            padding-bottom: 70px; /* Prostor pro fixní panel */
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        
+        header {
+            background-color: #15151e;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 5px solid #e10600;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 28px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        h2 {
+            color: #e10600;
+            border-bottom: 2px solid #e10600;
+            padding-bottom: 10px;
+            margin-top: 25px;
+            font-size: 22px;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Základní tabulky */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            background-color: white;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background-color: #15151e;
+            color: white;
+            text-transform: uppercase;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        /* Logo týmu v tabulce - kulaté */
+        .team-logo {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            margin-right: 10px;
+            vertical-align: middle;
+            border-radius: 50%;
+            border: 2px solid #e10600;
+            background: white;
+            padding: 2px;
+        }
+        
+        .team-cell {
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Logo týmu u jezdce v tabulce - malé kulaté */
+        .driver-team-logo {
+            width: 25px;
+            height: 25px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 1px solid #ddd;
+            background: white;
+            padding: 1px;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        .driver-cell {
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Výběr oblast */
+        .selection-area {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            position: sticky;
+            top: 20px;
+        }
+        
+        /* Rozpočet */
+        .budget {
+            background-color: #15151e;
+            color: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .budget div {
+            margin: 8px 0;
+            font-size: 1.1em;
+        }
+        
+        /* Progress bar */
+        .progress-container {
+            width: 100%;
+            background-color: #ddd;
+            margin: 20px 0;
+            height: 24px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        .progress-bar {
+            height: 24px;
+            background-color: #e10600;
+            color: white;
+            text-align: center;
+            line-height: 24px;
+            font-weight: bold;
+            transition: width 0.5s ease;
+        }
+        
+        /* Zprávy */
+        .error {
+            background-color: #d32f2f;
+            color: white;
+            padding: 12px 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-weight: bold;
+        }
+        
+        .success {
+            background-color: #388e3c;
+            color: white;
+            padding: 12px 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-weight: bold;
+        }
+        
+        /* Tlačítka */
+        button {
+            background-color: #e10600;
+            border: none;
+            color: white;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            transition: all 0.2s ease;
+        }
+        
+        button:hover {
+            background-color: #c00500;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* Karty jezdců a týmů s fotkami */
+        .selected-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .selected-card {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: white;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .selected-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .selected-card h4 {
+            margin: 0;
+            padding: 10px;
+            background-color: #15151e;
+            color: white;
+            font-size: 1em;
+            border-bottom: 2px solid #e10600;
+        }
+        
+        .selected-card p {
+            margin: 10px 0;
+            padding: 0 10px;
+        }
+        
+        /* Fotka profilu pro karty - upraveno pro skutečné fotky */
+        .card-photo {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            margin: 15px auto 10px;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid #e10600;
+            background: linear-gradient(135deg, #15151e, #e10600);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .card-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .card-photo .fallback-avatar {
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+            display: none;
+        }
+        
+        /* Fotka auta pro týmové karty */
+        .car-photo {
+            width: 120px;
+            height: auto;
+            margin: 15px auto 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .car-photo img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        
+        .price-tag {
+            color: #e10600;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .flag {
+            margin-right: 5px;
+            font-size: 1.2em;
+        }
+        
+        /* Finální náhled s vylepšenými kartami */
+        .preview-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .preview-content {
+            background-color: white;
+            max-width: 900px;
+            margin: 40px auto;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        }
+        
+        .preview-header {
+            background-color: #15151e;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 5px solid #e10600;
+        }
+        
+        .preview-header h2 {
+            margin: 0;
+            color: white;
+            border: none;
+            padding: 0;
+            font-size: 1.8em;
+        }
+        
+        .preview-body {
+            padding: 30px;
+        }
+        
+        .preview-section {
+            margin-bottom: 25px;
+        }
+        
+        .preview-section h3 {
+            color: #e10600;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .preview-card {
+            background-color: #f9f9f9;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border: 2px solid #e10600;
+            transition: transform 0.2s ease;
+        }
+        
+        .preview-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Velká fotka pro náhled - upraveno */
+        .preview-photo {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            position: relative;
+            overflow: hidden;
+            border: 4px solid #e10600;
+            background: linear-gradient(135deg, #15151e, #e10600);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .preview-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        
+        .preview-photo .fallback-avatar {
+            color: white;
+            font-weight: bold;
+            font-size: 1.5em;
+            display: none;
+        }
+        
+        /* Velká fotka auta pro náhled */
+        .preview-car-photo {
+            width: 160px;
+            height: auto;
+            margin: 0 auto 15px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .preview-car-photo img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            border-radius: 10px;
+        }
+        
+        .preview-card .driver-name {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 1.2em;
+            color: #15151e;
+        }
+        
+        .preview-card .price-tag {
+            font-size: 1.1em;
+            margin-top: 8px;
+        }
+        
+        .preview-footer {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .preview-budget-item {
+            text-align: center;
+            flex: 1;
+        }
+        
+        .preview-budget-item .label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .preview-budget-item .value {
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+        
+        .preview-budget-item .value.total {
+            color: #15151e;
+        }
+        
+        .preview-budget-item .value.used {
+            color: #e10600;
+        }
+        
+        .preview-budget-item .value.remaining {
+            color: #388e3c;
+        }
+        
+        .preview-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: #e10600;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        .preview-close:hover {
+            background-color: #c00500;
+        }
+        
+        /* Fixní panel dole */
+        .fixed-budget-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #15151e;
+            color: white;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+            z-index: 900;
+        }
+        
+        .budget-info {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex: 1;
+        }
+        
+        .budget-item {
+            text-align: center;
+            padding: 0 10px;
+        }
+        
+        .budget-item .label {
+            font-size: 0.8em;
+            opacity: 0.8;
+            margin-bottom: 3px;
+        }
+        
+        .budget-item .value {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .scroll-top {
+            background-color: #e10600;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-left: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        @media (min-width: 768px) {
+            .layout {
+                display: flex;
+                gap: 25px;
+            }
+            
+            .layout-left {
+                flex: 0 0 60%;
+            }
+            
+            .layout-right {
+                flex: 0 0 38%;
+            }
+        }
+        
+        /* Mobilní optimalizace */
+        @media (max-width: 767px) {
+            header {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 22px;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+            
+            table {
+                font-size: 0.9em;
+            }
+            
+            th, td {
+                padding: 10px 8px;
+            }
+            
+            .selected-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .preview-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .preview-footer {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .preview-budget-item {
+                padding: 10px;
+                border-bottom: 1px solid #ddd;
+            }
+            
+            .preview-budget-item:last-child {
+                border-bottom: none;
+            }
+            
+            /* Zvětšení interaktivních prvků pro mobilní dotyky */
+            input[type="checkbox"], input[type="radio"] {
+                transform: scale(1.5);
+                margin: 0 5px;
+                width: 24px;
+                height: 24px;
+            }
+            
+            button {
+                padding: 12px 15px;
+                width: 100%;
+                margin: 8px 0;
+                font-size: 0.9em;
+            }
+            
+            .preview-close {
+                width: 40px;
+                height: 40px;
+                font-size: 20px;
+            }
+            
+            /* Fixní výška a rolovatelný obsah pro náhled na mobilech */
+            .preview-content {
+                max-height: 85vh;
+                overflow-y: auto;
+                margin: 20px auto;
+            }
+            
+            .preview-container {
+                overflow-y: hidden;
+            }
+            
+            .preview-body {
+                padding: 15px;
+            }
+            
+            /* Vylepšení pro fixní panel na mobilech */
+            .fixed-budget-panel {
+                padding: 8px;
+            }
+            
+            .budget-item {
+                padding: 0 5px;
+            }
+            
+            .budget-item .label {
+                font-size: 0.7em;
+            }
+            
+            .budget-item .value {
+                font-size: 0.9em;
+            }
+            
+            /* Optimalizace rozložení pro telefony na výšku */
+            .selection-area {
+                position: relative;
+                top: 0;
+                margin-top: 15px;
+                padding: 15px;
+            }
+            
+            /* Odstranění margin-right pro tlačítka na malých obrazovkách */
+            button {
+                margin-right: 0;
+            }
+            
+            /* Zlepšení clickable oblasti pro mobilní zařízení */
+            tr {
+                cursor: pointer;
+            }
+            
+            /* Zarovnání checkboxů na mobilech */
+            td:last-child {
+                text-align: center;
+            }
+            
+            .card-photo, .preview-photo {
+                width: 50px;
+                height: 50px;
+            }
+        }
+        
+        /* Zvýraznění vybraných řádků */
+        tr.selected {
+            background-color: #ffecec;
+        }
+        
+        /* Styl pro řádky při kliknutí */
+        tr:active {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>F1 Baarovka Manager</h1>
+    </header>
+    
+    <div class="container">
+        <div class="layout">
+            <div class="layout-left">
+                <h2>Týmy</h2>
+                <table id="teamsTable">
+                    <tr>
+                        <th>Tým</th>
+                        <th>Cena</th>
+                        <th>Vybrat</th>
+                    </tr>
+                    <tr data-team="Red Bull Racing" data-price="6.5" data-flag="🇦🇹">
+                        <td>
+                            <div class="team-cell">
+                                <img src="Týmy loga/2025redbullracinglogowhitefr.avif" alt="Red Bull Racing" class="team-logo">
+                                <div>
+                                    <span class="flag">🇦🇹</span> Red Bull Racing
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="price-tag">6.5 mil.</span></td>
+                        <td><input type="radio" name="team" data-name="Red Bull Racing" data-price="6.5" data-flag="🇦🇹"></td>
+                    </tr>
+                    <tr data-team="McLaren" data-price="7.5" data-flag="🇬🇧">
+                        <td>
+                            <div class="team-cell">
+                                <img src="Týmy loga/2025mclarenlogowhitefr.avif" alt="McLaren" class="team-logo">
+                                <div>
+                                    <span class="flag">🇬🇧</span> McLaren
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="price-tag">7.5 mil.</span></td>
+                        <td><input type="radio" name="team" data-name="McLaren" data-price="7.5" data-flag="🇬🇧"></td>
+                    </tr>
+                    <tr data-team="Ferrari" data-price="7.0" data-flag="🇮🇹">
+                        <td>
+                            <div class="team-cell">
+                                <img src="Týmy loga/2025ferrarilogowhitefr.avif" alt="Ferrari" class="team-logo">
+                                <div>
+                                    <span class="flag">🇮🇹</span> Ferrari
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="price-tag">7.0 mil.</span></td>
+                        <td><input type="radio" name="team" data-name="Ferrari" data-price="7.0" data-flag="🇮🇹"></td>
+                    </tr>
+                    <tr data-team="Mercedes" data-price="6.0" data-flag="🇩🇪">
+                        <td>
+                            <div class="team-cell">
+                                <img src="Týmy loga/2025mercedeslogowhitefr.avif" alt="Mercedes" class="team-logo">
+                                <div>
+                                    <span class="flag">🇩🇪</span> Mercedes
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="price-tag">6.0 mil.</span></td>
+                        <td><input type="radio" name="team" data-name="Mercedes" data-price="6.0" data-flag="🇩🇪"></td>
+                    </tr>
+                    <tr data-team="Aston Martin" data-price="3.5" data-flag="🇬🇧">
+                        <td>
+                            <div class="team-cell">
+                                <img src="Týmy loga/2025astonmartinlogowhitefr.avif" alt="Aston Martin" class="team-logo">
+                                <div>
+                                    <span class="flag">🇬🇧</span> Aston Martin
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="price-tag">3.5 mil.</span></td>
+                        <td><input type="radio" name="team" data-name="Aston Martin" data-price="3.5" data-flag="🇬🇧"></td>
+                    </tr>
+                    <tr data-team="Alpine" data-price="3.5" data-flag="🇫🇷">
+                        <td>
+                            <div class="team-cell">
+                                <img src="Týmy loga/2025alpinelogowhitefr.avif" alt="Alpine" class="team-logo">
+                                <div>
+                                    <span class="flag">🇫🇷</span> Alpine
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="price-tag">3.5 mil.</span></td>
+                        <td><input type="radio" name="team" data-name="Alpine" data-price="3.5" data-flag="🇫🇷"></td>
+                    </tr>
+                    <tr data-team="Visa Cash App RB" data-price="3.0" data-flag="🇮🇹">
+                        <td>
+                            <div class="team-cell">
+                                <img src="Týmy loga/2025racingbullslogowhitefr.avif" alt="Racing Bulls" class="team-logo">
+                                <div>
+                                    <span class="flag">🇮🇹</span> Visa Cash App RB
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="price-tag">3.0 mil.</span></td>
+                        <td><input type="radio" name="team" data-name="Visa Cash App RB" data-price="3.0" data-flag="🇮🇹"></td>
+                    </tr>
+                    <tr data-team="Williams" data-price="4.0" data-flag="🇬🇧">
+                        <td>
+                            <div class="team-cell">
+                                <img src="Týmy loga/2025williamslogowhitefr.avif" alt="Williams" class="team-logo">
+                                <div>
+                                    <span class="flag">🇬🇧</span> Williams
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="price-tag">4.0 mil.</span></td>
+                        <td><input type="radio" name="team" data-name="Williams" data-price="4.0" data-flag="🇬🇧"></td>
+                    </tr>
+                    <tr data-team="Haas" data-price="3.0" data-flag="🇺🇸">
+                        <td>
+                            <div class="team-cell">
+                                <img src="Týmy loga/2025haaslogowhitefr.avif" alt="Haas" class="team-logo">
+                                <div>
+                                    <span class="flag">🇺🇸</span> Haas
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="price-tag">3.0 mil.</span></td>
+                        <td><input type="radio" name="team" data-name="Haas" data-price="3.0" data-flag="🇺🇸"></td>
+                    </tr>
+                    <tr data-team="Sauber" data-price="1.5" data-flag="🇨🇭">
+                        <td>
+                            <div class="team-cell">
+                                <img src="Týmy loga/2025kicksauberlogowhitefr.avif" alt="Kick Sauber" class="team-logo">
+                                <div>
+                                    <span class="flag">🇨🇭</span> Sauber
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="price-tag">1.5 mil.</span></td>
+                        <td><input type="radio" name="team" data-name="Sauber" data-price="1.5" data-flag="🇨🇭"></td>
+                    </tr>
+                </table>
+                
+                <h2>Jezdci</h2>
+                <table id="driversTable">
+                    <tr>
+                        <th>Jezdec</th>
+                        <th>Cena</th>
+                        <th>Vybrat</th>
+                    </tr>
+                    <tr data-driver="Verstappen" data-price="7.5" data-flag="🇳🇱">
+                        <td>
+                            <div class="driver-cell">
+                                <img src="Týmy loga/2025redbullracinglogowhitefr.avif" alt="Red Bull Racing" class="driver-team-logo">
+                                Verstappen
+                            </div>
+                        </td>
+                        <td><span class="price-tag">7.5 mil.</span></td>
+                        <td><input type="checkbox" data-name="Verstappen" data-price="7.5" data-flag="🇳🇱"></td>
+                    </tr>
+                    <tr data-driver="Tsunoda" data-price="5.0" data-flag="🇯🇵">
+                        <td>
+                            <div class="driver-cell">
+                                <img src="Týmy loga/2025redbullracinglogowhitefr.avif" alt="Red Bull Racing" class="driver-team-logo">
+                                Tsunoda
+                            </div>
+                        </td>
+                        <td><span class="price-tag">5.0 mil.</span></td>
+                        <td><input type="checkbox" data-name="Tsunoda" data-price="5.0" data-flag="🇯🇵"></td>
+                    </tr>
+                    <tr data-driver="Norris" data-price="8.0" data-flag="🇬🇧">
+                        <td>
+                            <div class="driver-cell">
+                                <img src="Týmy loga/2025mclarenlogowhitefr.avif" alt="McLaren" class="driver-team-logo">
+                                Norris
+                            </div>
+                        </td>
+                        <td><span class="price-tag">8.0 mil.</span></td>
+                        <td><input type="checkbox" data-name="Norris" data-price="8.0" data-flag="🇬🇧"></td>
+                    </tr>
+                    <tr data-driver="Piastri" data-price="6.5" data-flag="🇦🇺">
+                        <td>
+                            <div class="driver-cell">
+                                <img src="Týmy loga/2025mclarenlogowhitefr.avif" alt="McLaren" class="driver-team-logo">
+                                Piastri
+                            </div>
+                        </td>
+                        <td><span class="price-tag">6.5 mil.</span></td>
+                        <td><input type="checkbox" data-name="Piastri" data-price="6.5" data-flag="🇦🇺"></td>
+                    </tr>
+                    <tr data-driver="Leclerc" data-price="7.0" data-flag="🇲🇨">
+                        <td>
+                            <div class="driver-cell">
+                                <img src="Týmy loga/2025ferrarilogowhitefr.avif" alt="Ferrari" class="driver-team-logo">
+                                Leclerc
+                            </div>
+                        </td>
+                        <td><span class="price-tag">7.0 mil.</span></td>
+                        <td><input type="checkbox" data-name="Leclerc" data-price="7.0" data-flag="🇲🇨"></td>
+                    </tr>
+                    <tr data-driver="Hamilton" data-price="7.0" data-flag="🇬🇧">
+                        <td>
+                            <div class="driver-cell">
+                                <img src="Týmy loga/2025ferrarilogowhitefr.avif" alt="Ferrari" class="driver-team-logo">
+                                Hamilton
+                            </div>
+                        </td>
+                        <td><span class="price-tag">7.0 mil.</span></td>
+                        <td><input type="checkbox" data-name="Hamilton" data-price="7.0" data-flag="🇬🇧"></td>
+                    </tr>
+                    <tr data-driver="Russel" data-price="6.5" data-flag="🇬🇧">
+                        <td>
+                            <div class="driver-cell">
+                                <img src="Týmy loga/2025mercedeslogowhitefr.avif" alt="Mercedes" class="driver-team-logo">
+                                Russel
+                            </div>
+                        </td>
+                        <td><span class="price-tag">6.5 mil.</span></td>
+                        <td><input type="checkbox" data-name="Russel" data-price="6.5" data-flag="🇬🇧"></td>
+                    </tr>
+                    <tr data-driver="Antonelli" data-price="5.0" data-flag="🇮🇹">
+                        <td>
+                            <div class="driver-cell">
+                                <img src="Týmy loga/2025mercedeslogowhitefr.avif" alt="Mercedes" class="driver-team-logo">
+                                Antonelli
+                            </div>
+                        </td>
+                        <td><span class="price-tag">5.0 mil.</span></td>
+                        <td><input type="checkbox" data-name="Antonelli" data-price="5.0" data-flag="🇮🇹"></td>
+                    </tr>
+                    <tr data-driver="Alonso" data-price="4.0" data-flag="🇪🇸">
+                        <td>
+                            <div class="driver-cell">
+                                <img src="Týmy loga/2025astonmartinlogowhitefr.avif" alt="Aston Martin" class="driver-team-logo">
+                                Alonso
+                            </div>
+                        </td>
+                        <td><span class="price-tag">4.0 mil.</span></td>
+                        <td><input type="checkbox" data-name="Alonso" data-price="4.0" data-flag="🇪🇸"></td>
+                    </tr>
+                    <tr data-driver="Stroll" data-price="3.0" data-flag="🇨🇦">
+                        <td>
+                            <div class="driver-cell">
+                                <img src="Týmy loga/2025astonmartinlogowhitefr.avif" alt="Aston Martin" class="driver-team-logo">
+                                Stroll
+                            </div>
+                        </td>
+                        <td><span class="price-tag">3.0 mil.</span></td>
+                        <td><input type="checkbox" data-name="Stroll" data-price="3.0" data-flag="🇨🇦"></td>
+                    </tr>
+                    <tr data-driver="Gasly" data-price="4.5" data-flag="🇫🇷">
+                        <td>
+                            <div class="driver-cell">
+                                <img src="Týmy loga/2025alpinelogowhitefr.avif" alt="Alpine" class="driver-team-logo">
+                                Gasly
+                            </div>
+                        </td>
+                        <td><span class="price-tag">4.5 mil.</span></td>
+                        <td><input type="checkbox" data-name="Gasly" data-price="4.5" data-flag="🇫🇷"></td>
+                    </tr>
+                    <tr data-driver="Colapinto" data-price="3.0" data-flag="🇦🇷">
+                        <td>
+                            <div class="driver-cell">
+                                <img src="Týmy loga/2025alpinelogowhitefr.avif" alt="Alpine" class="driver-team-logo">
+                                Colapinto
+                            </div>
+                        </td>
+                        <td><span class="price-tag">3.0 mil.</span></td>
+                        <td><input type="checkbox" data-name="Colapinto" data-price="3.0" data-flag="🇦🇷"></td>
+                    </tr>
+                    <tr data-driver="Albon" data-price="4.0" data-flag="🇹🇭">
+                        <td>
+                            <div class="driver-cell">
+                                <img src="Týmy loga/2025williamslogowhitefr.avif" alt="Williams" class="driver-team-logo">
+                                Albon
+                            </div>
+                        </td>
+                        <td><span class="price-tag">4.0 mil.</span></td>
+                        <td><input type="checkbox" data-name="Albon" data-price="4.0" data-flag="🇹🇭"></td>
+                    </tr>
+                    <tr data-driver="Sainz" data-price="4.5" data-flag="🇪🇸">
+                        <td>
+                            <div class="driver-cell">
+                                <img src="Týmy loga/2025williamslogowhitefr.avif" alt="Williams" class="driver-team-logo">
+                                Sainz
+                            </div>
+                        </td>
+                        <td><span class="price-tag">4.5 mil.</span></td>
+                        <td><input type="checkbox" data-name="Sainz" data-price="4.5" data-flag="🇪🇸"></td>
+                    </tr>
+                    <tr data-driver="Lawson" data-price="3.5" data-flag="🇳🇿">
+                        <td>
+                            <div class="driver-cell">
+                                <img src="Týmy loga/2025racingbullslogowhitefr.avif" alt="Racing Bulls" class="driver-team-logo">
+                                Lawson
+                            </div>
+                        </td>
+                        <td><span class="price-tag">3.5 mil.</span></td>
+                        <td><input type="checkbox" data-name="Lawson" data-price="3.5" data-flag="🇳🇿"></td>
+                    </tr>
+                    <tr data-driver="Hadjar" data-price="2.5" data-flag="🇫🇷">
+                        <td>
+                            <div class="driver-cell">
+                                <img src="Týmy loga/2025racingbullslogowhitefr.avif" alt="Racing Bulls" class="driver-team-logo">
+                                Hadjar
+                            </div>
+                        </td>
+                        <td><span class="price-tag">2.5 mil.</span></td>
+                        <td><input type="checkbox" data-name="Hadjar" data-price="2.5" data-flag="🇫🇷"></td>
+                    </tr>
+                    <tr data-driver="Ocon" data-price="3.0" data-flag="🇫🇷">
+                        <td>
+                            <div class="driver-cell">
+                                <img src="Týmy loga/2025alpinelogowhitefr.avif" alt="Alpine" class="driver-team-logo">
+                                Ocon
+                            </div>
+                        </td>
+                        <td><span class="price-tag">3.0 mil.</span></td>
+                        <td><input type="checkbox" data-name="Ocon" data-price="3.0" data-flag="🇫🇷"></td>
+                    </tr>
+                    <tr data-driver="Bearman" data-price="3.0" data-flag="🇬🇧">
+                        <td>
+                            <div class="driver-cell">
+                                <img src="Týmy loga/2025haaslogowhitefr.avif" alt="Haas" class="driver-team-logo">
+                                Bearman
+                            </div>
+                        </td>
+                        <td><span class="price-tag">3.0 mil.</span></td>
+                        <td><input type="checkbox" data-name="Bearman" data-price="3.0" data-flag="🇬🇧"></td>
+                    </tr>
+                    <tr data-driver="Hulkenberg" data-price="2.0" data-flag="🇩🇪">
+                        <td>
+                            <div class="driver-cell">
+                                <img src="Týmy loga/2025kicksauberlogowhitefr.avif" alt="Kick Sauber" class="driver-team-logo">
+                                Hulkenberg
+                            </div>
+                        </td>
+                        <td><span class="price-tag">2.0 mil.</span></td>
+                        <td><input type="checkbox" data-name="Hulkenberg" data-price="2.0" data-flag="🇩🇪"></td>
+                    </tr>
+                    <tr data-driver="Bortoleto" data-price="1.5" data-flag="🇧🇷">
+                        <td>
+                            <div class="driver-cell">
+                                <img src="Týmy loga/2025kicksauberlogowhitefr.avif" alt="Kick Sauber" class="driver-team-logo">
+                                Bortoleto
+                            </div>
+                        </td>
+                        <td><span class="price-tag">1.5 mil.</span></td>
+                        <td><input type="checkbox" data-name="Bortoleto" data-price="1.5" data-flag="🇧🇷"></td>
+                    </tr>
+                        <td><span class="price-tag">3.0 mil.</span></td>
+                        <td><input type="checkbox" data-name="Bearman" data-price="3.0" data-flag="🇬🇧"></td>
+                    </tr>
+                    <tr data-driver="Hulkenberg" data-price="2.0" data-flag="🇩🇪">
+                        <td><span class="flag">🇩🇪</span> Hulkenberg</td>
+                        <td><span class="price-tag">2.0 mil.</span></td>
+                        <td><input type="checkbox" data-name="Hulkenberg" data-price="2.0" data-flag="🇩🇪"></td>
+                    </tr>
+                    <tr data-driver="Bortoleto" data-price="1.5" data-flag="🇧🇷">
+                        <td><span class="flag">🇧🇷</span> Bortoleto</td>
+                        <td><span class="price-tag">1.5 mil.</span></td>
+                        <td><input type="checkbox" data-name="Bortoleto" data-price="1.5" data-flag="🇧🇷"></td>
+                    </tr>
+                </table>
+            </div>
+            
+            <div class="layout-right">
+                <div class="selection-area">
+                    <h2>Váš výběr</h2>
+                    
+                    <div class="progress-container">
+                        <div id="progress-bar" class="progress-bar" style="width: 0%">0%</div>
+                    </div>
+                    
+                    <div class="budget">
+                        <div>Celkový rozpočet: <strong>30.0 mil.</strong></div>
+                        <div>Využito: <strong id="used-budget">0.0 mil.</strong></div>
+                        <div>Zbývá: <strong id="remaining-budget">30.0 mil.</strong></div>
+                    </div>
+                    
+                    <div id="status-message"></div>
+                    
+                    <h3>Vybraní jezdci</h3>
+                    <div class="selected-grid" id="selected-drivers">
+                        <!-- Sem budou dynamicky přidávány karty -->
+                    </div>
+                    
+                    <h3>Vybraný tým</h3>
+                    <div id="selected-team">
+                        <!-- Sem bude dynamicky přidána karta -->
+                    </div>
+                    
+                    <button id="reset-button">Resetovat</button>
+                    <button id="preview-button" disabled>Náhled</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Fixní panel s rozpočtem -->
+    <div class="fixed-budget-panel">
+        <div class="budget-info">
+            <div class="budget-item">
+                <div class="label">Rozpočet</div>
+                <div class="value">30.0 mil.</div>
+            </div>
+            <div class="budget-item">
+                <div class="label">Využito</div>
+                <div id="fixed-used-budget" class="value">0.0 mil.</div>
+            </div>
+            <div class="budget-item">
+                <div class="label">Zbývá</div>
+                <div id="fixed-remaining-budget" class="value">30.0 mil.</div>
+            </div>
+        </div>
+        <div id="scroll-top" class="scroll-top">↑</div>
+    </div>
+    
+    <!-- Finální náhled sestavy -->
+    <div id="preview-container" class="preview-container">
+        <div class="preview-content">
+            <div class="preview-header">
+                <h2>Finální sestava</h2>
+            </div>
+            <div class="preview-body">
+                <div class="preview-section">
+                    <h3>Vybraní jezdci</h3>
+                    <div id="preview-drivers" class="preview-grid">
+                        <!-- Sem budou vloženy karty jezdců -->
+                    </div>
+                </div>
+                <div class="preview-section">
+                    <h3>Vybraný tým</h3>
+                    <div id="preview-team" class="preview-grid">
+                        <!-- Sem bude vložena karta týmu -->
+                    </div>
+                </div>
+            </div>
+            <div class="preview-footer">
+                <div class="preview-budget-item">
+                    <div class="label">Celkový rozpočet</div>
+                    <div class="value total">30.0 mil.</div>
+                </div>
+                <div class="preview-budget-item">
+                    <div class="label">Využito</div>
+                    <div id="preview-used" class="value used">0.0 mil.</div>
+                </div>
+                <div class="preview-budget-item">
+                    <div class="label">Zbývá</div>
+                    <div id="preview-remaining" class="value remaining">30.0 mil.</div>
+                </div>
+            </div>
+        </div>
+        <div id="preview-close" class="preview-close">✕</div>
+    </div>
+
+    <script>
+        // Základní nastavení
+        const BUDGET_LIMIT = 30.0;
+        let selectedDrivers = [];
+        let selectedTeam = null;
+        
+        // Databáze fotek jezdců a týmů - vaše GitHub struktura
+        const driverPhotos = {
+            'Verstappen': 'Jezdci/2025redbullracingmaxver01right.avif',
+            'Tsunoda': 'Jezdci/2025redbullracingyuktsu01right.avif',
+            'Norris': 'Jezdci/2025mclarenlannor01right.avif',
+            'Piastri': 'Jezdci/2025mclarenoscpia01right.avif',
+            'Leclerc': 'Jezdci/2025ferrarichalec01right.avif',
+            'Hamilton': 'Jezdci/2025ferrarilewham01right.avif',
+            'Russel': 'Jezdci/2025mercedesgeorus01right.avif',
+            'Antonelli': 'Jezdci/2025mercedesandant01right.avif',
+            'Alonso': 'Jezdci/2025astonmartinferalo01right.avif',
+            'Stroll': 'Jezdci/2025astonmartinlanstr01right.avif',
+            'Gasly': 'Jezdci/2025alpinepiegas01right.avif',
+            'Colapinto': 'Jezdci/2025alpinefracol01right.avif',
+            'Albon': 'Jezdci/2025williamsalealb01right.avif',
+            'Sainz': 'Jezdci/2025williamscarsai01right.avif',
+            'Lawson': 'Jezdci/2025racingbullslialaw01right.avif',
+            'Hadjar': 'Jezdci/2025racingbullsisahad01right.avif',
+            'Ocon': 'Jezdci/2025alpinepiegas01right.avif',
+            'Bearman': 'Jezdci/2025haasolibea01right.avif',
+            'Hulkenberg': 'Jezdci/2025kicksaubernichul01right.avif',
+            'Bortoleto': 'Jezdci/2025kicksaubergabbor01right.avif'
+        };
+        
+        const teamLogos = {
+            'Red Bull Racing': 'Týmy loga/2025redbullracinglogowhitefr.avif',
+            'McLaren': 'Týmy loga/2025mclarenlogowhitefr.avif',
+            'Ferrari': 'Týmy loga/2025ferrarilogowhitefr.avif',
+            'Mercedes': 'Týmy loga/2025mercedeslogowhitefr.avif',
+            'Aston Martin': 'Týmy loga/2025astonmartinlogowhitefr.avif',
+            'Alpine': 'Týmy loga/2025alpinelogowhitefr.avif',
+            'Visa Cash App RB': 'Týmy loga/2025racingbullslogowhitefr.avif',
+            'Williams': 'Týmy loga/2025williamslogowhitefr.avif',
+            'Haas': 'Týmy loga/2025haaslogowhitefr.avif',
+            'Sauber': 'Týmy loga/2025kicksauberlogowhitefr.avif'
+        };
+        
+        const teamCars = {
+            'Red Bull Racing': 'Týmy/2025redbullracingcarright.avif',
+            'McLaren': 'Týmy/2025mclarencarright.avif',
+            'Ferrari': 'Týmy/2025ferraricarright.avif',
+            'Mercedes': 'Týmy/2025mercedescarright.avif',
+            'Aston Martin': 'Týmy/2025astonmartincarright.avif',
+            'Alpine': 'Týmy/2025alpinecarright.avif',
+            'Visa Cash App RB': 'Týmy/2025racingbullscarright.avif',
+            'Williams': 'Týmy/2025williamscarright.avif',
+            'Haas': 'Týmy/2025haascarright.avif',
+            'Sauber': 'Týmy/2025kicksaubercarright.avif'
+        };
+        
+        // Mapování jezdců na týmy pro zobrazení log
+        const driverTeams = {
+            'Verstappen': 'Red Bull Racing',
+            'Tsunoda': 'Red Bull Racing',
+            'Norris': 'McLaren',
+            'Piastri': 'McLaren',
+            'Leclerc': 'Ferrari',
+            'Hamilton': 'Ferrari',
+            'Russel': 'Mercedes',
+            'Antonelli': 'Mercedes',
+            'Alonso': 'Aston Martin',
+            'Stroll': 'Aston Martin',
+            'Gasly': 'Alpine',
+            'Colapinto': 'Alpine',
+            'Albon': 'Williams',
+            'Sainz': 'Williams',
+            'Lawson': 'Visa Cash App RB',
+            'Hadjar': 'Visa Cash App RB',
+            'Ocon': 'Alpine',
+            'Bearman': 'Haas',
+            'Hulkenberg': 'Sauber',
+            'Bortoleto': 'Sauber'
+        };
+        
+        // Funkce pro vytvoření fotky jezdce
+        function createDriverPhoto(name, size = 'normal') {
+            const photoUrl = driverPhotos[name];
+            const sizeClass = size === 'large' ? 'preview-photo' : 'card-photo';
+            const initials = name.substring(0, 2);
+            
+            if (!photoUrl) {
+                return `
+                    <div class="${sizeClass}">
+                        <div class="fallback-avatar" style="display: block;">${initials}</div>
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="${sizeClass}">
+                    <img src="${photoUrl}" alt="${name}" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="fallback-avatar">${initials}</div>
+                </div>
+            `;
+        }
+        
+        // Funkce pro vytvoření fotky auta
+        function createCarPhoto(teamName, size = 'normal') {
+            const carUrl = teamCars[teamName];
+            const sizeClass = size === 'large' ? 'preview-car-photo' : 'car-photo';
+            
+            if (!carUrl) {
+                return `<div class="${sizeClass}"><div style="padding: 20px; text-align: center; color: #666;">🏎️</div></div>`;
+            }
+            
+            return `
+                <div class="${sizeClass}">
+                    <img src="${carUrl}" alt="${teamName} car" 
+                         onerror="this.innerHTML='<div style=&quot;padding: 20px; text-align: center; color: #666;&quot;>🏎️</div>';">
+                </div>
+            `;
+        }
+        
+        // Počkejme na načtení celé stránky
+        document.addEventListener('DOMContentLoaded', function() {
+            // Získání referencí na elementy
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+            const resetButton = document.getElementById('reset-button');
+            const previewButton = document.getElementById('preview-button');
+            const previewContainer = document.getElementById('preview-container');
+            const previewClose = document.getElementById('preview-close');
+            const usedBudgetElement = document.getElementById('used-budget');
+            const remainingBudgetElement = document.getElementById('remaining-budget');
+            const fixedUsedBudgetElement = document.getElementById('fixed-used-budget');
+            const fixedRemainingBudgetElement = document.getElementById('fixed-remaining-budget');
+            const progressBarElement = document.getElementById('progress-bar');
+            const statusMessageElement = document.getElementById('status-message');
+            const selectedDriversElement = document.getElementById('selected-drivers');
+            const selectedTeamElement = document.getElementById('selected-team');
+            const scrollTopButton = document.getElementById('scroll-top');
+            
+            // Pro mobilní zařízení přidáme možnost kliknout i na celý řádek
+            const tableRows = document.querySelectorAll('#driversTable tr[data-driver], #teamsTable tr[data-team]');
+            
+            tableRows.forEach(row => {
+                row.addEventListener('click', function(e) {
+                    // Neklikejme na řádek, pokud jsme klikli přímo na checkbox nebo radio
+                    if (e.target.type === 'checkbox' || e.target.type === 'radio') {
+                        return;
+                    }
+                    
+                    // Najdeme input v tomto řádku
+                    const input = this.querySelector('input');
+                    if (input) {
+                        // Toggle input
+                        if (input.type === 'checkbox') {
+                            input.checked = !input.checked;
+                        } else {
+                            input.checked = true;
+                        }
+                        
+                        // Vyvoláme event change pro tento input
+                        const event = new Event('change');
+                        input.dispatchEvent(event);
+                    }
+                });
+            });
+            
+            // Přidáme třídu pro vybrané řádky
+            function updateSelectedRows() {
+                // Reset všech vybraných řádků
+                document.querySelectorAll('tr.selected').forEach(row => {
+                    row.classList.remove('selected');
+                });
+                
+                // Zvýraznění řádků s vybranými jezdci
+                selectedDrivers.forEach(driver => {
+                    const row = document.querySelector(`tr[data-driver="${driver.name}"]`);
+                    if (row) row.classList.add('selected');
+                });
+                
+                // Zvýraznění řádku s vybraným týmem
+                if (selectedTeam) {
+                    const row = document.querySelector(`tr[data-team="${selectedTeam.name}"]`);
+                    if (row) row.classList.add('selected');
+                }
+            }
+            
+            // Přidání scrollTop funkcionalitu
+            scrollTopButton.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+            
+            // Přidání listenerů na checkboxy jezdců
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const name = this.getAttribute('data-name');
+                    // Zajistíme, že price je vždy číslo
+                    const price = parseFloat(this.getAttribute('data-price') || 0);
+                    const flag = this.getAttribute('data-flag');
+                    
+                    if (this.checked) {
+                        // Kontrola limitu počtu jezdců
+                        if (selectedDrivers.length >= 5) {
+                            this.checked = false;
+                            alert('Můžete vybrat maximálně 5 jezdců!');
+                            return;
+                        }
+                        
+                        // Přidat jezdce - ujistíme se, že cena je číslo
+                        selectedDrivers.push({ name, price: Number(price), flag });
+                    } else {
+                        // Odebrat jezdce
+                        selectedDrivers = selectedDrivers.filter(driver => driver.name !== name);
+                    }
+                    
+                    // Aktualizovat zobrazení
+                    updateDisplay();
+                    // Aktualizace zvýraznění řádků
+                    updateSelectedRows();
+                });
+            });
+            
+            // Přidání listenerů na radiobuttony týmů
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const name = this.getAttribute('data-name');
+                    // Zajistíme, že price je vždy číslo
+                    const price = parseFloat(this.getAttribute('data-price') || 0);
+                    const flag = this.getAttribute('data-flag');
+                    
+                    // Nastavit vybraný tým - ujistíme se, že cena je číslo
+                    selectedTeam = { name, price: Number(price), flag };
+                    
+                    // Aktualizovat zobrazení
+                    updateDisplay();
+                    // Aktualizace zvýraznění řádků
+                    updateSelectedRows();
+                });
+            });
+            
+            // Přidání listeneru na tlačítko reset
+            resetButton.addEventListener('click', function() {
+                // Odznačit všechny checkboxy
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                
+                // Odznačit všechny radiobuttony
+                radioButtons.forEach(radio => {
+                    radio.checked = false;
+                });
+                
+                // Resetovat data
+                selectedDrivers = [];
+                selectedTeam = null;
+                
+                // Aktualizovat zobrazení
+                updateDisplay();
+                // Aktualizace zvýraznění řádků
+                updateSelectedRows();
+            });
+            
+            // Přidání listeneru na tlačítko náhledu
+            previewButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                showPreview();
+            });
+            
+            // Přidání listeneru na zavření náhledu
+            previewClose.addEventListener('click', function() {
+                previewContainer.style.display = 'none';
+            });
+            
+            // Zavření náhledu kliknutím mimo obsah
+            previewContainer.addEventListener('click', function(e) {
+                if (e.target === previewContainer) {
+                    previewContainer.style.display = 'none';
+                }
+            });
+            
+            // Funkce pro výpočet celkové ceny jezdců
+            function calculateDriversTotal() {
+                let total = 0;
+                for (let i = 0; i < selectedDrivers.length; i++) {
+                    const price = Number(selectedDrivers[i].price);
+                    if (!isNaN(price)) {
+                        total += price;
+                    }
+                }
+                return total;
+            }
+            
+            // Funkce pro aktualizaci zobrazení
+            function updateDisplay() {
+                // Výpočet rozpočtu
+                const driversTotal = calculateDriversTotal();
+                const teamTotal = selectedTeam ? Number(selectedTeam.price) : 0;
+                const totalCost = driversTotal + teamTotal;
+                const remainingBudget = BUDGET_LIMIT - totalCost;
+                
+                // Aktualizace rozpočtu v UI
+                usedBudgetElement.textContent = `${totalCost.toFixed(1)} mil.`;
+                remainingBudgetElement.textContent = `${remainingBudget.toFixed(1)} mil.`;
+                
+                // Aktualizace fixního panelu s rozpočtem
+                fixedUsedBudgetElement.textContent = `${totalCost.toFixed(1)} mil.`;
+                fixedRemainingBudgetElement.textContent = `${remainingBudget.toFixed(1)} mil.`;
+                
+                // Aktualizace progress baru
+                const progressPercentage = (totalCost / BUDGET_LIMIT) * 100;
+                progressBarElement.style.width = `${Math.min(progressPercentage, 100)}%`;
+                progressBarElement.textContent = `${Math.min(progressPercentage, 100).toFixed(0)}%`;
+                
+                // Změna barvy progress baru
+                if (progressPercentage > 100) {
+                    progressBarElement.style.backgroundColor = '#d32f2f';
+                } else if (progressPercentage > 90) {
+                    progressBarElement.style.backgroundColor = '#ff9800';
+                } else {
+                    progressBarElement.style.backgroundColor = '#e10600';
+                }
+                
+                // Aktualizace stavové zprávy a tlačítka náhledu
+                if (totalCost > BUDGET_LIMIT) {
+                    statusMessageElement.textContent = 'Překročili jste rozpočet!';
+                    statusMessageElement.className = 'error';
+                    previewButton.disabled = true;
+                } else if (selectedDrivers.length === 5 && selectedTeam) {
+                    statusMessageElement.textContent = 'Váš výběr je kompletní a v rámci rozpočtu!';
+                    statusMessageElement.className = 'success';
+                    previewButton.disabled = false;
+                } else {
+                    statusMessageElement.textContent = '';
+                    statusMessageElement.className = '';
+                    previewButton.disabled = true;
+                }
+                
+                // Aktualizace karet jezdců s fotkami
+                selectedDriversElement.innerHTML = '';
+                
+                if (selectedDrivers.length === 0) {
+                    selectedDriversElement.innerHTML = '<p>Zatím jste nevybrali žádné jezdce.</p>';
+                } else {
+                    selectedDrivers.forEach((driver, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'selected-card';
+                        card.innerHTML = `
+                            <h4>Jezdec ${index + 1}</h4>
+                            ${createDriverPhoto(driver.name)}
+                            <p><span class="flag">${driver.flag}</span> ${driver.name}</p>
+                            <p><span class="price-tag">${Number(driver.price).toFixed(1)} mil.</span></p>
+                        `;
+                        selectedDriversElement.appendChild(card);
+                    });
+                }
+                
+                // Aktualizace karty týmu s fotkou auta
+                selectedTeamElement.innerHTML = '';
+                
+                if (selectedTeam) {
+                    const teamCard = document.createElement('div');
+                    teamCard.className = 'selected-card';
+                    teamCard.innerHTML = `
+                        <h4>Tým</h4>
+                        ${createCarPhoto(selectedTeam.name)}
+                        <p><span class="flag">${selectedTeam.flag}</span> ${selectedTeam.name}</p>
+                        <p><span class="price-tag">${Number(selectedTeam.price).toFixed(1)} mil.</span></p>
+                    `;
+                    selectedTeamElement.appendChild(teamCard);
+                } else {
+                    selectedTeamElement.innerHTML = '<p>Zatím jste nevybrali žádný tým.</p>';
+                }
+            }
+            
+            // Funkce pro zobrazení náhledu s velkými fotkami
+            function showPreview() {
+                // Kontrola, zda je sestava kompletní
+                if (selectedDrivers.length !== 5 || !selectedTeam) {
+                    alert('Pro zobrazení náhledu musíte vybrat 5 jezdců a 1 tým.');
+                    return;
+                }
+                
+                // Výpočet rozpočtu
+                const driversTotal = calculateDriversTotal();
+                const teamTotal = Number(selectedTeam.price);
+                const totalCost = driversTotal + teamTotal;
+                const remainingBudget = BUDGET_LIMIT - totalCost;
+                
+                // Aktualizace náhledu jezdců s velkými fotkami
+                const previewDriversElement = document.getElementById('preview-drivers');
+                previewDriversElement.innerHTML = '';
+                
+                selectedDrivers.forEach(driver => {
+                    const card = document.createElement('div');
+                    card.className = 'preview-card';
+                    card.innerHTML = `
+                        ${createDriverPhoto(driver.name, 'large')}
+                        <div class="driver-name"><span class="flag">${driver.flag}</span> ${driver.name}</div>
+                        <div class="price-tag">${Number(driver.price).toFixed(1)} mil.</div>
+                    `;
+                    previewDriversElement.appendChild(card);
+                });
+                
+                // Aktualizace náhledu týmu s velkou fotkou auta
+                const previewTeamElement = document.getElementById('preview-team');
+                previewTeamElement.innerHTML = '';
+                
+                const teamCard = document.createElement('div');
+                teamCard.className = 'preview-card';
+                teamCard.innerHTML = `
+                    ${createCarPhoto(selectedTeam.name, 'large')}
+                    <div class="driver-name"><span class="flag">${selectedTeam.flag}</span> ${selectedTeam.name}</div>
+                    <div class="price-tag">${Number(selectedTeam.price).toFixed(1)} mil.</div>
+                `;
+                previewTeamElement.appendChild(teamCard);
+                
+                // Aktualizace rozpočtu v náhledu
+                document.getElementById('preview-used').textContent = `${totalCost.toFixed(1)} mil.`;
+                document.getElementById('preview-remaining').textContent = `${remainingBudget.toFixed(1)} mil.`;
+                
+                // Zobrazení náhledu
+                previewContainer.style.display = 'block';
+            }
+            
+            // Inicializace
+            updateDisplay();
+            updateSelectedRows();
+        });
+    </script>
+</body>
+</html>
