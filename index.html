@@ -212,7 +212,7 @@
             box-shadow: none;
         }
         
-        /* Karty jezdců a týmů s fotkami */
+        /* Karty jezdců a týmů s fotkami na pozadí */
         .selected-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -228,6 +228,11 @@
             text-align: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
+            position: relative;
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
         
         .selected-card:hover {
@@ -238,15 +243,37 @@
         .selected-card h4 {
             margin: 0;
             padding: 10px;
-            background-color: #15151e;
+            background: linear-gradient(to bottom, rgba(21, 21, 30, 0.9), rgba(21, 21, 30, 0.7));
             color: white;
             font-size: 1em;
             border-bottom: 2px solid #e10600;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 2;
+        }
+        
+        .selected-card .card-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7), transparent);
+            color: white;
+            padding: 15px 10px 10px;
+            z-index: 2;
         }
         
         .selected-card p {
-            margin: 10px 0;
-            padding: 0 10px;
+            margin: 5px 0;
+            padding: 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+        
+        /* Skrýt původní fotky, používáme background-image */
+        .card-photo, .car-photo {
+            display: none;
         }
         
         /* Fotka profilu pro karty - upraveno pro skutečné fotky */
@@ -590,8 +617,74 @@
                 grid-template-columns: repeat(2, 1fr);
             }
             
+            /* Mobilní optimalizace pro náhled */
+            .preview-content {
+                max-height: 90vh;
+                overflow-y: auto;
+                margin: 10px auto;
+                max-width: 95%;
+            }
+            
+            .preview-container {
+                overflow-y: hidden;
+                padding: 10px;
+            }
+            
+            .preview-body {
+                padding: 15px;
+            }
+            
             .preview-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            
+            .preview-card {
+                height: 200px;
+                border-radius: 8px;
+            }
+            
+            .preview-card .preview-content {
+                padding: 15px 8px 8px;
+            }
+            
+            .preview-card .driver-name {
+                font-size: 1em;
+                margin-bottom: 5px;
+            }
+            
+            .preview-card .price-tag {
+                font-size: 1em;
+                margin-top: 5px;
+            }
+            
+            /* Mobilní footer pro náhled */
+            .preview-footer {
+                flex-direction: row;
+                gap: 5px;
+                padding: 15px 10px;
+                justify-content: space-around;
+            }
+            
+            .preview-budget-item {
+                padding: 8px 5px;
+                border-bottom: none;
+                border-right: 1px solid #ddd;
+                flex: 1;
+                text-align: center;
+            }
+            
+            .preview-budget-item:last-child {
+                border-right: none;
+            }
+            
+            .preview-budget-item .label {
+                font-size: 0.7em;
+                margin-bottom: 3px;
+            }
+            
+            .preview-budget-item .value {
+                font-size: 1em;
             }
             
             .preview-footer {
@@ -627,21 +720,6 @@
                 width: 40px;
                 height: 40px;
                 font-size: 20px;
-            }
-            
-            /* Fixní výška a rolovatelný obsah pro náhled na mobilech */
-            .preview-content {
-                max-height: 85vh;
-                overflow-y: auto;
-                margin: 20px auto;
-            }
-            
-            .preview-container {
-                overflow-y: hidden;
-            }
-            
-            .preview-body {
-                padding: 15px;
             }
             
             /* Vylepšení pro fixní panel na mobilech */
@@ -687,6 +765,45 @@
             .card-photo, .preview-photo {
                 width: 50px;
                 height: 50px;
+            }
+            
+            /* Zmenšení loga na mobilech */
+            .team-logo {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .driver-team-logo {
+                width: 20px;
+                height: 20px;
+            }
+            
+            /* Mobilní karty v náhledu - kompaktní layout */
+            .preview-section {
+                margin-bottom: 20px;
+            }
+            
+            .preview-section h3 {
+                font-size: 1.1em;
+                margin-bottom: 10px;
+            }
+            
+            /* Mobilní scroll do náhledu */
+            .preview-container {
+                display: flex;
+                align-items: flex-start;
+                padding-top: 20px;
+            }
+            
+            /* Zajistit, že všechno je vidět */
+            .preview-body {
+                max-height: none;
+            }
+            
+            /* Flag optimalizace pro mobil */
+            .flag {
+                font-size: 1em;
+                margin-right: 4px;
             }
         }
         
@@ -1045,6 +1162,19 @@
                         <td><span class="price-tag">1.5 mil.</span></td>
                         <td><input type="checkbox" data-name="Bortoleto" data-price="1.5" data-flag="🇧🇷"></td>
                     </tr>
+                        <td><span class="price-tag">3.0 mil.</span></td>
+                        <td><input type="checkbox" data-name="Bearman" data-price="3.0" data-flag="🇬🇧"></td>
+                    </tr>
+                    <tr data-driver="Hulkenberg" data-price="2.0" data-flag="🇩🇪">
+                        <td><span class="flag">🇩🇪</span> Hulkenberg</td>
+                        <td><span class="price-tag">2.0 mil.</span></td>
+                        <td><input type="checkbox" data-name="Hulkenberg" data-price="2.0" data-flag="🇩🇪"></td>
+                    </tr>
+                    <tr data-driver="Bortoleto" data-price="1.5" data-flag="🇧🇷">
+                        <td><span class="flag">🇧🇷</span> Bortoleto</td>
+                        <td><span class="price-tag">1.5 mil.</span></td>
+                        <td><input type="checkbox" data-name="Bortoleto" data-price="1.5" data-flag="🇧🇷"></td>
+                    </tr>
                 </table>
             </div>
             
@@ -1218,42 +1348,56 @@
             'Bortoleto': 'Sauber'
         };
         
-        // Funkce pro vytvoření fotky jezdce
-        function createDriverPhoto(name, size = 'normal') {
-            const photoUrl = driverPhotos[name];
-            const sizeClass = size === 'large' ? 'preview-photo' : 'card-photo';
-            const initials = name.substring(0, 2);
-            
-            if (!photoUrl) {
-                return `
-                    <div class="${sizeClass}">
-                        <div class="fallback-avatar" style="display: block;">${initials}</div>
-                    </div>
-                `;
-            }
-            
+        // Funkce pro vytvoření karty s fotkou na pozadí
+        function createDriverCard(driver, index) {
+            const photoUrl = driverPhotos[driver.name];
             return `
-                <div class="${sizeClass}">
-                    <img src="${photoUrl}" alt="${name}" 
-                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                    <div class="fallback-avatar">${initials}</div>
+                <div class="selected-card" style="background-image: url('${photoUrl}');">
+                    <h4>Jezdec ${index + 1}</h4>
+                    <div class="card-content">
+                        <p><span class="flag">${driver.flag}</span> ${driver.name}</p>
+                        <p><span class="price-tag">${Number(driver.price).toFixed(1)} mil.</span></p>
+                    </div>
                 </div>
             `;
         }
         
-        // Funkce pro vytvoření fotky auta
-        function createCarPhoto(teamName, size = 'normal') {
-            const carUrl = teamCars[teamName];
-            const sizeClass = size === 'large' ? 'preview-car-photo' : 'car-photo';
-            
-            if (!carUrl) {
-                return `<div class="${sizeClass}"><div style="padding: 20px; text-align: center; color: #666;">🏎️</div></div>`;
-            }
-            
+        // Funkce pro vytvoření karty týmu s autem na pozadí
+        function createTeamCard(team) {
+            const carUrl = teamCars[team.name];
             return `
-                <div class="${sizeClass}">
-                    <img src="${carUrl}" alt="${teamName} car" 
-                         onerror="this.innerHTML='<div style=&quot;padding: 20px; text-align: center; color: #666;&quot;>🏎️</div>';">
+                <div class="selected-card" style="background-image: url('${carUrl}');">
+                    <h4>Tým</h4>
+                    <div class="card-content">
+                        <p><span class="flag">${team.flag}</span> ${team.name}</p>
+                        <p><span class="price-tag">${Number(team.price).toFixed(1)} mil.</span></p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Funkce pro vytvoření preview karty jezdce
+        function createPreviewDriverCard(driver) {
+            const photoUrl = driverPhotos[driver.name];
+            return `
+                <div class="preview-card" style="background-image: url('${photoUrl}');">
+                    <div class="preview-content">
+                        <div class="driver-name"><span class="flag">${driver.flag}</span> ${driver.name}</div>
+                        <div class="price-tag">${Number(driver.price).toFixed(1)} mil.</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Funkce pro vytvoření preview karty týmu
+        function createPreviewTeamCard(team) {
+            const carUrl = teamCars[team.name];
+            return `
+                <div class="preview-card" style="background-image: url('${carUrl}');">
+                    <div class="preview-content">
+                        <div class="driver-name"><span class="flag">${team.flag}</span> ${team.name}</div>
+                        <div class="price-tag">${Number(team.price).toFixed(1)} mil.</div>
+                    </div>
                 </div>
             `;
         }
@@ -1477,38 +1621,22 @@
                     previewButton.disabled = true;
                 }
                 
-                // Aktualizace karet jezdců s fotkami
+                // Aktualizace karet jezdců s fotkami na pozadí
                 selectedDriversElement.innerHTML = '';
                 
                 if (selectedDrivers.length === 0) {
                     selectedDriversElement.innerHTML = '<p>Zatím jste nevybrali žádné jezdce.</p>';
                 } else {
                     selectedDrivers.forEach((driver, index) => {
-                        const card = document.createElement('div');
-                        card.className = 'selected-card';
-                        card.innerHTML = `
-                            <h4>Jezdec ${index + 1}</h4>
-                            ${createDriverPhoto(driver.name)}
-                            <p><span class="flag">${driver.flag}</span> ${driver.name}</p>
-                            <p><span class="price-tag">${Number(driver.price).toFixed(1)} mil.</span></p>
-                        `;
-                        selectedDriversElement.appendChild(card);
+                        selectedDriversElement.innerHTML += createDriverCard(driver, index);
                     });
                 }
                 
-                // Aktualizace karty týmu s fotkou auta
+                // Aktualizace karty týmu s fotkou auta na pozadí
                 selectedTeamElement.innerHTML = '';
                 
                 if (selectedTeam) {
-                    const teamCard = document.createElement('div');
-                    teamCard.className = 'selected-card';
-                    teamCard.innerHTML = `
-                        <h4>Tým</h4>
-                        ${createCarPhoto(selectedTeam.name)}
-                        <p><span class="flag">${selectedTeam.flag}</span> ${selectedTeam.name}</p>
-                        <p><span class="price-tag">${Number(selectedTeam.price).toFixed(1)} mil.</span></p>
-                    `;
-                    selectedTeamElement.appendChild(teamCard);
+                    selectedTeamElement.innerHTML = createTeamCard(selectedTeam);
                 } else {
                     selectedTeamElement.innerHTML = '<p>Zatím jste nevybrali žádný tým.</p>';
                 }
@@ -1528,33 +1656,19 @@
                 const totalCost = driversTotal + teamTotal;
                 const remainingBudget = BUDGET_LIMIT - totalCost;
                 
-                // Aktualizace náhledu jezdců s velkými fotkami
+                // Aktualizace náhledu jezdců s fotkami na pozadí
                 const previewDriversElement = document.getElementById('preview-drivers');
                 previewDriversElement.innerHTML = '';
                 
                 selectedDrivers.forEach(driver => {
-                    const card = document.createElement('div');
-                    card.className = 'preview-card';
-                    card.innerHTML = `
-                        ${createDriverPhoto(driver.name, 'large')}
-                        <div class="driver-name"><span class="flag">${driver.flag}</span> ${driver.name}</div>
-                        <div class="price-tag">${Number(driver.price).toFixed(1)} mil.</div>
-                    `;
-                    previewDriversElement.appendChild(card);
+                    previewDriversElement.innerHTML += createPreviewDriverCard(driver);
                 });
                 
-                // Aktualizace náhledu týmu s velkou fotkou auta
+                // Aktualizace náhledu týmu s fotkou auta na pozadí
                 const previewTeamElement = document.getElementById('preview-team');
                 previewTeamElement.innerHTML = '';
                 
-                const teamCard = document.createElement('div');
-                teamCard.className = 'preview-card';
-                teamCard.innerHTML = `
-                    ${createCarPhoto(selectedTeam.name, 'large')}
-                    <div class="driver-name"><span class="flag">${selectedTeam.flag}</span> ${selectedTeam.name}</div>
-                    <div class="price-tag">${Number(selectedTeam.price).toFixed(1)} mil.</div>
-                `;
-                previewTeamElement.appendChild(teamCard);
+                previewTeamElement.innerHTML = createPreviewTeamCard(selectedTeam);
                 
                 // Aktualizace rozpočtu v náhledu
                 document.getElementById('preview-used').textContent = `${totalCost.toFixed(1)} mil.`;
