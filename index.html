@@ -4,6 +4,7 @@
     <title>F1 Baarovka Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* Import F1-like font */
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@400;700;900&display=swap');
@@ -826,6 +827,54 @@
             100% { left: 100%; }
         }
         
+        /* STATS TAB STYLING */
+        .stats-tab {
+            border-radius: 8px 8px 0 0;
+            transition: all 0.2s ease;
+        }
+        
+        .stats-tab:hover {
+            transform: translateY(-2px);
+        }
+        
+        .stats-tab.active {
+            background: #e10600 !important;
+            color: white !important;
+        }
+        
+        /* TABULKY STATISTIK STYLING */
+        #fantasy-drivers-table th,
+        #fantasy-teams-table th {
+            background-color: #15151e;
+            color: white;
+            padding: 8px 12px;
+            text-align: left;
+            text-transform: uppercase;
+            font-size: 0.8em;
+            font-weight: bold;
+            border-bottom: 1px solid #333;
+        }
+        
+        #fantasy-drivers-table td,
+        #fantasy-teams-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+        
+        #fantasy-drivers-table td:first-child,
+        #fantasy-teams-table td:first-child {
+            text-align: left;
+            font-weight: bold;
+        }
+        
+        #fantasy-drivers-table td:last-child,
+        #fantasy-teams-table td:last-child {
+            background-color: #fff9e6;
+            font-weight: bold;
+            color: #e10600;
+        }
+        
         /* Zvýraznění vybraných řádků */
         tr.selected {
             background-color: #ffecec;
@@ -1277,43 +1326,51 @@
 
     <!-- Fantasy Statistiky Modal -->
     <div id="stats-modal" style="display:none; position:fixed; z-index:1001; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.85); overflow-y: auto; padding: 20px;">
-        <div style="max-width:1000px; margin:20px auto; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 5px 25px rgba(0,0,0,0.4);">
+        <div style="max-width:1200px; margin:20px auto; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 5px 25px rgba(0,0,0,0.4);">
             <div style="background-color: #15151e; color: white; padding: 20px; text-align: center; border-bottom: 5px solid #e10600;">
-                <h2 style="margin: 0; color: white; font-size: 1.8em;">🏆 Fantasy Statistiky – Poslední závod</h2>
+                <h2 style="margin: 0; color: white; font-size: 1.8em;">🏆 Fantasy Statistiky – Celá sezóna 2025</h2>
             </div>
             <div style="padding: 30px;">
                 <div id="stats-loading" style="text-align: center; padding: 40px; font-size: 1.2em; color: #666;">
-                    🏎️ Načítám výsledky posledního závodu...
+                    🏎️ Načítám výsledky celé sezóny...
                 </div>
                 <div id="stats-content" style="display: none;">
-                    <h3 style="color: #e10600; border-bottom: 2px solid #e10600; padding-bottom: 10px;">🏁 Jezdci - Fantasy bodování</h3>
-                    <div style="overflow-x: auto; margin-bottom: 30px;">
-                        <table id="fantasy-drivers-table" style="width: 100%; border-collapse: collapse; margin-bottom: 25px; background-color: white; box-shadow: 0 1px 5px rgba(0,0,0,0.15); border-radius: 8px; overflow: hidden;">
-                            <thead>
-                                <tr style="background-color: #15151e; color: white;">
-                                    <th style="padding: 12px 15px; text-align: left; text-transform: uppercase; font-size: 0.9em;">Pozice</th>
-                                    <th style="padding: 12px 15px; text-align: left; text-transform: uppercase; font-size: 0.9em;">Jezdec</th>
-                                    <th style="padding: 12px 15px; text-align: left; text-transform: uppercase; font-size: 0.9em;">Tým</th>
-                                    <th style="padding: 12px 15px; text-align: left; text-transform: uppercase; font-size: 0.9em;">Fantasy body</th>
-                                    <th style="padding: 12px 15px; text-align: left; text-transform: uppercase; font-size: 0.9em;">Detail bodování</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                    <!-- TABY -->
+                    <div style="margin-bottom: 20px; border-bottom: 2px solid #eee;">
+                        <button id="tab-drivers" class="stats-tab active" style="background: #e10600; color: white; border: none; padding: 12px 24px; margin-right: 5px; cursor: pointer; font-weight: bold;">JEZDCI</button>
+                        <button id="tab-teams" class="stats-tab" style="background: #ccc; color: #333; border: none; padding: 12px 24px; cursor: pointer; font-weight: bold;">TÝMY</button>
                     </div>
                     
-                    <h3 style="color: #e10600; border-bottom: 2px solid #e10600; padding-bottom: 10px;">🏎️ Konstruktéři - Průměr z jezdců</h3>
-                    <div style="overflow-x: auto; margin-bottom: 30px;">
-                        <table id="fantasy-teams-table" style="width: 100%; border-collapse: collapse; margin-bottom: 25px; background-color: white; box-shadow: 0 1px 5px rgba(0,0,0,0.15); border-radius: 8px; overflow: hidden;">
-                            <thead>
-                                <tr style="background-color: #15151e; color: white;">
-                                    <th style="padding: 12px 15px; text-align: left; text-transform: uppercase; font-size: 0.9em;">Pozice</th>
-                                    <th style="padding: 12px 15px; text-align: left; text-transform: uppercase; font-size: 0.9em;">Tým</th>
-                                    <th style="padding: 12px 15px; text-align: left; text-transform: uppercase; font-size: 0.9em;">Fantasy body</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
+                    <!-- TAB JEZDCI -->
+                    <div id="stats-tab-drivers">
+                        <h3 style="color: #e10600; border-bottom: 2px solid #e10600; padding-bottom: 10px;">📊 Graf vývoje bodů - Jezdci</h3>
+                        <div style="margin-bottom: 30px; height: 400px; position: relative;">
+                            <canvas id="drivers-chart"></canvas>
+                        </div>
+                        
+                        <h3 style="color: #e10600; border-bottom: 2px solid #e10600; padding-bottom: 10px;">🏁 Tabulka bodů podle závodů - Jezdci</h3>
+                        <div style="overflow-x: auto; margin-bottom: 30px;">
+                            <table id="fantasy-drivers-table" style="width: 100%; border-collapse: collapse; margin-bottom: 25px; background-color: white; box-shadow: 0 1px 5px rgba(0,0,0,0.15); border-radius: 8px; overflow: hidden; font-size: 0.9em;">
+                                <thead></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- TAB TÝMY -->
+                    <div id="stats-tab-teams" style="display: none;">
+                        <h3 style="color: #e10600; border-bottom: 2px solid #e10600; padding-bottom: 10px;">📊 Graf vývoje bodů - Týmy</h3>
+                        <div style="margin-bottom: 30px; height: 400px; position: relative;">
+                            <canvas id="teams-chart"></canvas>
+                        </div>
+                        
+                        <h3 style="color: #e10600; border-bottom: 2px solid #e10600; padding-bottom: 10px;">🏎️ Tabulka bodů podle závodů - Týmy</h3>
+                        <div style="overflow-x: auto; margin-bottom: 30px;">
+                            <table id="fantasy-teams-table" style="width: 100%; border-collapse: collapse; margin-bottom: 25px; background-color: white; box-shadow: 0 1px 5px rgba(0,0,0,0.15); border-radius: 8px; overflow: hidden; font-size: 0.9em;">
+                                <thead></thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
                     </div>
                     
                     <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin-top: 20px;">
@@ -1765,20 +1822,301 @@
             const statsLoading = document.getElementById('stats-loading');
             const statsContent = document.getElementById('stats-content');
             
+            // Tab handler
+            document.getElementById('tab-drivers').onclick = function() {
+                this.classList.add('active');
+                document.getElementById('tab-teams').classList.remove('active');
+                document.getElementById('stats-tab-drivers').style.display = '';
+                document.getElementById('stats-tab-teams').style.display = 'none';
+            };
+            document.getElementById('tab-teams').onclick = function() {
+                this.classList.add('active');
+                document.getElementById('tab-drivers').classList.remove('active');
+                document.getElementById('stats-tab-drivers').style.display = 'none';
+                document.getElementById('stats-tab-teams').style.display = '';
+            };
+            
             statsButton.addEventListener('click', function() {
                 // Zobraz modal a loading
                 statsModal.style.display = 'block';
                 statsLoading.style.display = 'block';
                 statsContent.style.display = 'none';
+                statsLoading.textContent = '🏎️ Načítám výsledky celé sezóny...';
                 
-                // Načtení dat z Ergast API
+                // Načte všechny závody a výsledky SEZÓNY, která běží (automaticky 2025, pokud jsi na /current/)
                 Promise.all([
-                    fetch('https://ergast.com/api/f1/current/last/results.json').then(res => res.json()),
-                    fetch('https://ergast.com/api/f1/current/last/qualifying.json').then(res => res.json())
+                    fetch('https://ergast.com/api/f1/current/results.json').then(res => res.json()),
+                    fetch('https://ergast.com/api/f1/current/qualifying.json').then(res => res.json())
                 ]).then(([raceData, qualiData]) => {
                     // Skryj loading, zobraz obsah
                     statsLoading.style.display = 'none';
                     statsContent.style.display = 'block';
+                    
+                    // Všechny závody v sezóně
+                    const races = raceData.MRData.RaceTable.Races;
+                    const qualis = qualiData.MRData.RaceTable.Races;
+
+                    // Najdi pole position pro každý závod
+                    const poleDriverByRound = {};
+                    qualis.forEach(qrace => {
+                        const pole = qrace.QualifyingResults?.find(q => q.position == "1");
+                        if (pole) poleDriverByRound[qrace.round] = pole.Driver.driverId;
+                    });
+
+                    // Simulace Driver of the Day – můžeš doplnit ručně přes objekt např. {'6': 'norris'}
+                    const driverOfTheDayPerRound = {};
+
+                    // Funkce na bodování
+                    function getPositionPoints(pos) {
+                        const map = [30, 25, 21, 18, 15, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+                        return map[pos - 1] || 0;
+                    }
+
+                    // Sestav fantasy body jezdců
+                    let driversSet = new Set();
+                    let teamsSet = new Set();
+                    let driverPoints = {};
+                    let teamPoints = {};
+
+                    races.forEach(race => {
+                        const round = race.round;
+                        (race.Results || []).forEach(result => {
+                            const d = result.Driver;
+                            const driverId = d.driverId;
+                            const name = `${d.givenName} ${d.familyName}`;
+                            const team = result.Constructor.name;
+                            const pos = Number(result.position);
+                            const grid = Number(result.grid);
+                            const status = result.status?.toLowerCase() || "";
+                            let points = 0;
+
+                            // Umístění
+                            points += getPositionPoints(pos);
+
+                            // Penalizace
+                            if(status.includes('disqual')) points -= 20;
+                            else if(status.includes('did not start')) points -= 10;
+                            else if(status && status !== "finished" && !status.includes('+')) points -= 10;
+
+                            // Zlepšení/zhoršení
+                            if(grid && pos) points += (grid - pos);
+
+                            // Fastest lap
+                            if(result.FastestLap && result.FastestLap.rank === "1") points += 5;
+
+                            // Pole position
+                            if(driverId === poleDriverByRound[round]) points += 5;
+
+                            // Driver of the Day
+                            if(driverOfTheDayPerRound[round] === driverId) points += 5;
+
+                            // Ulož
+                            if(!driverPoints[driverId]) driverPoints[driverId] = {name, team, points: [], driverId};
+                            driverPoints[driverId].points[round-1] = points;
+                            driversSet.add(driverId);
+
+                            // Týmy
+                            if(!teamPoints[team]) teamPoints[team] = [];
+                            if(!teamPoints[team][round-1]) teamPoints[team][round-1] = [];
+                            teamPoints[team][round-1].push(points);
+                            teamsSet.add(team);
+                        });
+                    });
+
+                    // Průměr pro týmy
+                    let teamAverages = {};
+                    Array.from(teamsSet).forEach(team => {
+                        teamAverages[team] = [];
+                        for(let i=0; i<races.length; ++i){
+                            const arr = (teamPoints[team][i] || []);
+                            const avg = arr.length ? arr.reduce((a, b) => a+b, 0)/arr.length : 0;
+                            teamAverages[team][i] = Math.round(avg*100)/100;
+                        }
+                    });
+
+                    // === Tabulka jezdců ===
+                    const thead = document.querySelector('#fantasy-drivers-table thead');
+                    let th = '<tr><th>Jezdec</th>';
+                    races.forEach(race => th += `<th style="min-width: 80px;">${race.raceName.replace(' Grand Prix', '')}</th>`);
+                    th += '<th style="background-color: #e10600;">Celkem</th></tr>';
+                    thead.innerHTML = th;
+
+                    const tbody = document.querySelector('#fantasy-drivers-table tbody');
+                    tbody.innerHTML = '';
+                    
+                    // Seřaď jezdce podle celkových bodů
+                    const sortedDrivers = Object.values(driverPoints).sort((a, b) => {
+                        const sumA = a.points.reduce((sum, pts) => sum + (pts || 0), 0);
+                        const sumB = b.points.reduce((sum, pts) => sum + (pts || 0), 0);
+                        return sumB - sumA;
+                    });
+                    
+                    sortedDrivers.forEach((drv, index) => {
+                        let tr = `<tr${index < 3 ? ' style="background-color: #fff9e6;"' : ''}><td>${drv.name}</td>`;
+                        let sum = 0;
+                        for(let i=0;i<races.length;++i){
+                            const pts = drv.points[i] ?? '';
+                            tr += `<td>${pts}</td>`;
+                            sum += Number(pts) || 0;
+                        }
+                        tr += `<td><b>${sum}</b></td></tr>`;
+                        tbody.innerHTML += tr;
+                    });
+
+                    // === Tabulka týmů ===
+                    const theadT = document.querySelector('#fantasy-teams-table thead');
+                    let thT = '<tr><th>Tým</th>';
+                    races.forEach(race => thT += `<th style="min-width: 80px;">${race.raceName.replace(' Grand Prix', '')}</th>`);
+                    thT += '<th style="background-color: #e10600;">Celkem</th></tr>';
+                    theadT.innerHTML = thT;
+
+                    const tbodyT = document.querySelector('#fantasy-teams-table tbody');
+                    tbodyT.innerHTML = '';
+                    
+                    // Seřaď týmy podle celkových bodů
+                    const sortedTeams = Object.entries(teamAverages).sort((a, b) => {
+                        const sumA = a[1].reduce((sum, pts) => sum + (pts || 0), 0);
+                        const sumB = b[1].reduce((sum, pts) => sum + (pts || 0), 0);
+                        return sumB - sumA;
+                    });
+                    
+                    sortedTeams.forEach(([team, avgs], index) => {
+                        let tr = `<tr${index < 3 ? ' style="background-color: #fff9e6;"' : ''}><td>${team}</td>`;
+                        let sum = 0;
+                        for(let i=0;i<races.length;++i){
+                            const pts = avgs[i] ?? '';
+                            tr += `<td>${pts}</td>`;
+                            sum += Number(pts) || 0;
+                        }
+                        tr += `<td><b>${Math.round(sum*100)/100}</b></td></tr>`;
+                        tbodyT.innerHTML += tr;
+                    });
+
+                    // === Grafy ===
+                    // Graf JEZDCI
+                    const chartColors = [
+                      "#e10600", "#0072ce", "#ff8700", "#16a34a", "#ffea00", "#1a1a1a", "#e70043", "#00c2b4", "#9440ff", "#0fbcf9",
+                      "#aa00ff", "#b19cd9", "#ffd600", "#c51162", "#2962ff", "#43a047", "#6d4c41", "#bf360c", "#304ffe", "#f57c00"
+                    ];
+                    
+                    const ctx = document.getElementById('drivers-chart').getContext('2d');
+                    if(window.driversChart) window.driversChart.destroy();
+                    window.driversChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: races.map(r => r.raceName.replace(' Grand Prix', '')),
+                            datasets: sortedDrivers.slice(0, 10).map((drv,idx) => {
+                                // Kumulativní suma
+                                let data = [];
+                                let sum = 0;
+                                for(let i=0;i<races.length;++i){
+                                    sum += drv.points[i] || 0;
+                                    data.push(sum);
+                                }
+                                return {
+                                    label: drv.name,
+                                    data,
+                                    borderColor: chartColors[idx % chartColors.length],
+                                    backgroundColor: chartColors[idx % chartColors.length]+"33",
+                                    tension: 0.3,
+                                    pointRadius: 4,
+                                    borderWidth: 2
+                                };
+                            })
+                        },
+                        options: {
+                            plugins: {
+                                legend: { 
+                                    display: true,
+                                    position: 'bottom',
+                                    labels: {
+                                        usePointStyle: true,
+                                        padding: 15
+                                    }
+                                }
+                            },
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: { 
+                                y: { 
+                                    beginAtZero: true,
+                                    grid: {
+                                        color: '#f0f0f0'
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        color: '#f0f0f0'
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    // Graf TÝMY
+                    const ctxT = document.getElementById('teams-chart').getContext('2d');
+                    if(window.teamsChart) window.teamsChart.destroy();
+                    window.teamsChart = new Chart(ctxT, {
+                        type: 'line',
+                        data: {
+                            labels: races.map(r => r.raceName.replace(' Grand Prix', '')),
+                            datasets: sortedTeams.map(([team,avgs],idx) => {
+                                // Kumulativní suma
+                                let data = [];
+                                let sum = 0;
+                                for(let i=0;i<races.length;++i){
+                                    sum += avgs[i] || 0;
+                                    data.push(Math.round(sum*100)/100);
+                                }
+                                return {
+                                    label: team,
+                                    data,
+                                    borderColor: chartColors[idx % chartColors.length],
+                                    backgroundColor: chartColors[idx % chartColors.length]+"33",
+                                    tension: 0.3,
+                                    pointRadius: 4,
+                                    borderWidth: 2
+                                };
+                            })
+                        },
+                        options: {
+                            plugins: {
+                                legend: { 
+                                    display: true,
+                                    position: 'bottom',
+                                    labels: {
+                                        usePointStyle: true,
+                                        padding: 15
+                                    }
+                                }
+                            },
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: { 
+                                y: { 
+                                    beginAtZero: true,
+                                    grid: {
+                                        color: '#f0f0f0'
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        color: '#f0f0f0'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    
+                }).catch(error => {
+                    console.error('Chyba při načítání dat:', error);
+                    statsLoading.innerHTML = '❌ Chyba při načítání dat. Zkuste to později.';
+                });
+            });
+        });
+    </script>
+</body>
+</html> = 'block';
                     
                     // Zpracování dat
                     const race = raceData.MRData.RaceTable.Races[0];
