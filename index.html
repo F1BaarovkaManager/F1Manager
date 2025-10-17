@@ -1836,284 +1836,294 @@
                 document.getElementById('stats-tab-teams').style.display = '';
             };
             
-            statsButton.addEventListener('click', function() {
-                // Zobraz modal a loading
-                statsModal.style.display = 'block';
-                statsLoading.style.display = 'block';
-                statsContent.style.display = 'none';
-                statsLoading.textContent = '🏎️ Načítám výsledky celé sezóny...';
-                
-                // Načte všechny závody a výsledky SEZÓNY, která běží (automaticky 2025, pokud jsi na /current/)
-                Promise.all([
-                    fetch('https://ergast.com/api/f1/current/results.json').then(res => res.json()),
-                    fetch('https://ergast.com/api/f1/current/qualifying.json').then(res => res.json())
-                ]).then(([raceData, qualiData]) => {
-                    // Skryj loading, zobraz obsah
-                    statsLoading.style.display = 'none';
-                    statsContent.style.display = 'block';
-                    
-                    // Všechny závody v sezóně
-                    const races = raceData.MRData.RaceTable.Races;
-                    const qualis = qualiData.MRData.RaceTable.Races;
+            // Nahraďte sekci statistik tímto kódem:
 
-                    // Najdi pole position pro každý závod
-                    const poleDriverByRound = {};
-                    qualis.forEach(qrace => {
-                        const pole = qrace.QualifyingResults?.find(q => q.position == "1");
-                        if (pole) poleDriverByRound[qrace.round] = pole.Driver.driverId;
-                    });
+    statsButton.addEventListener('click', function() {
+    // Zobraz modal a loading
+    statsModal.style.display = 'block';
+    statsLoading.style.display = 'block';
+    statsContent.style.display = 'none';
+    statsLoading.textContent = '🏎️ Načítám výsledky celé sezóny...';
 
-                    // Simulace Driver of the Day – můžeš doplnit ručně přes objekt např. {'6': 'norris'}
-                    const driverOfTheDayPerRound = {};
+    // Kontrola cache (24 hodin)
+    const cachedData = localStorage.getItem('f1_stats_2025');
+    const cacheTime = localStorage.getItem('f1_stats_time');
+    const now = Date.now();
+    
+    if (cachedData && cacheTime && (now - parseInt(cacheTime, 10)) < 86400000) {
+        processStatsData(JSON.parse(cachedData));
+        return;
+    }
+    
+    // Jolpica F1 API - kompatibilní s Ergast (POZOR: https kvůli mixed-content)
+    const API_BASE = 'https://api.jolpi.ca/ergast/f1';
+    
+    // Načtení dat ze sezóny 2025
+    Promise.all([
+        fetch(`${API_BASE}/2025/results.json?limit=1000`).then(res => res.json()),
+        fetch(`${API_BASE}/2025/qualifying.json?limit=1000`).then(res => res.json()),
+        fetch(`${API_BASE}/2025/driverStandings.json`).then(res => res.json())
+    ]).then(([raceData, qualiData, standingsData]) => {
+        // Uložit do cache
+        const dataToCache = { races: raceData, qualifying: qualiData, standings: standingsData };
+        localStorage.setItem('f1_stats_2025', JSON.stringify(dataToCache));
+        localStorage.setItem('f1_stats_time', now.toString());
+        
+        processStatsData(dataToCache);
+    }).catch(error => {
+        console.error('Chyba při načítání dat z Jolpica:', error);
+        // Fallback na mock data
+        loadMockData();
+    });
+});
 
-                    // Funkce na bodování
-                    function getPositionPoints(pos) {
-                        const map = [30, 25, 21, 18, 15, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
-                        return map[pos - 1] || 0;
-                    }
-
-                    // Sestav fantasy body jezdců
-                    let driversSet = new Set();
-                    let teamsSet = new Set();
-                    let driverPoints = {};
-                    let teamPoints = {};
-
-                    races.forEach(race => {
-                        const round = race.round;
-                        (race.Results || []).forEach(result => {
-                            const d = result.Driver;
-                            const driverId = d.driverId;
-                            const name = `${d.givenName} ${d.familyName}`;
-                            const team = result.Constructor.name;
-                            const pos = Number(result.position);
-                            const grid = Number(result.grid);
-                            const status = result.status?.toLowerCase() || "";
-                            let points = 0;
-
-                            // Umístění
-                            points += getPositionPoints(pos);
-
-                            // Penalizace
-                            if(status.includes('disqual')) points -= 20;
-                            else if(status.includes('did not start')) points -= 10;
-                            else if(status && status !== "finished" && !status.includes('+')) points -= 10;
-
-                            // Zlepšení/zhoršení
-                            if(grid && pos) points += (grid - pos);
-
-                            // Fastest lap
-                            if(result.FastestLap && result.FastestLap.rank === "1") points += 5;
-
-                            // Pole position
-                            if(driverId === poleDriverByRound[round]) points += 5;
-
-                            // Driver of the Day
-                            if(driverOfTheDayPerRound[round] === driverId) points += 5;
-
-                            // Ulož
-                            if(!driverPoints[driverId]) driverPoints[driverId] = {name, team, points: [], driverId};
-                            driverPoints[driverId].points[round-1] = points;
-                            driversSet.add(driverId);
-
-                            // Týmy
-                            if(!teamPoints[team]) teamPoints[team] = [];
-                            if(!teamPoints[team][round-1]) teamPoints[team][round-1] = [];
-                            teamPoints[team][round-1].push(points);
-                            teamsSet.add(team);
-                        });
-                    });
-
-                    // Průměr pro týmy
-                    let teamAverages = {};
-                    Array.from(teamsSet).forEach(team => {
-                        teamAverages[team] = [];
-                        for(let i=0; i<races.length; ++i){
-                            const arr = (teamPoints[team][i] || []);
-                            const avg = arr.length ? arr.reduce((a, b) => a+b, 0)/arr.length : 0;
-                            teamAverages[team][i] = Math.round(avg*100)/100;
-                        }
-                    });
-
-                    // === Tabulka jezdců ===
-                    const thead = document.querySelector('#fantasy-drivers-table thead');
-                    let th = '<tr><th>Jezdec</th>';
-                    races.forEach(race => th += `<th style="min-width: 80px;">${race.raceName.replace(' Grand Prix', '')}</th>`);
-                    th += '<th style="background-color: #e10600;">Celkem</th></tr>';
-                    thead.innerHTML = th;
-
-                    const tbody = document.querySelector('#fantasy-drivers-table tbody');
-                    tbody.innerHTML = '';
-                    
-                    // Seřaď jezdce podle celkových bodů
-                    const sortedDrivers = Object.values(driverPoints).sort((a, b) => {
-                        const sumA = a.points.reduce((sum, pts) => sum + (pts || 0), 0);
-                        const sumB = b.points.reduce((sum, pts) => sum + (pts || 0), 0);
-                        return sumB - sumA;
-                    });
-                    
-                    sortedDrivers.forEach((drv, index) => {
-                        let tr = `<tr${index < 3 ? ' style="background-color: #fff9e6;"' : ''}><td>${drv.name}</td>`;
-                        let sum = 0;
-                        for(let i=0;i<races.length;++i){
-                            const pts = drv.points[i] ?? '';
-                            tr += `<td>${pts}</td>`;
-                            sum += Number(pts) || 0;
-                        }
-                        tr += `<td><b>${sum}</b></td></tr>`;
-                        tbody.innerHTML += tr;
-                    });
-
-                    // === Tabulka týmů ===
-                    const theadT = document.querySelector('#fantasy-teams-table thead');
-                    let thT = '<tr><th>Tým</th>';
-                    races.forEach(race => thT += `<th style="min-width: 80px;">${race.raceName.replace(' Grand Prix', '')}</th>`);
-                    thT += '<th style="background-color: #e10600;">Celkem</th></tr>';
-                    theadT.innerHTML = thT;
-
-                    const tbodyT = document.querySelector('#fantasy-teams-table tbody');
-                    tbodyT.innerHTML = '';
-                    
-                    // Seřaď týmy podle celkových bodů
-                    const sortedTeams = Object.entries(teamAverages).sort((a, b) => {
-                        const sumA = a[1].reduce((sum, pts) => sum + (pts || 0), 0);
-                        const sumB = b[1].reduce((sum, pts) => sum + (pts || 0), 0);
-                        return sumB - sumA;
-                    });
-                    
-                    sortedTeams.forEach(([team, avgs], index) => {
-                        let tr = `<tr${index < 3 ? ' style="background-color: #fff9e6;"' : ''}><td>${team}</td>`;
-                        let sum = 0;
-                        for(let i=0;i<races.length;++i){
-                            const pts = avgs[i] ?? '';
-                            tr += `<td>${pts}</td>`;
-                            sum += Number(pts) || 0;
-                        }
-                        tr += `<td><b>${Math.round(sum*100)/100}</b></td></tr>`;
-                        tbodyT.innerHTML += tr;
-                    });
-
-                    // === Grafy ===
-                    // Graf JEZDCI
-                    const chartColors = [
-                      "#e10600", "#0072ce", "#ff8700", "#16a34a", "#ffea00", "#1a1a1a", "#e70043", "#00c2b4", "#9440ff", "#0fbcf9",
-                      "#aa00ff", "#b19cd9", "#ffd600", "#c51162", "#2962ff", "#43a047", "#6d4c41", "#bf360c", "#304ffe", "#f57c00"
-                    ];
-                    
-                    const ctx = document.getElementById('drivers-chart').getContext('2d');
-                    if(window.driversChart) window.driversChart.destroy();
-                    window.driversChart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: races.map(r => r.raceName.replace(' Grand Prix', '')),
-                            datasets: sortedDrivers.slice(0, 10).map((drv,idx) => {
-                                // Kumulativní suma
-                                let data = [];
-                                let sum = 0;
-                                for(let i=0;i<races.length;++i){
-                                    sum += drv.points[i] || 0;
-                                    data.push(sum);
-                                }
-                                return {
-                                    label: drv.name,
-                                    data,
-                                    borderColor: chartColors[idx % chartColors.length],
-                                    backgroundColor: chartColors[idx % chartColors.length]+"33",
-                                    tension: 0.3,
-                                    pointRadius: 4,
-                                    borderWidth: 2
-                                };
-                            })
-                        },
-                        options: {
-                            plugins: {
-                                legend: { 
-                                    display: true,
-                                    position: 'bottom',
-                                    labels: {
-                                        usePointStyle: true,
-                                        padding: 15
-                                    }
-                                }
-                            },
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: { 
-                                y: { 
-                                    beginAtZero: true,
-                                    grid: {
-                                        color: '#f0f0f0'
-                                    }
-                                },
-                                x: {
-                                    grid: {
-                                        color: '#f0f0f0'
-                                    }
-                                }
-                            }
-                        }
-                    });
-
-                    // Graf TÝMY
-                    const ctxT = document.getElementById('teams-chart').getContext('2d');
-                    if(window.teamsChart) window.teamsChart.destroy();
-                    window.teamsChart = new Chart(ctxT, {
-                        type: 'line',
-                        data: {
-                            labels: races.map(r => r.raceName.replace(' Grand Prix', '')),
-                            datasets: sortedTeams.map(([team,avgs],idx) => {
-                                // Kumulativní suma
-                                let data = [];
-                                let sum = 0;
-                                for(let i=0;i<races.length;++i){
-                                    sum += avgs[i] || 0;
-                                    data.push(Math.round(sum*100)/100);
-                                }
-                                return {
-                                    label: team,
-                                    data,
-                                    borderColor: chartColors[idx % chartColors.length],
-                                    backgroundColor: chartColors[idx % chartColors.length]+"33",
-                                    tension: 0.3,
-                                    pointRadius: 4,
-                                    borderWidth: 2
-                                };
-                            })
-                        },
-                        options: {
-                            plugins: {
-                                legend: { 
-                                    display: true,
-                                    position: 'bottom',
-                                    labels: {
-                                        usePointStyle: true,
-                                        padding: 15
-                                    }
-                                }
-                            },
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            scales: { 
-                                y: { 
-                                    beginAtZero: true,
-                                    grid: {
-                                        color: '#f0f0f0'
-                                    }
-                                },
-                                x: {
-                                    grid: {
-                                        color: '#f0f0f0'
-                                    }
-                                }
-                            }
-                        }
-                    });
-                    
-                }).catch(error => {
-                    console.error('Chyba při načítání dat:', error);
-                    statsLoading.innerHTML = '❌ Chyba při načítání dat. Zkuste to později.';
-                });
-            });
+function processStatsData(data) {
+    statsLoading.style.display = 'none';
+    statsContent.style.display = 'block';
+    
+    const races = data.races?.MRData?.RaceTable?.Races || [];
+    const qualis = data.qualifying?.MRData?.RaceTable?.Races || [];
+    
+    // Mapování jmen - Jolpica/Ergast
+    const driverNameMap = {
+        'max_verstappen': 'Verstappen',
+        'tsunoda': 'Tsunoda',
+        'norris': 'Norris',
+        'piastri': 'Piastri',
+        'leclerc': 'Leclerc',
+        'hamilton': 'Hamilton',
+        'russell': 'Russell',
+        'antonelli': 'Antonelli',
+        'alonso': 'Alonso',
+        'stroll': 'Stroll',
+        'gasly': 'Gasly',
+        'colapinto': 'Colapinto',
+        'albon': 'Albon',
+        'sainz': 'Sainz',
+        'lawson': 'Lawson',
+        'hadjar': 'Hadjar',
+        'ocon': 'Ocon',
+        'bearman': 'Bearman',
+        'hulkenberg': 'Hulkenberg',
+        'bortoleto': 'Bortoleto'
+    };
+    
+    const teamNameMap = {
+        'red_bull': 'Red Bull Racing',
+        'mclaren': 'McLaren',
+        'ferrari': 'Ferrari',
+        'mercedes': 'Mercedes',
+        'aston_martin': 'Aston Martin',
+        'alpine': 'Alpine',
+        'rb': 'Visa Cash App RB',
+        'williams': 'Williams',
+        'haas': 'Haas',
+        'sauber': 'Sauber'
+    };
+    
+    // Pole position per round
+    const poleDriverByRound = {};
+    qualis.forEach(qrace => {
+        const pole = qrace.QualifyingResults?.find(q => q.position == "1");
+        if (pole) poleDriverByRound[qrace.round] = pole.Driver.driverId;
+    });
+    
+    // Bodování
+    function getPositionPoints(pos) {
+        const map = [30, 25, 21, 18, 15, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
+        return map[pos - 1] || 0;
+    }
+    
+    // Výpočet bodů
+    const driverPoints = {};
+    const teamPoints = {};
+    
+    races.forEach((race, raceIndex) => {
+        const round = race.round;
+        (race.Results || []).forEach(result => {
+            const driverId = result.Driver.driverId;
+            const driverName = driverNameMap[driverId] || result.Driver.familyName;
+            const teamId = result.Constructor.constructorId;
+            const teamName = teamNameMap[teamId] || result.Constructor.name;
+            
+            const pos = Number(result.position);
+            const grid = Number(result.grid);
+            const status = (result.status || '').toLowerCase();
+            
+            let points = 0;
+            // Umístění
+            points += getPositionPoints(pos);
+            // Penalizace
+            if (status.includes('disqualified')) points -= 20;
+            else if (status === 'did not start') points -= 10;
+            else if (status && status !== 'finished' && !status.includes('+')) points -= 10;
+            // Zlepšení/zhoršení
+            if (grid && pos) points += (grid - pos);
+            // Fastest lap
+            if (result.FastestLap?.rank === "1") points += 5;
+            // Pole position
+            if (driverId === poleDriverByRound[round]) points += 5;
+            
+            // Ulož body jezdce
+            if (!driverPoints[driverName]) {
+                driverPoints[driverName] = {
+                    name: driverName,
+                    team: teamName,
+                    points: new Array(races.length).fill(0)
+                };
+            }
+            driverPoints[driverName].points[raceIndex] = points;
+            
+            // Týmové body (součet)
+            if (!teamPoints[teamName]) {
+                teamPoints[teamName] = new Array(races.length).fill(0);
+            }
+            teamPoints[teamName][raceIndex] += points;
         });
+    });
+    
+    updateTables(driverPoints, teamPoints, races);
+    createCharts(driverPoints, teamPoints, races);
+}
+
+function updateTables(driverPoints, teamPoints, races) {
+    // JEZDCI
+    const driversTable = document.querySelector('#fantasy-drivers-table');
+    const thead = driversTable.querySelector('thead');
+    let headerRow = '<tr><th>Jezdec</th>';
+    races.forEach(r => headerRow += `<th style="min-width: 80px;">${r.raceName.replace(' Grand Prix', '')}</th>`);
+    headerRow += '<th style="background-color: #e10600;">Celkem</th></tr>';
+    thead.innerHTML = headerRow;
+
+    const tbody = driversTable.querySelector('tbody');
+    tbody.innerHTML = '';
+    const sortedDrivers = Object.values(driverPoints).sort((a, b) => {
+        const sa = a.points.reduce((s, p) => s + p, 0);
+        const sb = b.points.reduce((s, p) => s + p, 0);
+        return sb - sa;
+    });
+    sortedDrivers.forEach((d, i) => {
+        let row = `<tr${i < 3 ? ' style="background-color: #fff9e6;"' : ''}>`;
+        row += `<td>${d.name}</td>`;
+        let total = 0;
+        d.points.forEach(p => {
+            row += `<td>${p || '-'}</td>`;
+            total += p || 0;
+        });
+        row += `<td><b>${total}</b></td></tr>`;
+        tbody.innerHTML += row;
+    });
+
+    // TÝMY
+    const teamsTable = document.querySelector('#fantasy-teams-table');
+    const theadT = teamsTable.querySelector('thead');
+    let headerRowT = '<tr><th>Tým</th>';
+    races.forEach(r => headerRowT += `<th style="min-width: 80px;">${r.raceName.replace(' Grand Prix', '')}</th>`);
+    headerRowT += '<th style="background-color: #e10600;">Celkem</th></tr>';
+    theadT.innerHTML = headerRowT;
+
+    const tbodyT = teamsTable.querySelector('tbody');
+    tbodyT.innerHTML = '';
+    const sortedTeams = Object.entries(teamPoints).sort((a, b) => {
+        const sa = a[1].reduce((s, p) => s + p, 0);
+        const sb = b[1].reduce((s, p) => s + p, 0);
+        return sb - sa;
+    });
+    sortedTeams.forEach(([team, pts], i) => {
+        let row = `<tr${i < 3 ? ' style="background-color: #fff9e6;"' : ''}>`;
+        row += `<td>${team}</td>`;
+        let total = 0;
+        pts.forEach(p => {
+            row += `<td>${p || '-'}</td>`;
+            total += p || 0;
+        });
+        row += `<td><b>${total}</b></td></tr>`;
+        tbodyT.innerHTML += row;
+    });
+}
+
+function createCharts(driverPoints, teamPoints, races) {
+    const chartColors = [
+        "#e10600", "#0072ce", "#ff8700", "#16a34a", "#ffea00",
+        "#1a1a1a", "#e70043", "#00c2b4", "#9440ff", "#0fbcf9"
+    ];
+
+    // JEZDCI – kumulativní
+    const sortedDrivers = Object.values(driverPoints).sort((a, b) => {
+        const sa = a.points.reduce((s, p) => s + p, 0);
+        const sb = b.points.reduce((s, p) => s + p, 0);
+        return sb - sa;
+    });
+
+    const ctx = document.getElementById('drivers-chart').getContext('2d');
+    if (window.driversChart) window.driversChart.destroy();
+    window.driversChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: races.map(r => r.raceName.replace(' Grand Prix', '')),
+            datasets: sortedDrivers.slice(0, 10).map((d, idx) => {
+                let sum = 0;
+                const cumulative = d.points.map(p => (sum += p || 0));
+                return {
+                    label: d.name,
+                    data: cumulative,
+                    borderColor: chartColors[idx % chartColors.length],
+                    backgroundColor: chartColors[idx % chartColors.length] + '33',
+                    tension: 0.3,
+                    pointRadius: 4,
+                    borderWidth: 2
+                };
+            })
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: true, position: 'bottom' } },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+
+    // TÝMY – kumulativní
+    const sortedTeams = Object.entries(teamPoints).sort((a, b) => {
+        const sa = a[1].reduce((s, p) => s + p, 0);
+        const sb = b[1].reduce((s, p) => s + p, 0);
+        return sb - sa;
+    });
+
+    const ctxT = document.getElementById('teams-chart').getContext('2d');
+    if (window.teamsChart) window.teamsChart.destroy();
+    window.teamsChart = new Chart(ctxT, {
+        type: 'line',
+        data: {
+            labels: races.map(r => r.raceName.replace(' Grand Prix', '')),
+            datasets: sortedTeams.slice(0, 10).map(([team, pts], idx) => {
+                let sum = 0;
+                const cumulative = pts.map(p => (sum += p || 0));
+                return {
+                    label: team,
+                    data: cumulative,
+                    borderColor: chartColors[idx % chartColors.length],
+                    backgroundColor: chartColors[idx % chartColors.length] + '33',
+                    tension: 0.3,
+                    pointRadius: 4,
+                    borderWidth: 2
+                };
+            })
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: true, position: 'bottom' } },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+}
+
+// Mock data pro případ selhání API
+function loadMockData() {
+    statsLoading.innerHTML = '⚠️ Používám testovací data (API nedostupné)';
+    // TODO: doplň krátký dataset, aby se grafy a tabulky ukázaly i offline
+}
     </script>
 </body>
 </html>
