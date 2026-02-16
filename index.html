@@ -884,13 +884,431 @@
         tr:active {
             background-color: #f0f0f0;
         }
+
+        /* ===== PICK SYSTEM STYLES ===== */
+
+        /* Player/Race selection bar */
+        .player-bar {
+            background: linear-gradient(135deg, #1a1a2e, #15151e);
+            padding: 12px 20px;
+            border-bottom: 3px solid #e10600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 73px;
+            z-index: 99;
+        }
+
+        .player-bar label {
+            color: #aaa;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-right: 6px;
+        }
+
+        .player-bar select {
+            background: #2a2a3e;
+            color: white;
+            border: 1px solid #444;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            cursor: pointer;
+            min-width: 160px;
+        }
+
+        .player-bar select:focus {
+            border-color: #e10600;
+            outline: none;
+        }
+
+        .player-bar-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .picks-status {
+            color: #ffeb3b;
+            font-size: 0.85em;
+            font-weight: bold;
+            padding: 6px 12px;
+            background: rgba(255,235,59,0.1);
+            border-radius: 6px;
+            border: 1px solid rgba(255,235,59,0.3);
+        }
+
+        .picks-status.submitted {
+            color: #4caf50;
+            background: rgba(76,175,80,0.1);
+            border-color: rgba(76,175,80,0.3);
+        }
+
+        .settings-btn {
+            background: none;
+            border: 1px solid #555;
+            color: #aaa;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            padding: 0;
+            margin: 0;
+            box-shadow: none;
+            min-width: 36px;
+        }
+
+        .settings-btn:hover {
+            border-color: #e10600;
+            color: white;
+            transform: none;
+        }
+
+        /* Usage badge */
+        .usage-badge {
+            display: inline-block;
+            background: #15151e;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            margin-left: 8px;
+            font-weight: bold;
+            vertical-align: middle;
+            letter-spacing: 0.5px;
+        }
+
+        .usage-badge.warning {
+            background: #ff9800;
+            color: #000;
+        }
+
+        .usage-badge.maxed {
+            background: #d32f2f;
+            color: white;
+        }
+
+        tr.driver-maxed {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        tr.driver-maxed td {
+            text-decoration: line-through;
+        }
+
+        /* Confirmation modal */
+        .confirm-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .confirm-box {
+            max-width: 500px;
+            margin: 80px auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .confirm-header {
+            background: #15151e;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 4px solid #e10600;
+        }
+
+        .confirm-header h3 {
+            margin: 0;
+            font-size: 1.4em;
+        }
+
+        .confirm-body {
+            padding: 25px;
+        }
+
+        .confirm-warning {
+            background: #fff3e0;
+            border: 2px solid #ff9800;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+            color: #e65100;
+            font-size: 0.95em;
+        }
+
+        .confirm-summary {
+            margin: 15px 0;
+        }
+
+        .confirm-summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.95em;
+        }
+
+        .confirm-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .confirm-buttons button {
+            flex: 1;
+            padding: 14px;
+            font-size: 1em;
+        }
+
+        .btn-cancel {
+            background: #666 !important;
+        }
+
+        .btn-cancel:hover {
+            background: #555 !important;
+        }
+
+        .btn-submit-final {
+            background: #e10600 !important;
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(225, 6, 0, 0.4); }
+            50% { box-shadow: 0 0 0 10px rgba(225, 6, 0, 0); }
+        }
+
+        /* Settings modal */
+        .settings-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .settings-box {
+            max-width: 500px;
+            margin: 60px auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .settings-header {
+            background: #15151e;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 4px solid #e10600;
+        }
+
+        .settings-body {
+            padding: 25px;
+        }
+
+        .settings-body label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            margin-top: 16px;
+            color: #333;
+        }
+
+        .settings-body input[type="text"],
+        .settings-body input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95em;
+            box-sizing: border-box;
+        }
+
+        .settings-body .hint {
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        /* Picks overview modal */
+        .overview-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .overview-box {
+            max-width: 95%;
+            width: 1200px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+
+        .overview-header {
+            background: #15151e;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 4px solid #e10600;
+        }
+
+        .overview-body {
+            padding: 25px;
+            overflow-x: auto;
+        }
+
+        .overview-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85em;
+        }
+
+        .overview-table th {
+            background: #15151e;
+            color: white;
+            padding: 10px 8px;
+            text-align: center;
+            font-size: 0.8em;
+            white-space: nowrap;
+        }
+
+        .overview-table th:first-child {
+            text-align: left;
+            min-width: 100px;
+        }
+
+        .overview-table td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+            vertical-align: top;
+            font-size: 0.85em;
+        }
+
+        .overview-table td:first-child {
+            text-align: left;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .pick-cell {
+            background: #f0fff0;
+            border-radius: 4px;
+            padding: 4px;
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+
+        .pick-cell.empty {
+            background: #fff0f0;
+            color: #999;
+        }
+
+        /* Submit button special style */
+        .btn-submit-pick {
+            background: linear-gradient(135deg, #e10600, #ff4444) !important;
+            font-size: 1.05em;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit-pick:disabled {
+            background: #ccc !important;
+        }
+
+        /* Mobile adjustments for player bar */
+        @media (max-width: 767px) {
+            .player-bar {
+                padding: 10px 12px;
+                gap: 10px;
+                top: 61px;
+            }
+
+            .player-bar select {
+                min-width: 120px;
+                font-size: 0.85em;
+                padding: 6px 8px;
+            }
+
+            .player-bar label {
+                font-size: 0.75em;
+            }
+
+            .picks-status {
+                font-size: 0.75em;
+                width: 100%;
+                text-align: center;
+            }
+
+            .usage-badge {
+                font-size: 0.65em;
+                padding: 1px 6px;
+            }
+
+            .confirm-box, .settings-box {
+                margin: 20px auto;
+            }
+
+            .overview-box {
+                margin: 10px auto;
+                max-width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
     <header>
         <h1>F1 Baarovka Manager</h1>
     </header>
-    
+
+    <!-- Player / Race selection bar -->
+    <div class="player-bar">
+        <div class="player-bar-group">
+            <label>Hráč:</label>
+            <select id="player-select">
+                <option value="">-- Vyber hráče --</option>
+            </select>
+        </div>
+        <div class="player-bar-group">
+            <label>Závod:</label>
+            <select id="race-select">
+                <option value="">-- Vyber závod --</option>
+            </select>
+        </div>
+        <span id="picks-status" class="picks-status">Vyber hráče a závod</span>
+        <button class="settings-btn" id="settings-btn" title="Nastavení">&#9881;</button>
+    </div>
+
     <div class="container">
         <div class="layout">
             <div class="layout-left">
@@ -1293,7 +1711,9 @@
                     
                     <button id="reset-button">Resetovat</button>
                     <button id="preview-button" disabled>Náhled</button>
-                    <button id="stats-button" style="margin-left:10px;">Statistiky</button>
+                    <button id="submit-pick-button" class="btn-submit-pick" disabled>Odeslat sestavu</button>
+                    <button id="overview-button" style="margin-top:8px;">Přehled picků</button>
+                    <button id="stats-button" style="margin-top:8px;">Statistiky</button>
                 </div>
             </div>
         </div>
@@ -1354,6 +1774,66 @@
             </div>
         </div>
         <div id="preview-close" class="preview-close">✕</div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirm-overlay" class="confirm-overlay">
+        <div class="confirm-box">
+            <div class="confirm-header">
+                <h3>Odeslat sestavu?</h3>
+            </div>
+            <div class="confirm-body">
+                <div class="confirm-warning">
+                    Toto je FINÁLNÍ sestava pro tento závod.<br>Po odeslání ji NEJDE změnit!
+                </div>
+                <div id="confirm-summary" class="confirm-summary"></div>
+                <div class="confirm-buttons">
+                    <button class="btn-cancel" id="confirm-cancel">Zpět</button>
+                    <button class="btn-submit-final" id="confirm-yes">Odeslat!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-overlay" class="settings-overlay">
+        <div class="settings-box">
+            <div class="settings-header">
+                <h3>Nastavení</h3>
+            </div>
+            <div class="settings-body">
+                <label>GitHub Personal Access Token</label>
+                <input type="password" id="settings-token" placeholder="ghp_xxxxxxxxxxxx">
+                <div class="hint">Token s oprávněním 'contents' pro repo F1BaarovkaManager/F1Manager</div>
+
+                <label>Hráči (jména oddělená čárkou)</label>
+                <input type="text" id="settings-players" placeholder="Pepa, Honza, Kuba, ...">
+                <div class="hint">Změna jmen se projeví po uložení do GitHub</div>
+
+                <div style="margin-top: 20px; display: flex; gap: 10px;">
+                    <button id="settings-save" style="flex:1;">Uložit</button>
+                    <button id="settings-close" style="flex:1; background:#666;">Zavřít</button>
+                </div>
+                <div id="settings-status" style="margin-top:10px; text-align:center; font-size:0.9em;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Picks Overview Modal -->
+    <div id="overview-overlay" class="overview-overlay">
+        <div class="overview-box">
+            <div class="overview-header">
+                <h3>Přehled picků – Sezóna 2026</h3>
+            </div>
+            <div class="overview-body">
+                <div id="overview-content">
+                    <p style="text-align:center; color:#888;">Načítám data...</p>
+                </div>
+            </div>
+            <div style="padding: 15px; text-align: center; border-top: 1px solid #eee;">
+                <button id="overview-close">Zavřít</button>
+            </div>
+        </div>
     </div>
 
     <!-- Fantasy Statistiky Modal -->
@@ -2166,6 +2646,559 @@ function loadMockData() {
     statsLoading.innerHTML = '⚠️ Používám testovací data (API nedostupné)';
     // TODO: doplň krátký dataset, aby se grafy a tabulky ukázaly i offline
 }
+
+// ============================================
+// FANTASY PICK SYSTEM
+// ============================================
+
+const GITHUB_OWNER = 'F1BaarovkaManager';
+const GITHUB_REPO = 'F1Manager';
+const PICKS_FILE_PATH = 'data/picks.json';
+const MAX_DRIVER_USES = 12;
+
+let picksData = null;
+let picksSha = null;
+let currentPlayer = localStorage.getItem('f1_current_player') || '';
+let currentRound = '';
+
+function getGithubToken() {
+    return localStorage.getItem('f1_github_token') || '';
+}
+
+// --- GitHub API ---
+
+async function loadPicksFromGitHub() {
+    const token = getGithubToken();
+    if (!token) {
+        // Zkusíme načíst z lokálního souboru (pokud běží lokálně)
+        try {
+            const resp = await fetch('data/picks.json');
+            if (resp.ok) {
+                picksData = await resp.json();
+                picksSha = null;
+                return picksData;
+            }
+        } catch(e) {}
+        picksData = getDefaultPicksData();
+        return picksData;
+    }
+
+    try {
+        const resp = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${PICKS_FILE_PATH}`, {
+            headers: {
+                'Authorization': `token ${token}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        });
+
+        if (resp.ok) {
+            const data = await resp.json();
+            picksSha = data.sha;
+            picksData = JSON.parse(atob(data.content));
+            return picksData;
+        } else if (resp.status === 404) {
+            picksData = getDefaultPicksData();
+            picksSha = null;
+            return picksData;
+        } else {
+            throw new Error(`GitHub API: ${resp.status}`);
+        }
+    } catch(e) {
+        console.error('Chyba při načítání z GitHub:', e);
+        // Fallback na lokální
+        try {
+            const resp = await fetch('data/picks.json');
+            if (resp.ok) {
+                picksData = await resp.json();
+                picksSha = null;
+                return picksData;
+            }
+        } catch(e2) {}
+        picksData = getDefaultPicksData();
+        return picksData;
+    }
+}
+
+async function savePicksToGitHub(commitMessage) {
+    const token = getGithubToken();
+    if (!token) {
+        alert('Nastav GitHub token v Nastavení pro ukládání picků.');
+        return false;
+    }
+
+    try {
+        // Vždy načti nejnovější SHA před uložením
+        const shaResp = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${PICKS_FILE_PATH}`, {
+            headers: {
+                'Authorization': `token ${token}`,
+                'Accept': 'application/vnd.github.v3+json'
+            }
+        });
+
+        if (shaResp.ok) {
+            const shaData = await shaResp.json();
+            picksSha = shaData.sha;
+        }
+
+        const body = {
+            message: commitMessage || 'Update picks',
+            content: btoa(unescape(encodeURIComponent(JSON.stringify(picksData, null, 2)))),
+        };
+        if (picksSha) body.sha = picksSha;
+
+        const resp = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${PICKS_FILE_PATH}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${token}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/vnd.github.v3+json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (resp.ok) {
+            const result = await resp.json();
+            picksSha = result.content.sha;
+            return true;
+        } else {
+            const err = await resp.json();
+            console.error('GitHub save error:', err);
+            alert('Chyba při ukládání: ' + (err.message || resp.status));
+            return false;
+        }
+    } catch(e) {
+        console.error('Chyba při ukládání:', e);
+        alert('Chyba při ukládání: ' + e.message);
+        return false;
+    }
+}
+
+function getDefaultPicksData() {
+    return {
+        season: 2026,
+        maxDriverUses: MAX_DRIVER_USES,
+        players: ["Hráč 1", "Hráč 2", "Hráč 3", "Hráč 4", "Hráč 5", "Hráč 6"],
+        races: [
+            {round: 1, name: "Australian GP", date: "2026-03-08"},
+            {round: 2, name: "Chinese GP", date: "2026-03-15"},
+            {round: 3, name: "Japanese GP", date: "2026-03-29"},
+            {round: 4, name: "Bahrain GP", date: "2026-04-12"},
+            {round: 5, name: "Saudi Arabian GP", date: "2026-04-19"},
+            {round: 6, name: "Miami GP", date: "2026-05-03"},
+            {round: 7, name: "Canadian GP", date: "2026-05-24"},
+            {round: 8, name: "Monaco GP", date: "2026-06-07"},
+            {round: 9, name: "Barcelona GP", date: "2026-06-14"},
+            {round: 10, name: "Austrian GP", date: "2026-06-28"},
+            {round: 11, name: "British GP", date: "2026-07-05"},
+            {round: 12, name: "Belgian GP", date: "2026-07-19"},
+            {round: 13, name: "Hungarian GP", date: "2026-07-26"},
+            {round: 14, name: "Dutch GP", date: "2026-08-23"},
+            {round: 15, name: "Italian GP", date: "2026-09-06"},
+            {round: 16, name: "Madrid GP", date: "2026-09-14"},
+            {round: 17, name: "Azerbaijan GP", date: "2026-09-26"},
+            {round: 18, name: "Singapore GP", date: "2026-10-11"},
+            {round: 19, name: "United States GP", date: "2026-10-25"},
+            {round: 20, name: "Mexico City GP", date: "2026-11-01"},
+            {round: 21, name: "São Paulo GP", date: "2026-11-08"},
+            {round: 22, name: "Las Vegas GP", date: "2026-11-21"},
+            {round: 23, name: "Qatar GP", date: "2026-11-29"},
+            {round: 24, name: "Abu Dhabi GP", date: "2026-12-06"}
+        ],
+        picks: {}
+    };
+}
+
+// --- Usage tracking ---
+
+function getDriverUsage(player, driver) {
+    if (!picksData || !picksData.picks || !picksData.picks[player]) return 0;
+    const playerPicks = picksData.picks[player];
+    let count = 0;
+    for (const round of Object.keys(playerPicks)) {
+        if (playerPicks[round].drivers && playerPicks[round].drivers.includes(driver)) {
+            count++;
+        }
+    }
+    return count;
+}
+
+function isRoundSubmitted(player, round) {
+    if (!picksData || !picksData.picks || !picksData.picks[player]) return false;
+    return !!picksData.picks[player][String(round)];
+}
+
+function updateUsageBadges() {
+    document.querySelectorAll('#driversTable tr[data-driver]').forEach(row => {
+        const driver = row.dataset.driver;
+        const usage = currentPlayer ? getDriverUsage(currentPlayer, driver) : 0;
+        const maxUses = picksData ? (picksData.maxDriverUses || MAX_DRIVER_USES) : MAX_DRIVER_USES;
+
+        // Najdi nebo vytvoř badge
+        let badge = row.querySelector('.usage-badge');
+        if (!badge) {
+            badge = document.createElement('span');
+            badge.className = 'usage-badge';
+            const nameCell = row.querySelector('.driver-cell');
+            if (nameCell) nameCell.appendChild(badge);
+        }
+
+        badge.textContent = `${usage}/${maxUses}`;
+        badge.classList.remove('warning', 'maxed');
+
+        if (usage >= maxUses) {
+            badge.classList.add('maxed');
+            row.classList.add('driver-maxed');
+            const cb = row.querySelector('input[type="checkbox"]');
+            if (cb) { cb.checked = false; cb.disabled = true; }
+        } else if (usage >= maxUses - 2) {
+            badge.classList.add('warning');
+            row.classList.remove('driver-maxed');
+            const cb = row.querySelector('input[type="checkbox"]');
+            if (cb) cb.disabled = false;
+        } else {
+            row.classList.remove('driver-maxed');
+            const cb = row.querySelector('input[type="checkbox"]');
+            if (cb) cb.disabled = false;
+        }
+
+        // Pokud není hráč vybraný, skrýt badge
+        if (!currentPlayer) {
+            badge.style.display = 'none';
+        } else {
+            badge.style.display = '';
+        }
+    });
+}
+
+function updatePicksStatus() {
+    const statusEl = document.getElementById('picks-status');
+    if (!currentPlayer || !currentRound) {
+        statusEl.textContent = 'Vyber hráče a závod';
+        statusEl.classList.remove('submitted');
+        return;
+    }
+
+    if (isRoundSubmitted(currentPlayer, currentRound)) {
+        const pick = picksData.picks[currentPlayer][String(currentRound)];
+        statusEl.textContent = `Odesláno: ${pick.drivers.join(', ')} + ${pick.team}`;
+        statusEl.classList.add('submitted');
+    } else {
+        statusEl.textContent = 'Sestava neodeslaná – vyber a odešli';
+        statusEl.classList.remove('submitted');
+    }
+}
+
+function updateSubmitButton() {
+    const btn = document.getElementById('submit-pick-button');
+    const canSubmit = currentPlayer &&
+                      currentRound &&
+                      selectedDrivers.length === 5 &&
+                      selectedTeam &&
+                      !isRoundSubmitted(currentPlayer, currentRound);
+
+    const driversTotal = selectedDrivers.reduce((s, d) => s + Number(d.price), 0);
+    const teamTotal = selectedTeam ? Number(selectedTeam.price) : 0;
+    const totalCost = driversTotal + teamTotal;
+
+    btn.disabled = !(canSubmit && totalCost <= BUDGET_LIMIT);
+}
+
+// --- Populate dropdowns ---
+
+function populatePlayerDropdown() {
+    const select = document.getElementById('player-select');
+    select.innerHTML = '<option value="">-- Vyber hráče --</option>';
+    if (picksData && picksData.players) {
+        picksData.players.forEach(name => {
+            const opt = document.createElement('option');
+            opt.value = name;
+            opt.textContent = name;
+            if (name === currentPlayer) opt.selected = true;
+            select.appendChild(opt);
+        });
+    }
+}
+
+function populateRaceDropdown() {
+    const select = document.getElementById('race-select');
+    select.innerHTML = '<option value="">-- Vyber závod --</option>';
+    if (picksData && picksData.races) {
+        const now = new Date();
+        let nearestRound = '';
+
+        picksData.races.forEach(race => {
+            const opt = document.createElement('option');
+            opt.value = String(race.round);
+            const submitted = currentPlayer && isRoundSubmitted(currentPlayer, race.round);
+            opt.textContent = `R${race.round}: ${race.name} (${race.date})${submitted ? ' ✓' : ''}`;
+            select.appendChild(opt);
+
+            // Automaticky vybrat nejbližší budoucí závod
+            const raceDate = new Date(race.date);
+            if (!nearestRound && raceDate >= new Date(now.getTime() - 2*86400000)) {
+                nearestRound = String(race.round);
+            }
+        });
+
+        if (!currentRound && nearestRound) {
+            currentRound = nearestRound;
+            select.value = nearestRound;
+        } else if (currentRound) {
+            select.value = currentRound;
+        }
+    }
+}
+
+// --- Confirmation flow ---
+
+function showConfirmation() {
+    const overlay = document.getElementById('confirm-overlay');
+    const summary = document.getElementById('confirm-summary');
+
+    const race = picksData.races.find(r => String(r.round) === String(currentRound));
+    const raceName = race ? race.name : `Round ${currentRound}`;
+
+    let html = `<div style="text-align:center; margin-bottom:15px; font-size:1.1em;">
+        <strong>${currentPlayer}</strong> – <strong>${raceName}</strong>
+    </div>`;
+
+    html += '<div style="font-weight:bold; margin-bottom:8px;">Jezdci:</div>';
+    selectedDrivers.forEach(d => {
+        const usage = getDriverUsage(currentPlayer, d.name);
+        const maxUses = picksData.maxDriverUses || MAX_DRIVER_USES;
+        const newUsage = usage + 1;
+        const warn = newUsage >= maxUses ? ' color:#d32f2f; font-weight:bold;' : (newUsage >= maxUses - 2 ? ' color:#ff9800;' : '');
+        html += `<div class="confirm-summary-item">
+            <span>${d.flag} ${d.name}</span>
+            <span>${d.price.toFixed(1)} mil. <span style="font-size:0.85em;${warn}">(${newUsage}/${maxUses})</span></span>
+        </div>`;
+    });
+
+    html += '<div style="font-weight:bold; margin-top:12px; margin-bottom:8px;">Tým:</div>';
+    html += `<div class="confirm-summary-item">
+        <span>${selectedTeam.flag} ${selectedTeam.name}</span>
+        <span>${Number(selectedTeam.price).toFixed(1)} mil.</span>
+    </div>`;
+
+    const total = selectedDrivers.reduce((s, d) => s + Number(d.price), 0) + Number(selectedTeam.price);
+    html += `<div style="margin-top:12px; text-align:right; font-size:1.1em;">
+        <strong>Celkem: ${total.toFixed(1)} / ${BUDGET_LIMIT.toFixed(1)} mil.</strong>
+    </div>`;
+
+    summary.innerHTML = html;
+    overlay.style.display = 'block';
+}
+
+async function confirmSubmitPick() {
+    const overlay = document.getElementById('confirm-overlay');
+    const confirmBtn = document.getElementById('confirm-yes');
+
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = 'Odesílám...';
+
+    // Uložit pick
+    if (!picksData.picks[currentPlayer]) {
+        picksData.picks[currentPlayer] = {};
+    }
+
+    picksData.picks[currentPlayer][String(currentRound)] = {
+        drivers: selectedDrivers.map(d => d.name),
+        team: selectedTeam.name,
+        timestamp: new Date().toISOString()
+    };
+
+    const race = picksData.races.find(r => String(r.round) === String(currentRound));
+    const raceName = race ? race.name : `R${currentRound}`;
+    const saved = await savePicksToGitHub(`Pick: ${currentPlayer} – ${raceName}`);
+
+    if (saved) {
+        overlay.style.display = 'none';
+        alert(`Sestava pro ${raceName} úspěšně odeslána!`);
+        updatePicksStatus();
+        updateSubmitButton();
+        populateRaceDropdown();
+    } else {
+        // Revert
+        delete picksData.picks[currentPlayer][String(currentRound)];
+    }
+
+    confirmBtn.disabled = false;
+    confirmBtn.textContent = 'Odeslat!';
+}
+
+// --- Picks overview ---
+
+function showPicksOverview() {
+    const overlay = document.getElementById('overview-overlay');
+    const content = document.getElementById('overview-content');
+
+    if (!picksData) {
+        content.innerHTML = '<p style="text-align:center; color:#888;">Žádná data k zobrazení.</p>';
+        overlay.style.display = 'block';
+        return;
+    }
+
+    const players = picksData.players || [];
+    const races = picksData.races || [];
+    const picks = picksData.picks || {};
+
+    let html = '<table class="overview-table"><thead><tr><th>Hráč</th>';
+    races.forEach(r => {
+        html += `<th>R${r.round}<br><small>${r.name.replace(' GP', '')}</small></th>`;
+    });
+    html += '</tr></thead><tbody>';
+
+    players.forEach(player => {
+        html += `<tr><td>${player}</td>`;
+        races.forEach(r => {
+            const pick = picks[player] && picks[player][String(r.round)];
+            if (pick) {
+                const drivers = pick.drivers ? pick.drivers.join(', ') : '';
+                const team = pick.team || '';
+                html += `<td><div class="pick-cell"><small>${drivers}</small><br><strong>${team}</strong></div></td>`;
+            } else {
+                html += `<td><div class="pick-cell empty">–</div></td>`;
+            }
+        });
+        html += '</tr>';
+    });
+
+    html += '</tbody></table>';
+    content.innerHTML = html;
+    overlay.style.display = 'block';
+}
+
+// --- Settings ---
+
+function showSettings() {
+    const overlay = document.getElementById('settings-overlay');
+    document.getElementById('settings-token').value = getGithubToken();
+    document.getElementById('settings-players').value = picksData ? picksData.players.join(', ') : '';
+    document.getElementById('settings-status').textContent = '';
+    overlay.style.display = 'block';
+}
+
+async function saveSettings() {
+    const token = document.getElementById('settings-token').value.trim();
+    const playersStr = document.getElementById('settings-players').value.trim();
+    const statusEl = document.getElementById('settings-status');
+
+    if (token) {
+        localStorage.setItem('f1_github_token', token);
+    }
+
+    if (playersStr && picksData) {
+        const newPlayers = playersStr.split(',').map(s => s.trim()).filter(s => s);
+        picksData.players = newPlayers;
+
+        statusEl.textContent = 'Ukládám...';
+        statusEl.style.color = '#666';
+
+        const saved = await savePicksToGitHub('Update players list');
+        if (saved) {
+            statusEl.textContent = 'Uloženo!';
+            statusEl.style.color = '#388e3c';
+            populatePlayerDropdown();
+        } else {
+            statusEl.textContent = 'Chyba při ukládání do GitHub';
+            statusEl.style.color = '#d32f2f';
+        }
+    } else if (token) {
+        statusEl.textContent = 'Token uložen lokálně.';
+        statusEl.style.color = '#388e3c';
+
+        // Zkusit znovu načíst data z GitHubu
+        await loadPicksFromGitHub();
+        populatePlayerDropdown();
+        populateRaceDropdown();
+    }
+}
+
+// --- Init pick system ---
+
+async function initPickSystem() {
+    await loadPicksFromGitHub();
+    populatePlayerDropdown();
+    populateRaceDropdown();
+    updateUsageBadges();
+    updatePicksStatus();
+    updateSubmitButton();
+
+    // Player dropdown
+    document.getElementById('player-select').addEventListener('change', function() {
+        currentPlayer = this.value;
+        localStorage.setItem('f1_current_player', currentPlayer);
+        updateUsageBadges();
+        updatePicksStatus();
+        updateSubmitButton();
+        populateRaceDropdown();
+    });
+
+    // Race dropdown
+    document.getElementById('race-select').addEventListener('change', function() {
+        currentRound = this.value;
+        updatePicksStatus();
+        updateSubmitButton();
+    });
+
+    // Submit pick button
+    document.getElementById('submit-pick-button').addEventListener('click', function(e) {
+        e.preventDefault();
+        if (!currentPlayer) { alert('Vyber hráče!'); return; }
+        if (!currentRound) { alert('Vyber závod!'); return; }
+        if (isRoundSubmitted(currentPlayer, currentRound)) {
+            alert('Pro tento závod už máš sestavu odeslanou!');
+            return;
+        }
+        showConfirmation();
+    });
+
+    // Confirmation buttons
+    document.getElementById('confirm-yes').addEventListener('click', function() {
+        confirmSubmitPick();
+    });
+    document.getElementById('confirm-cancel').addEventListener('click', function() {
+        document.getElementById('confirm-overlay').style.display = 'none';
+    });
+    document.getElementById('confirm-overlay').addEventListener('click', function(e) {
+        if (e.target === this) this.style.display = 'none';
+    });
+
+    // Overview button
+    document.getElementById('overview-button').addEventListener('click', function() {
+        showPicksOverview();
+    });
+    document.getElementById('overview-close').addEventListener('click', function() {
+        document.getElementById('overview-overlay').style.display = 'none';
+    });
+    document.getElementById('overview-overlay').addEventListener('click', function(e) {
+        if (e.target === this) this.style.display = 'none';
+    });
+
+    // Settings button
+    document.getElementById('settings-btn').addEventListener('click', function() {
+        showSettings();
+    });
+    document.getElementById('settings-save').addEventListener('click', function() {
+        saveSettings();
+    });
+    document.getElementById('settings-close').addEventListener('click', function() {
+        document.getElementById('settings-overlay').style.display = 'none';
+    });
+    document.getElementById('settings-overlay').addEventListener('click', function(e) {
+        if (e.target === this) this.style.display = 'none';
+    });
+
+    // Hook do existujícího updateDisplay pro aktualizaci submit buttonu
+    const origUpdateDisplay = updateDisplay;
+    updateDisplay = function() {
+        origUpdateDisplay();
+        updateSubmitButton();
+    };
+}
+
+initPickSystem();
+
     }); // konec DOMContentLoaded
     </script>
 </body>
