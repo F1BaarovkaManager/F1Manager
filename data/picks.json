@@ -2,12 +2,13 @@
   "season": 2026,
   "maxDriverUses": 12,
   "players": [
-    "Hráč 1",
-    "Hráč 2",
-    "Hráč 3",
-    "Hráč 4",
-    "Hráč 5",
-    "Hráč 6"
+    "Flyons Racing",
+    "Flygirl",
+    "Salvetus",
+    "F17",
+    "Piňa",
+    "Vzoom",
+    "Martini Motors"
   ],
   "races": [
     {"round": 1, "name": "Australian GP", "date": "2026-03-08"},
