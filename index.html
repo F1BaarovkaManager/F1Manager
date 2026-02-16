@@ -125,8 +125,44 @@
             background-color: white;
             box-shadow: 0 1px 5px rgba(0,0,0,0.15);
             border-radius: 8px;
-            position: sticky;
-            top: 20px;
+            position: relative;
+        }
+
+        .selection-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .selection-toggle h2 {
+            margin: 0;
+            border: none;
+            padding: 0;
+        }
+
+        .toggle-arrow {
+            font-size: 1.2em;
+            color: #e10600;
+            transition: transform 0.3s;
+            font-weight: bold;
+        }
+
+        .toggle-arrow.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .selection-content {
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            overflow: hidden;
+        }
+
+        .selection-content.collapsed {
+            max-height: 0 !important;
+            opacity: 0;
+            padding: 0;
+            margin: 0;
         }
         
         /* Rozpočet */
@@ -947,30 +983,6 @@
             border-color: rgba(76,175,80,0.3);
         }
 
-        .settings-btn {
-            background: none;
-            border: 1px solid #555;
-            color: #aaa;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 1.2em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            padding: 0;
-            margin: 0;
-            box-shadow: none;
-            min-width: 36px;
-        }
-
-        .settings-btn:hover {
-            border-color: #e10600;
-            color: white;
-            transform: none;
-        }
 
         /* Usage badge */
         .usage-badge {
@@ -1096,61 +1108,6 @@
             50% { box-shadow: 0 0 0 10px rgba(225, 6, 0, 0); }
         }
 
-        /* Settings modal */
-        .settings-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.85);
-            z-index: 2000;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .settings-box {
-            max-width: 500px;
-            margin: 60px auto;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-        }
-
-        .settings-header {
-            background: #15151e;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            border-bottom: 4px solid #e10600;
-        }
-
-        .settings-body {
-            padding: 25px;
-        }
-
-        .settings-body label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 6px;
-            margin-top: 16px;
-            color: #333;
-        }
-
-        .settings-body input[type="text"],
-        .settings-body input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 0.95em;
-            box-sizing: border-box;
-        }
-
-        .settings-body .hint {
-            font-size: 0.8em;
-            color: #888;
-            margin-top: 4px;
-        }
 
         /* Picks overview modal */
         .overview-overlay {
@@ -1306,7 +1263,6 @@
             </select>
         </div>
         <span id="picks-status" class="picks-status">Vyber hráče a závod</span>
-        <button class="settings-btn" id="settings-btn" title="Nastavení">&#9881;</button>
     </div>
 
     <div class="container">
@@ -1685,35 +1641,40 @@
             
             <div class="layout-right">
                 <div class="selection-area">
-                    <h2>Váš výběr</h2>
-                    
-                    <div class="progress-container">
-                        <div id="progress-bar" class="progress-bar" style="width: 0%">0%</div>
+                    <div class="selection-toggle" id="selection-toggle">
+                        <h2>Váš výběr</h2>
+                        <span class="toggle-arrow" id="toggle-arrow">&#9660;</span>
                     </div>
-                    
-                    <div class="budget">
-                        <div>Celkový rozpočet: <strong>30.0 mil.</strong></div>
-                        <div>Využito: <strong id="used-budget">0.0 mil.</strong></div>
-                        <div>Zbývá: <strong id="remaining-budget">30.0 mil.</strong></div>
+
+                    <div class="selection-content" id="selection-content">
+                        <div class="progress-container">
+                            <div id="progress-bar" class="progress-bar" style="width: 0%">0%</div>
+                        </div>
+
+                        <div class="budget">
+                            <div>Celkový rozpočet: <strong>30.0 mil.</strong></div>
+                            <div>Využito: <strong id="used-budget">0.0 mil.</strong></div>
+                            <div>Zbývá: <strong id="remaining-budget">30.0 mil.</strong></div>
+                        </div>
+
+                        <div id="status-message"></div>
+
+                        <h3>Vybraní jezdci</h3>
+                        <div class="selected-grid" id="selected-drivers">
+                            <!-- Sem budou dynamicky přidávány karty -->
+                        </div>
+
+                        <h3>Vybraný tým</h3>
+                        <div id="selected-team">
+                            <!-- Sem bude dynamicky přidána karta -->
+                        </div>
+
+                        <button id="reset-button">Resetovat</button>
+                        <button id="preview-button" disabled>Náhled</button>
+                        <button id="submit-pick-button" class="btn-submit-pick" disabled>Odeslat sestavu</button>
+                        <button id="overview-button" style="margin-top:8px;">Přehled picků</button>
+                        <button id="stats-button" style="margin-top:8px;">Statistiky</button>
                     </div>
-                    
-                    <div id="status-message"></div>
-                    
-                    <h3>Vybraní jezdci</h3>
-                    <div class="selected-grid" id="selected-drivers">
-                        <!-- Sem budou dynamicky přidávány karty -->
-                    </div>
-                    
-                    <h3>Vybraný tým</h3>
-                    <div id="selected-team">
-                        <!-- Sem bude dynamicky přidána karta -->
-                    </div>
-                    
-                    <button id="reset-button">Resetovat</button>
-                    <button id="preview-button" disabled>Náhled</button>
-                    <button id="submit-pick-button" class="btn-submit-pick" disabled>Odeslat sestavu</button>
-                    <button id="overview-button" style="margin-top:8px;">Přehled picků</button>
-                    <button id="stats-button" style="margin-top:8px;">Statistiky</button>
                 </div>
             </div>
         </div>
@@ -1791,30 +1752,6 @@
                     <button class="btn-cancel" id="confirm-cancel">Zpět</button>
                     <button class="btn-submit-final" id="confirm-yes">Odeslat!</button>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Settings Modal -->
-    <div id="settings-overlay" class="settings-overlay">
-        <div class="settings-box">
-            <div class="settings-header">
-                <h3>Nastavení</h3>
-            </div>
-            <div class="settings-body">
-                <label>GitHub Personal Access Token</label>
-                <input type="password" id="settings-token" placeholder="ghp_xxxxxxxxxxxx">
-                <div class="hint">Token s oprávněním 'contents' pro repo F1BaarovkaManager/F1Manager</div>
-
-                <label>Hráči (jména oddělená čárkou)</label>
-                <input type="text" id="settings-players" placeholder="Pepa, Honza, Kuba, ...">
-                <div class="hint">Změna jmen se projeví po uložení do GitHub</div>
-
-                <div style="margin-top: 20px; display: flex; gap: 10px;">
-                    <button id="settings-save" style="flex:1;">Uložit</button>
-                    <button id="settings-close" style="flex:1; background:#666;">Zavřít</button>
-                </div>
-                <div id="settings-status" style="margin-top:10px; text-align:center; font-size:0.9em;"></div>
             </div>
         </div>
     </div>
@@ -3071,52 +3008,6 @@ function showPicksOverview() {
     overlay.style.display = 'block';
 }
 
-// --- Settings ---
-
-function showSettings() {
-    const overlay = document.getElementById('settings-overlay');
-    document.getElementById('settings-token').value = getGithubToken();
-    document.getElementById('settings-players').value = picksData ? picksData.players.join(', ') : '';
-    document.getElementById('settings-status').textContent = '';
-    overlay.style.display = 'block';
-}
-
-async function saveSettings() {
-    const token = document.getElementById('settings-token').value.trim();
-    const playersStr = document.getElementById('settings-players').value.trim();
-    const statusEl = document.getElementById('settings-status');
-
-    if (token) {
-        localStorage.setItem('f1_github_token', token);
-    }
-
-    if (playersStr && picksData) {
-        const newPlayers = playersStr.split(',').map(s => s.trim()).filter(s => s);
-        picksData.players = newPlayers;
-
-        statusEl.textContent = 'Ukládám...';
-        statusEl.style.color = '#666';
-
-        const saved = await savePicksToGitHub('Update players list');
-        if (saved) {
-            statusEl.textContent = 'Uloženo!';
-            statusEl.style.color = '#388e3c';
-            populatePlayerDropdown();
-        } else {
-            statusEl.textContent = 'Chyba při ukládání do GitHub';
-            statusEl.style.color = '#d32f2f';
-        }
-    } else if (token) {
-        statusEl.textContent = 'Token uložen lokálně.';
-        statusEl.style.color = '#388e3c';
-
-        // Zkusit znovu načíst data z GitHubu
-        await loadPicksFromGitHub();
-        populatePlayerDropdown();
-        populateRaceDropdown();
-    }
-}
-
 // --- Init pick system ---
 
 async function initPickSystem() {
@@ -3178,18 +3069,12 @@ async function initPickSystem() {
         if (e.target === this) this.style.display = 'none';
     });
 
-    // Settings button
-    document.getElementById('settings-btn').addEventListener('click', function() {
-        showSettings();
-    });
-    document.getElementById('settings-save').addEventListener('click', function() {
-        saveSettings();
-    });
-    document.getElementById('settings-close').addEventListener('click', function() {
-        document.getElementById('settings-overlay').style.display = 'none';
-    });
-    document.getElementById('settings-overlay').addEventListener('click', function(e) {
-        if (e.target === this) this.style.display = 'none';
+    // Toggle pro zabalení/rozbalení výběru
+    document.getElementById('selection-toggle').addEventListener('click', function() {
+        const content = document.getElementById('selection-content');
+        const arrow = document.getElementById('toggle-arrow');
+        content.classList.toggle('collapsed');
+        arrow.classList.toggle('collapsed');
     });
 
     // Hook do existujícího updateDisplay pro aktualizaci submit buttonu
