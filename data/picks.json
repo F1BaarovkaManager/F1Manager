@@ -132,19 +132,5 @@
       "date": "2026-12-06"
     }
   ],
-  "picks": {
-    "Flyons Racing": {
-      "1": {
-        "drivers": [
-          "Sainz",
-          "Lawson",
-          "Lindblad",
-          "Ocon",
-          "Bearman"
-        ],
-        "team": "Cadillac",
-        "timestamp": "2026-02-16T13:06:26.134Z"
-      }
-    }
-  }
+  "picks": {}
 }
