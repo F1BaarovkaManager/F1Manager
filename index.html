@@ -2584,11 +2584,13 @@ function getSheetsUrl() {
 
 async function sendToGoogleSheets(url, data) {
     try {
+        // Použijeme form data - no-cors blokuje application/json hlavičku
+        const formData = new URLSearchParams();
+        formData.append('payload', JSON.stringify(data));
         await fetch(url, {
             method: 'POST',
             mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            body: formData
         });
         console.log('Google Sheets: data sent');
     } catch (e) {
