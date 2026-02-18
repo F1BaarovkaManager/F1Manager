@@ -131,44 +131,5 @@
       "name": "Abu Dhabi GP",
       "date": "2026-12-06"
     }
-  ],
-  "picks": {
-    "Flyons Racing": {
-      "1": {
-        "drivers": [
-          "Sainz",
-          "Lawson",
-          "Lindblad",
-          "Ocon",
-          "Bearman"
-        ],
-        "team": "Cadillac",
-        "timestamp": "2026-02-16T13:06:26.134Z"
-      },
-      "2": {
-        "drivers": [
-          "Sainz",
-          "Lawson",
-          "Ocon",
-          "Lindblad",
-          "Hulkenberg"
-        ],
-        "team": "Cadillac",
-        "timestamp": "2026-02-18T12:41:21.743Z"
-      }
-    },
-    "Flygirl": {
-      "1": {
-        "drivers": [
-          "Bottas",
-          "Perez",
-          "Bortoleto",
-          "Hulkenberg",
-          "Bearman"
-        ],
-        "team": "Cadillac",
-        "timestamp": "2026-02-18T12:46:42.997Z"
-      }
-    }
   }
 }
