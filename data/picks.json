@@ -6,7 +6,7 @@
     "Flygirl",
     "Salvetus",
     "F17",
-    "PiÃÂÃÂa",
+    "Piňa",
     "Vzoom",
     "Martini Motors"
   ],
@@ -113,7 +113,7 @@
     },
     {
       "round": 21,
-      "name": "SÃÂÃÂ£o Paulo GP",
+      "name": "São Paulo GP",
       "date": "2026-11-08"
     },
     {
@@ -130,6 +130,21 @@
       "round": 24,
       "name": "Abu Dhabi GP",
       "date": "2026-12-06"
+    }
+  ],
+  "picks": {
+    "Salvetus": {
+      "1": {
+        "drivers": [
+          "Albon",
+          "Sainz",
+          "Lawson",
+          "Lindblad",
+          "Gasly"
+        ],
+        "team": "Haas",
+        "timestamp": "2026-02-19T16:48:12.787Z"
+      }
     }
   }
 }
