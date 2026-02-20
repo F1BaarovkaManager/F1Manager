@@ -6,7 +6,7 @@
     "Flygirl",
     "Salvetus",
     "F17",
-    "Piňa",
+    "PiÅa",
     "Vzoom",
     "Martini Motors"
   ],
@@ -113,7 +113,7 @@
     },
     {
       "round": 21,
-      "name": "São Paulo GP",
+      "name": "SÃ£o Paulo GP",
       "date": "2026-11-08"
     },
     {
@@ -144,6 +144,17 @@
         ],
         "team": "Haas",
         "timestamp": "2026-02-19T16:48:12.787Z"
+      },
+      "2": {
+        "drivers": [
+          "Albon",
+          "Sainz",
+          "Lawson",
+          "Lindblad",
+          "Ocon"
+        ],
+        "team": "Ferrari",
+        "timestamp": "2026-02-20T18:42:35.660Z"
       }
     }
   }
