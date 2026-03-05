@@ -888,6 +888,27 @@
             transform: none;
         }
 
+        /* Bar expand button - shows when player-bar is collapsed on mobile */
+        .bar-expand-btn {
+            display: none;
+            position: fixed;
+            top: 62px;
+            right: 10px;
+            z-index: 99;
+            background: #15151e;
+            color: #ccc;
+            border: 1px solid #555;
+            border-radius: 0 0 8px 8px;
+            padding: 4px 14px;
+            font-size: 0.75em;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            width: auto;
+            margin: 0;
+        }
+
         /* Usage badge */
         .usage-badge {
             display: inline-block;
@@ -1507,8 +1528,8 @@
         }
 
         .driver-stack-item {
-            width: 90px;
-            height: 100px;
+            width: 80px;
+            height: 140px;
             overflow: hidden;
             transform: translateX(-100px) rotate(12deg);
             opacity: 0;
@@ -1519,16 +1540,16 @@
         }
 
         .driver-stack-item.visible {
-            transform: translateX(-30px) rotate(8deg);
+            transform: translateX(-25px) rotate(8deg);
             opacity: 1;
         }
 
         .driver-stack-item img {
-            width: 160%;
-            height: 200%;
+            width: 140%;
+            height: 110%;
             object-fit: cover;
             object-position: top center;
-            margin-left: -20%;
+            margin-left: -15%;
         }
 
         /* === CAR - malé, random směr přes obrazovku === */
@@ -1558,17 +1579,17 @@
 
         .car-nose-peek img {
             height: 50px;
-            clip-path: inset(0 50% 0 0);
-            transform: scaleX(1);
+            clip-path: inset(0 0 0 50%);
+            transform: translateX(-50%);
         }
 
         @media (max-width: 767px) {
             .driver-stack-item {
-                width: 70px;
-                height: 80px;
+                width: 60px;
+                height: 110px;
             }
             .driver-stack-item.visible {
-                transform: translateX(-20px) rotate(8deg);
+                transform: translateX(-15px) rotate(8deg);
             }
             .popup-character.car-fly img {
                 height: 45px;
@@ -1600,7 +1621,10 @@
         </div>
         <span id="picks-status" class="picks-status">Vyber hráče a závod</span>
         <button class="settings-btn" id="settings-btn" title="Nastavení">&#9881;</button>
+        <button class="settings-btn" id="bar-collapse-btn" title="Schovat panel" style="display:none;">&#9650;</button>
     </div>
+    <!-- Tlačítko pro znovuzobrazení player-bar -->
+    <button id="bar-expand-btn" class="bar-expand-btn" style="display:none;">&#9660; Výběr</button>
 
     <div class="container">
         <div class="layout">
@@ -2546,7 +2570,6 @@
                         setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 500);
                     });
                     driverStack = [];
-                    if (carNoseEl) carNoseEl.classList.remove('visible');
                 }, 4000);
             }
 
@@ -2563,12 +2586,10 @@
 
                 const colors = getTeamColors(teamName);
 
-                // Také ukáž čumák auta nalevo pod jezdci
+                // Čumák auta - ukáže se PO projetí auta a zůstane viditelný
                 ensureStackContainer();
                 carNoseEl.querySelector('img').src = carUrl;
-                carNoseEl.classList.add('visible');
                 updateCarNosePosition();
-                setTimeout(() => { if (carNoseEl) carNoseEl.classList.remove('visible'); }, 2500);
 
                 // Random směr - 0=L→R, 1=R→L, 2=T→B, 3=B→T, 4-7=diagonály
                 const dir = Math.floor(Math.random() * 6);
@@ -2618,6 +2639,11 @@
                         requestAnimationFrame(animateCar);
                     } else {
                         if (popup.parentNode) popup.parentNode.removeChild(popup);
+                        // Po projetí auta ukáž čumák zleva - zůstane viditelný
+                        if (carNoseEl) {
+                            carNoseEl.classList.add('visible');
+                            updateCarNosePosition();
+                        }
                     }
                 }
                 requestAnimationFrame(animateCar);
@@ -2662,6 +2688,40 @@
 
                 checkMobile();
                 window.addEventListener('resize', checkMobile);
+            })();
+
+            // ===== MOBILE: Schovat/ukázat player-bar =====
+            (function() {
+                const collapseBtn = document.getElementById('bar-collapse-btn');
+                const expandBtn = document.getElementById('bar-expand-btn');
+                const playerBar = document.querySelector('.player-bar');
+                if (!collapseBtn || !expandBtn || !playerBar) return;
+
+                function checkMobileBar() {
+                    if (window.innerWidth <= 767) {
+                        collapseBtn.style.display = 'flex';
+                    } else {
+                        collapseBtn.style.display = 'none';
+                        expandBtn.style.display = 'none';
+                        playerBar.style.display = '';
+                    }
+                }
+
+                collapseBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    playerBar.style.display = 'none';
+                    expandBtn.style.display = 'block';
+                });
+
+                expandBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    playerBar.style.display = '';
+                    expandBtn.style.display = 'none';
+                });
+
+                checkMobileBar();
+                window.addEventListener('resize', checkMobileBar);
             })();
 
             // Přidáme třídu pro vybrané řádky
