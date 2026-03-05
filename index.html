@@ -81,40 +81,52 @@
             background-color: #f9f9f9;
         }
         
-        /* Logo týmu v tabulce - kulaté */
+        /* Logo týmu v tabulce - kulaté s team color */
         .team-logo {
             width: 40px;
             height: 40px;
-            object-fit: cover;
-            margin-right: 10px;
+            object-fit: contain;
+            margin-right: 12px;
             vertical-align: middle;
             border-radius: 50%;
-            border: 2px solid #e10600;
-            background: white;
-            padding: 2px;
+            padding: 5px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
-        
+
         .team-cell {
             display: flex;
             align-items: center;
         }
-        
+
+        /* Týmový řádek - barevný proužek vlevo */
+        #teamsTable tr[data-team],
+        #driversTable tr[data-driver] {
+            border-left: 4px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        #teamsTable tr[data-team]:hover,
+        #driversTable tr[data-driver]:hover {
+            background-color: rgba(0,0,0,0.03);
+            transform: scale(1.005);
+        }
+
         /* Logo týmu u jezdce v tabulce - malé kulaté */
         .driver-team-logo {
-            width: 25px;
-            height: 25px;
-            object-fit: cover;
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
             border-radius: 50%;
-            border: 1px solid #ddd;
-            background: white;
-            padding: 1px;
-            margin-right: 8px;
+            padding: 3px;
+            margin-right: 10px;
             vertical-align: middle;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
         }
-        
+
         .driver-cell {
             display: flex;
             align-items: center;
+            font-weight: 500;
         }
         
         /* Výběr oblast */
@@ -224,46 +236,46 @@
         }
         
         .selected-card {
-            border: 1px solid #eee;
-            border-radius: 8px;
+            border: none;
+            border-radius: 12px;
             overflow: hidden;
-            background-color: white;
             text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
             position: relative;
             height: 200px;
-            background-size: cover;
-            background-position: center;
+            background-size: contain;
+            background-position: center right;
             background-repeat: no-repeat;
         }
-        
+
         .selected-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
         }
-        
+
         .selected-card h4 {
             display: none;
         }
-        
+
         .selected-card .card-content {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7), transparent);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.4) 60%, transparent);
             color: white;
-            padding: 20px 10px 10px;
+            padding: 25px 12px 12px;
             z-index: 2;
         }
-        
+
         .selected-card p {
-            margin: 5px 0;
+            margin: 4px 0;
             padding: 0;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+            font-weight: 600;
         }
-        
+
         /* Skrýt původní fotky, používáme background-image */
         .card-photo, .car-photo {
             display: none;
@@ -344,27 +356,27 @@
             justify-items: center;
         }
         
-        /* IMPROVED PREVIEW CARDS - Better dimensions and readability */
+        /* IMPROVED PREVIEW CARDS - Team color backgrounds */
         .preview-card {
             position: relative;
             width: 280px;
-            height: 140px;
-            background-size: cover;
-            background-position: center;
+            height: 150px;
+            background-size: contain;
+            background-position: center right;
             background-repeat: no-repeat;
-            border-radius: 12px;
+            border-radius: 14px;
             overflow: hidden;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-            border: 2px solid #e10600;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            border: none;
             margin: 0 auto;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
-        
+
         .preview-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
         }
-        
+
         /* IMPROVED TEXT OVERLAY - Better contrast and readability */
         .preview-card-content {
             position: absolute;
@@ -376,7 +388,7 @@
             flex-direction: column;
             justify-content: flex-end;
             padding: 16px 14px 12px 14px;
-            background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.1) 65%);
+            background: linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0.1) 60%, transparent);
             color: #fff !important;
         }
         
@@ -1353,14 +1365,14 @@
         .points-total { font-weight: bold; font-size: 1.1em; color: #15151e; }
 
         .admin-trigger {
-            background: none !important;
+            background: #15151e !important;
             border: none !important;
-            color: #15151e !important;
+            color: #666 !important;
             box-shadow: none !important;
-            font-size: 0.7em !important;
-            padding: 2px 6px !important;
+            font-size: 0.75em !important;
+            padding: 6px 12px !important;
             margin: 0 !important;
-            opacity: 0.15;
+            opacity: 0.35;
             cursor: pointer;
             min-width: auto !important;
             width: auto !important;
@@ -1369,7 +1381,59 @@
         .admin-trigger:hover {
             opacity: 1;
             color: #e10600 !important;
+            background: #15151e !important;
             transform: none !important;
+        }
+
+        .s25-driver-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85em;
+        }
+
+        .s25-driver-table th {
+            background: #15151e;
+            color: white;
+            padding: 8px 6px;
+            text-align: center;
+            font-size: 0.8em;
+            position: sticky;
+            top: 0;
+        }
+
+        .s25-driver-table td {
+            padding: 5px 6px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .s25-driver-table tr:hover { background: #f0f0f0; }
+
+        .s25-driver-table td:first-child {
+            text-align: left;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .s25-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .s25-tab {
+            padding: 8px 16px !important;
+            font-size: 0.85em !important;
+            min-width: auto !important;
+            width: auto !important;
+        }
+
+        .s25-tab.active {
+            background: #e10600 !important;
+        }
+
+        .s25-tab:not(.active) {
+            background: #666 !important;
         }
 
         @media (max-width: 767px) {
@@ -1394,6 +1458,91 @@
 
             .admin-trigger {
                 font-size: 0.6em !important;
+            }
+        }
+        /* ===== POP-UP DRIVER / CAR ANIMATION ===== */
+        .popup-character {
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+            transition: none;
+        }
+
+        /* Jezdec peek - oříznutý na hlavu, vykukne ze strany */
+        .popup-character .driver-peek {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            overflow: hidden;
+            filter: drop-shadow(0 4px 25px rgba(0,0,0,0.6));
+            border: 4px solid var(--team-color, #e10600);
+        }
+
+        .popup-character .driver-peek img {
+            width: 100%;
+            height: 250%;
+            object-fit: cover;
+            object-position: top center;
+        }
+
+        /* Jezdec - vykukne zleva */
+        .popup-character.from-left {
+            left: -220px;
+            animation: peekFromLeft 1.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        /* Jezdec - vykukne zprava */
+        .popup-character.from-right {
+            right: -220px;
+            animation: peekFromRight 1.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes peekFromLeft {
+            0% { left: -220px; opacity: 0; transform: rotate(-15deg); }
+            20% { left: -60px; opacity: 1; transform: rotate(5deg); }
+            35% { left: -70px; transform: rotate(-2deg); }
+            65% { left: -70px; opacity: 1; transform: rotate(0deg); }
+            100% { left: -220px; opacity: 0; transform: rotate(-10deg); }
+        }
+
+        @keyframes peekFromRight {
+            0% { right: -220px; opacity: 0; transform: rotate(15deg); }
+            20% { right: -60px; opacity: 1; transform: rotate(-5deg); }
+            35% { right: -70px; transform: rotate(2deg); }
+            65% { right: -70px; opacity: 1; transform: rotate(0deg); }
+            100% { right: -220px; opacity: 0; transform: rotate(10deg); }
+        }
+
+        /* Auto - projede zleva doprava (pravá strana auta) */
+        .popup-character.car-drive {
+            left: -400px;
+            animation: carDriveThrough 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        .popup-character.car-drive img {
+            height: 180px;
+            max-height: 25vh;
+        }
+
+        @keyframes carDriveThrough {
+            0% { left: -400px; opacity: 0; transform: translateY(0); }
+            10% { opacity: 1; }
+            15% { transform: translateY(-3px); }
+            30% { transform: translateY(2px); }
+            45% { transform: translateY(-2px); }
+            60% { transform: translateY(1px); }
+            90% { opacity: 1; }
+            100% { left: 110vw; opacity: 0; transform: translateY(0); }
+        }
+
+        @media (max-width: 767px) {
+            .popup-character .driver-peek {
+                width: 130px;
+                height: 130px;
+            }
+            .popup-character.car-drive img {
+                height: 120px;
+                max-height: 18vh;
             }
         }
     </style>
@@ -1434,7 +1583,7 @@
                     <tr data-team="Red Bull Racing" data-price="6.0" data-flag="🇦🇹">
                         <td>
                             <div class="team-cell">
-                                <img src="Týmy loga/2025redbullracinglogowhitefr.avif" alt="Red Bull Racing" class="team-logo">
+                                <img src="2026 fotos/2026redbullracinglogowhite.avif" alt="Red Bull Racing" class="team-logo">
                                 <div>
                                     <span class="flag">🇦🇹</span> Red Bull Racing
                                 </div>
@@ -1446,7 +1595,7 @@
                     <tr data-team="McLaren" data-price="7.5" data-flag="🇬🇧">
                         <td>
                             <div class="team-cell">
-                                <img src="Týmy loga/2025mclarenlogowhitefr.avif" alt="McLaren" class="team-logo">
+                                <img src="2026 fotos/2026mclarenlogowhite.avif" alt="McLaren" class="team-logo">
                                 <div>
                                     <span class="flag">🇬🇧</span> McLaren
                                 </div>
@@ -1458,7 +1607,7 @@
                     <tr data-team="Ferrari" data-price="6.0" data-flag="🇮🇹">
                         <td>
                             <div class="team-cell">
-                                <img src="Týmy loga/2025ferrarilogowhitefr.avif" alt="Ferrari" class="team-logo">
+                                <img src="2026 fotos/2026ferrarilogowhite.avif" alt="Ferrari" class="team-logo">
                                 <div>
                                     <span class="flag">🇮🇹</span> Ferrari
                                 </div>
@@ -1470,7 +1619,7 @@
                     <tr data-team="Mercedes" data-price="6.5" data-flag="🇩🇪">
                         <td>
                             <div class="team-cell">
-                                <img src="Týmy loga/2025mercedeslogowhitefr.avif" alt="Mercedes" class="team-logo">
+                                <img src="2026 fotos/2026mercedeslogowhite.avif" alt="Mercedes" class="team-logo">
                                 <div>
                                     <span class="flag">🇩🇪</span> Mercedes
                                 </div>
@@ -1482,7 +1631,7 @@
                     <tr data-team="Aston Martin" data-price="3.5" data-flag="🇬🇧">
                         <td>
                             <div class="team-cell">
-                                <img src="Týmy loga/2025astonmartinlogowhitefr.avif" alt="Aston Martin" class="team-logo">
+                                <img src="2026 fotos/2026astonmartinlogowhite.avif" alt="Aston Martin" class="team-logo">
                                 <div>
                                     <span class="flag">🇬🇧</span> Aston Martin
                                 </div>
@@ -1494,7 +1643,7 @@
                     <tr data-team="Alpine" data-price="2.5" data-flag="🇫🇷">
                         <td>
                             <div class="team-cell">
-                                <img src="Týmy loga/2025alpinelogowhitefr.avif" alt="Alpine" class="team-logo">
+                                <img src="2026 fotos/2026alpinelogowhite.avif" alt="Alpine" class="team-logo">
                                 <div>
                                     <span class="flag">🇫🇷</span> Alpine
                                 </div>
@@ -1506,7 +1655,7 @@
                     <tr data-team="Racing Bulls" data-price="3.5" data-flag="🇮🇹">
                         <td>
                             <div class="team-cell">
-                                <img src="Týmy loga/2025racingbullslogowhitefr.avif" alt="Racing Bulls" class="team-logo">
+                                <img src="2026 fotos/2026racingbullslogowhite.avif" alt="Racing Bulls" class="team-logo">
                                 <div>
                                     <span class="flag">🇮🇹</span> Racing Bulls
                                 </div>
@@ -1518,7 +1667,7 @@
                     <tr data-team="Williams" data-price="4.0" data-flag="🇬🇧">
                         <td>
                             <div class="team-cell">
-                                <img src="Týmy loga/2025williamslogowhitefr.avif" alt="Williams" class="team-logo">
+                                <img src="2026 fotos/2026williamslogowhite.avif" alt="Williams" class="team-logo">
                                 <div>
                                     <span class="flag">🇬🇧</span> Williams
                                 </div>
@@ -1530,7 +1679,7 @@
                     <tr data-team="Haas" data-price="4.5" data-flag="🇺🇸">
                         <td>
                             <div class="team-cell">
-                                <img src="Týmy loga/2025haaslogowhitefr.avif" alt="Haas" class="team-logo">
+                                <img src="2026 fotos/2026haasf1teamlogowhite.avif" alt="Haas" class="team-logo">
                                 <div>
                                     <span class="flag">🇺🇸</span> Haas
                                 </div>
@@ -1542,7 +1691,7 @@
                     <tr data-team="Audi" data-price="2.0" data-flag="🇩🇪">
                         <td>
                             <div class="team-cell">
-                                <img src="Týmy loga/2025kicksauberlogowhitefr.avif" alt="Audi" class="team-logo">
+                                <img src="2026 fotos/2026audilogowhite.avif" alt="Audi" class="team-logo">
                                 <div>
                                     <span class="flag">🇩🇪</span> Audi
                                 </div>
@@ -1554,7 +1703,7 @@
                     <tr data-team="Cadillac" data-price="3.5" data-flag="🇺🇸">
                         <td>
                             <div class="team-cell">
-                                <img src="Týmy loga/2026cadillaclogowhitefr.avif" alt="Cadillac" class="team-logo">
+                                <img src="2026 fotos/2026cadillaclogowhite.avif" alt="Cadillac" class="team-logo">
                                 <div>
                                     <span class="flag">🇺🇸</span> Cadillac
                                 </div>
@@ -1575,7 +1724,7 @@
                     <tr data-driver="Verstappen" data-price="7.5" data-flag="🇳🇱">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2025redbullracinglogowhitefr.avif" alt="Red Bull Racing" class="driver-team-logo">
+                                <img src="2026 fotos/2026redbullracinglogowhite.avif" alt="Red Bull Racing" class="driver-team-logo">
                                 Verstappen
                             </div>
                         </td>
@@ -1585,7 +1734,7 @@
                     <tr data-driver="Hadjar" data-price="5.0" data-flag="🇫🇷">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2025redbullracinglogowhitefr.avif" alt="Red Bull Racing" class="driver-team-logo">
+                                <img src="2026 fotos/2026redbullracinglogowhite.avif" alt="Red Bull Racing" class="driver-team-logo">
                                 Hadjar
                             </div>
                         </td>
@@ -1595,7 +1744,7 @@
                     <tr data-driver="Norris" data-price="8.0" data-flag="🇬🇧">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2025mclarenlogowhitefr.avif" alt="McLaren" class="driver-team-logo">
+                                <img src="2026 fotos/2026mclarenlogowhite.avif" alt="McLaren" class="driver-team-logo">
                                 Norris
                             </div>
                         </td>
@@ -1605,7 +1754,7 @@
                     <tr data-driver="Piastri" data-price="7.0" data-flag="🇦🇺">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2025mclarenlogowhitefr.avif" alt="McLaren" class="driver-team-logo">
+                                <img src="2026 fotos/2026mclarenlogowhite.avif" alt="McLaren" class="driver-team-logo">
                                 Piastri
                             </div>
                         </td>
@@ -1615,7 +1764,7 @@
                     <tr data-driver="Leclerc" data-price="7.0" data-flag="🇲🇨">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2025ferrarilogowhitefr.avif" alt="Ferrari" class="driver-team-logo">
+                                <img src="2026 fotos/2026ferrarilogowhite.avif" alt="Ferrari" class="driver-team-logo">
                                 Leclerc
                             </div>
                         </td>
@@ -1625,7 +1774,7 @@
                     <tr data-driver="Hamilton" data-price="5.5" data-flag="🇬🇧">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2025ferrarilogowhitefr.avif" alt="Ferrari" class="driver-team-logo">
+                                <img src="2026 fotos/2026ferrarilogowhite.avif" alt="Ferrari" class="driver-team-logo">
                                 Hamilton
                             </div>
                         </td>
@@ -1635,7 +1784,7 @@
                     <tr data-driver="Russel" data-price="7.0" data-flag="🇬🇧">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2025mercedeslogowhitefr.avif" alt="Mercedes" class="driver-team-logo">
+                                <img src="2026 fotos/2026mercedeslogowhite.avif" alt="Mercedes" class="driver-team-logo">
                                 Russel
                             </div>
                         </td>
@@ -1645,7 +1794,7 @@
                     <tr data-driver="Antonelli" data-price="6.0" data-flag="🇮🇹">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2025mercedeslogowhitefr.avif" alt="Mercedes" class="driver-team-logo">
+                                <img src="2026 fotos/2026mercedeslogowhite.avif" alt="Mercedes" class="driver-team-logo">
                                 Antonelli
                             </div>
                         </td>
@@ -1655,7 +1804,7 @@
                     <tr data-driver="Alonso" data-price="3.5" data-flag="🇪🇸">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2025astonmartinlogowhitefr.avif" alt="Aston Martin" class="driver-team-logo">
+                                <img src="2026 fotos/2026astonmartinlogowhite.avif" alt="Aston Martin" class="driver-team-logo">
                                 Alonso
                             </div>
                         </td>
@@ -1665,7 +1814,7 @@
                     <tr data-driver="Stroll" data-price="2.0" data-flag="🇨🇦">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2025astonmartinlogowhitefr.avif" alt="Aston Martin" class="driver-team-logo">
+                                <img src="2026 fotos/2026astonmartinlogowhite.avif" alt="Aston Martin" class="driver-team-logo">
                                 Stroll
                             </div>
                         </td>
@@ -1675,7 +1824,7 @@
                     <tr data-driver="Gasly" data-price="3.0" data-flag="🇫🇷">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2025alpinelogowhitefr.avif" alt="Alpine" class="driver-team-logo">
+                                <img src="2026 fotos/2026alpinelogowhite.avif" alt="Alpine" class="driver-team-logo">
                                 Gasly
                             </div>
                         </td>
@@ -1685,7 +1834,7 @@
                     <tr data-driver="Colapinto" data-price="2.5" data-flag="🇦🇷">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2025alpinelogowhitefr.avif" alt="Alpine" class="driver-team-logo">
+                                <img src="2026 fotos/2026alpinelogowhite.avif" alt="Alpine" class="driver-team-logo">
                                 Colapinto
                             </div>
                         </td>
@@ -1695,7 +1844,7 @@
                     <tr data-driver="Albon" data-price="4.0" data-flag="🇹🇭">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2025williamslogowhitefr.avif" alt="Williams" class="driver-team-logo">
+                                <img src="2026 fotos/2026williamslogowhite.avif" alt="Williams" class="driver-team-logo">
                                 Albon
                             </div>
                         </td>
@@ -1705,7 +1854,7 @@
                     <tr data-driver="Sainz" data-price="4.5" data-flag="🇪🇸">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2025williamslogowhitefr.avif" alt="Williams" class="driver-team-logo">
+                                <img src="2026 fotos/2026williamslogowhite.avif" alt="Williams" class="driver-team-logo">
                                 Sainz
                             </div>
                         </td>
@@ -1715,7 +1864,7 @@
                     <tr data-driver="Lawson" data-price="3.5" data-flag="🇳🇿">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2025racingbullslogowhitefr.avif" alt="Racing Bulls" class="driver-team-logo">
+                                <img src="2026 fotos/2026racingbullslogowhite.avif" alt="Racing Bulls" class="driver-team-logo">
                                 Lawson
                             </div>
                         </td>
@@ -1725,7 +1874,7 @@
                     <tr data-driver="Lindblad" data-price="3.0" data-flag="🇬🇧">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2025racingbullslogowhitefr.avif" alt="Racing Bulls" class="driver-team-logo">
+                                <img src="2026 fotos/2026racingbullslogowhite.avif" alt="Racing Bulls" class="driver-team-logo">
                                 Lindblad
                             </div>
                         </td>
@@ -1735,7 +1884,7 @@
                     <tr data-driver="Ocon" data-price="4.0" data-flag="🇫🇷">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2025haaslogowhitefr.avif" alt="Haas" class="driver-team-logo">
+                                <img src="2026 fotos/2026haasf1teamlogowhite.avif" alt="Haas" class="driver-team-logo">
                                 Ocon
                             </div>
                         </td>
@@ -1745,7 +1894,7 @@
                     <tr data-driver="Bearman" data-price="4.5" data-flag="🇬🇧">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2025haaslogowhitefr.avif" alt="Haas" class="driver-team-logo">
+                                <img src="2026 fotos/2026haasf1teamlogowhite.avif" alt="Haas" class="driver-team-logo">
                                 Bearman
                             </div>
                         </td>
@@ -1755,7 +1904,7 @@
                     <tr data-driver="Hulkenberg" data-price="2.5" data-flag="🇩🇪">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2025kicksauberlogowhitefr.avif" alt="Audi" class="driver-team-logo">
+                                <img src="2026 fotos/2026audilogowhite.avif" alt="Audi" class="driver-team-logo">
                                 Hulkenberg
                             </div>
                         </td>
@@ -1765,7 +1914,7 @@
                     <tr data-driver="Bortoleto" data-price="2.0" data-flag="🇧🇷">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2025kicksauberlogowhitefr.avif" alt="Audi" class="driver-team-logo">
+                                <img src="2026 fotos/2026audilogowhite.avif" alt="Audi" class="driver-team-logo">
                                 Bortoleto
                             </div>
                         </td>
@@ -1775,7 +1924,7 @@
                     <tr data-driver="Perez" data-price="4.0" data-flag="🇲🇽">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2026cadillaclogowhitefr.avif" alt="Cadillac" class="driver-team-logo">
+                                <img src="2026 fotos/2026cadillaclogowhite.avif" alt="Cadillac" class="driver-team-logo">
                                 Perez
                             </div>
                         </td>
@@ -1785,7 +1934,7 @@
                     <tr data-driver="Bottas" data-price="4.0" data-flag="🇫🇮">
                         <td>
                             <div class="driver-cell">
-                                <img src="Týmy loga/2026cadillaclogowhitefr.avif" alt="Cadillac" class="driver-team-logo">
+                                <img src="2026 fotos/2026cadillaclogowhite.avif" alt="Cadillac" class="driver-team-logo">
                                 Bottas
                             </div>
                         </td>
@@ -1826,6 +1975,7 @@
                     <button id="submit-pick-button" class="btn-submit-pick" disabled>Odeslat sestavu</button>
                     <button id="overview-button">Přehled picků</button>
                     <button id="results-button">Výsledky & Body</button>
+                    <button id="season2025-button" style="background:#15151e !important;">Sezóna 2025</button>
                     <button class="admin-trigger" id="admin-trigger" title="Admin">&#9998;</button>
                 </div>
             </div>
@@ -1970,6 +2120,28 @@
         </div>
     </div>
 
+    <!-- 2025 Season Modal -->
+    <div id="season2025-overlay" class="results-overlay">
+        <div class="results-box">
+            <div class="results-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <h3>Sezóna 2025 - Historický přehled</h3>
+                <div>
+                    <button id="s25-view-drivers" style="padding:6px 14px; font-size:0.85em;">Jezdci</button>
+                    <button id="s25-view-teams" style="padding:6px 14px; font-size:0.85em; background:#666;">Týmy</button>
+                </div>
+            </div>
+            <div class="results-body">
+                <div id="s25-loading" style="text-align:center; padding:40px; color:#888;">
+                    Načítám data z API...
+                </div>
+                <div id="s25-content"></div>
+            </div>
+            <div style="padding:15px; text-align:center; border-top:1px solid #eee;">
+                <button id="s25-close">Zavřít</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Admin Modal - Race Results Entry -->
     <div id="admin-overlay" class="admin-overlay">
         <div class="admin-box">
@@ -2068,57 +2240,78 @@
         
         // Databáze fotek jezdců a týmů - vaše GitHub struktura
         const driverPhotos = {
-            'Verstappen': 'Jezdci/2025redbullracingmaxver01right.avif',
-            'Hadjar': 'Jezdci/2025racingbullsisahad01right.avif',
-            'Norris': 'Jezdci/2025mclarenlannor01right.avif',
-            'Piastri': 'Jezdci/2025mclarenoscpia01right.avif',
-            'Leclerc': 'Jezdci/2025ferrarichalec01right.avif',
-            'Hamilton': 'Jezdci/2025ferrarilewham01right.avif',
-            'Russel': 'Jezdci/2025mercedesgeorus01right.avif',
-            'Antonelli': 'Jezdci/2025mercedesandant01right.avif',
-            'Alonso': 'Jezdci/2025astonmartinferalo01right.avif',
-            'Stroll': 'Jezdci/2025astonmartinlanstr01right.avif',
-            'Gasly': 'Jezdci/2025alpinepiegas01right.avif',
-            'Colapinto': 'Jezdci/2025alpinefracol01right.avif',
-            'Albon': 'Jezdci/2025williamsalealb01right.avif',
-            'Sainz': 'Jezdci/2025williamscarsai01right.avif',
-            'Lawson': 'Jezdci/2025racingbullslialaw01right.avif',
-            'Lindblad': 'Jezdci/2026racingbullsarvlin01right.avif',
-            'Ocon': 'Jezdci/2025haasestoco01right.avif',
-            'Bearman': 'Jezdci/2025haasolibea01right.avif',
-            'Hulkenberg': 'Jezdci/2025kicksaubernichul01right.avif',
-            'Bortoleto': 'Jezdci/2025kicksaubergabbor01right.avif',
-            'Perez': 'Jezdci/2026cadillacserper01right.avif',
-            'Bottas': 'Jezdci/2026cadillacvalbot01right.avif'
+            'Verstappen': '2026 fotos/2026redbullracingmaxver01right.avif',
+            'Hadjar': '2026 fotos/2026redbullracingisahad01right.avif',
+            'Norris': '2026 fotos/2026mclarenlannor01right.avif',
+            'Piastri': '2026 fotos/2026mclarenoscpia01right.avif',
+            'Leclerc': '2026 fotos/2026ferrarichalec01right.avif',
+            'Hamilton': '2026 fotos/2026ferrarilewham01right.avif',
+            'Russel': '2026 fotos/2026mercedesgeorus01right.avif',
+            'Antonelli': '2026 fotos/2026mercedesandant01right.avif',
+            'Alonso': '2026 fotos/2026astonmartinferalo01right.avif',
+            'Stroll': '2026 fotos/2026astonmartinlanstr01right.avif',
+            'Gasly': '2026 fotos/2026alpinepiegas01right.avif',
+            'Colapinto': '2026 fotos/2026alpinefracol01right.avif',
+            'Albon': '2026 fotos/2026williamsalealb01right.avif',
+            'Sainz': '2026 fotos/2026williamscarsai01right.avif',
+            'Lawson': '2026 fotos/2026racingbullslialaw01right.avif',
+            'Lindblad': '2026 fotos/2026racingbullsarvlin01right.avif',
+            'Ocon': '2026 fotos/2026haasf1teamestoco01right.avif',
+            'Bearman': '2026 fotos/2026haasf1teamolibea01right.avif',
+            'Hulkenberg': '2026 fotos/2026audinichul01right.avif',
+            'Bortoleto': '2026 fotos/2026audigabbor01right.avif',
+            'Perez': '2026 fotos/2026cadillacserper01right.avif',
+            'Bottas': '2026 fotos/2026cadillacvalbot01right.avif'
         };
         
         const teamLogos = {
-            'Red Bull Racing': 'Týmy loga/2025redbullracinglogowhitefr.avif',
-            'McLaren': 'Týmy loga/2025mclarenlogowhitefr.avif',
-            'Ferrari': 'Týmy loga/2025ferrarilogowhitefr.avif',
-            'Mercedes': 'Týmy loga/2025mercedeslogowhitefr.avif',
-            'Aston Martin': 'Týmy loga/2025astonmartinlogowhitefr.avif',
-            'Alpine': 'Týmy loga/2025alpinelogowhitefr.avif',
-            'Racing Bulls': 'Týmy loga/2025racingbullslogowhitefr.avif',
-            'Williams': 'Týmy loga/2025williamslogowhitefr.avif',
-            'Haas': 'Týmy loga/2025haaslogowhitefr.avif',
-            'Audi': 'Týmy loga/2025kicksauberlogowhitefr.avif',
-            'Cadillac': 'Týmy loga/2026cadillaclogowhitefr.avif'
+            'Red Bull Racing': '2026 fotos/2026redbullracinglogowhite.avif',
+            'McLaren': '2026 fotos/2026mclarenlogowhite.avif',
+            'Ferrari': '2026 fotos/2026ferrarilogowhite.avif',
+            'Mercedes': '2026 fotos/2026mercedeslogowhite.avif',
+            'Aston Martin': '2026 fotos/2026astonmartinlogowhite.avif',
+            'Alpine': '2026 fotos/2026alpinelogowhite.avif',
+            'Racing Bulls': '2026 fotos/2026racingbullslogowhite.avif',
+            'Williams': '2026 fotos/2026williamslogowhite.avif',
+            'Haas': '2026 fotos/2026haasf1teamlogowhite.avif',
+            'Audi': '2026 fotos/2026audilogowhite.avif',
+            'Cadillac': '2026 fotos/2026cadillaclogowhite.avif'
         };
         
         const teamCars = {
-            'Red Bull Racing': 'Týmy/2025redbullracingcarright.avif',
-            'McLaren': 'Týmy/2025mclarencarright.avif',
-            'Ferrari': 'Týmy/2025ferraricarright.avif',
-            'Mercedes': 'Týmy/2025mercedescarright.avif',
-            'Aston Martin': 'Týmy/2025astonmartincarright.avif',
-            'Alpine': 'Týmy/2025alpinecarright.avif',
-            'Racing Bulls': 'Týmy/2025racingbullscarright.avif',
-            'Williams': 'Týmy/2025williamscarright.avif',
-            'Haas': 'Týmy/2025haascarright.avif',
-            'Audi': 'Týmy/2025kicksaubercarright.avif',
-            'Cadillac': 'Týmy/2026cadillaccarright.avif'
+            'Red Bull Racing': '2026 fotos/2026redbullracingcarright.avif',
+            'McLaren': '2026 fotos/2026mclarencarright.avif',
+            'Ferrari': '2026 fotos/2026ferraricarright.avif',
+            'Mercedes': '2026 fotos/2026mercedescarright.avif',
+            'Aston Martin': '2026 fotos/2026astonmartincarright.avif',
+            'Alpine': '2026 fotos/2026alpinecarright.avif',
+            'Racing Bulls': '2026 fotos/2026racingbullscarright.avif',
+            'Williams': '2026 fotos/2026williamscarright.avif',
+            'Haas': '2026 fotos/2026haasf1teamcarright.avif',
+            'Audi': '2026 fotos/2026audicarright.avif',
+            'Cadillac': '2026 fotos/2026cadillaccarright.avif'
         };
+
+        // Týmové barvy - primární a sekundární
+        const teamColors = {
+            'Red Bull Racing': { primary: '#3671C6', secondary: '#1B2A4A', accent: '#FFD700' },
+            'McLaren': { primary: '#FF8000', secondary: '#2C2C2C', accent: '#FFD700' },
+            'Ferrari': { primary: '#E8002D', secondary: '#1E1E1E', accent: '#FFF200' },
+            'Mercedes': { primary: '#27F4D2', secondary: '#0A1628', accent: '#FFFFFF' },
+            'Aston Martin': { primary: '#229971', secondary: '#0A2E1F', accent: '#CEDC00' },
+            'Alpine': { primary: '#0093CC', secondary: '#0A1628', accent: '#FF69B4' },
+            'Racing Bulls': { primary: '#6692FF', secondary: '#1B2D5B', accent: '#FF0000' },
+            'Williams': { primary: '#64C4FF', secondary: '#0A1628', accent: '#FFFFFF' },
+            'Haas': { primary: '#B6BABD', secondary: '#1E1E1E', accent: '#E10600' },
+            'Audi': { primary: '#00A651', secondary: '#0A0A0A', accent: '#FFFFFF' },
+            'Cadillac': { primary: '#1E3A5F', secondary: '#0D1B2A', accent: '#C4A747' }
+        };
+
+        // Získání barvy týmu pro jezdce
+        function getTeamColors(driverOrTeamName) {
+            const teamName = driverTeams[driverOrTeamName] || driverOrTeamName;
+            return teamColors[teamName] || { primary: '#e10600', secondary: '#15151e', accent: '#FFFFFF' };
+        }
         
         // Mapování jezdců na týmy pro zobrazení log
         const driverTeams = {
@@ -2146,29 +2339,31 @@
             'Bottas': 'Cadillac'
         };
         
-        // Funkce pro vytvoření karty s fotkou na pozadí
+        // Funkce pro vytvoření karty s fotkou na pozadí + team color
         function createDriverCard(driver, index) {
             const photoUrl = driverPhotos[driver.name];
+            const colors = getTeamColors(driver.name);
             return `
-                <div class="selected-card" style="background-image: url('${photoUrl}');">
+                <div class="selected-card" style="background: linear-gradient(135deg, ${colors.secondary} 0%, ${colors.primary}33 50%, ${colors.secondary} 100%) no-repeat, url('${photoUrl}') no-repeat top center / cover;">
                     <h4>Jezdec ${index + 1}</h4>
-                    <div class="card-content">
+                    <div class="card-content" style="background: linear-gradient(to top, ${colors.secondary}ee, ${colors.primary}55 60%, transparent);">
                         <p><span class="flag">${driver.flag}</span> ${driver.name}</p>
-                        <p><span class="price-tag">${Number(driver.price).toFixed(1)} mil.</span></p>
+                        <p><span class="price-tag" style="color: ${colors.accent};">${Number(driver.price).toFixed(1)} mil.</span></p>
                     </div>
                 </div>
             `;
         }
-        
-        // Funkce pro vytvoření karty týmu s autem na pozadí
+
+        // Funkce pro vytvoření karty týmu s autem na pozadí + team color
         function createTeamCard(team) {
             const carUrl = teamCars[team.name];
+            const colors = getTeamColors(team.name);
             return `
-                <div class="selected-card" style="background-image: url('${carUrl}');">
+                <div class="selected-card" style="background: linear-gradient(135deg, ${colors.secondary} 0%, ${colors.primary}33 50%, ${colors.secondary} 100%) no-repeat, url('${carUrl}') no-repeat center right / contain;">
                     <h4>Tým</h4>
-                    <div class="card-content">
+                    <div class="card-content" style="background: linear-gradient(to top, ${colors.secondary}ee, ${colors.primary}55 60%, transparent);">
                         <p><span class="flag">${team.flag}</span> ${team.name}</p>
-                        <p><span class="price-tag">${Number(team.price).toFixed(1)} mil.</span></p>
+                        <p><span class="price-tag" style="color: ${colors.accent};">${Number(team.price).toFixed(1)} mil.</span></p>
                     </div>
                 </div>
             `;
@@ -2220,6 +2415,104 @@
                 });
             });
             
+            // Aplikovat týmové barvy na řádky tabulky a loga
+            function applyTeamColors() {
+                // Týmy tabulka - barevný proužek + logo pozadí
+                document.querySelectorAll('#teamsTable tr[data-team]').forEach(row => {
+                    const teamName = row.getAttribute('data-team');
+                    const colors = getTeamColors(teamName);
+                    row.style.borderLeft = `4px solid ${colors.primary}`;
+                    const logo = row.querySelector('.team-logo');
+                    if (logo) {
+                        logo.style.background = colors.primary;
+                        logo.style.border = `2px solid ${colors.primary}`;
+                    }
+                });
+
+                // Jezdci tabulka - barevný proužek + logo pozadí
+                document.querySelectorAll('#driversTable tr[data-driver]').forEach(row => {
+                    const driverName = row.getAttribute('data-driver');
+                    const colors = getTeamColors(driverName);
+                    row.style.borderLeft = `4px solid ${colors.primary}`;
+                    const logo = row.querySelector('.driver-team-logo');
+                    if (logo) {
+                        logo.style.background = colors.primary;
+                        logo.style.border = `2px solid ${colors.primary}`;
+                    }
+                });
+            }
+            applyTeamColors();
+
+            // ===== POP-UP ANIMACE JEZDCŮ A AUT =====
+            let popupCooldown = false;
+
+            function spawnDriverPopup(driverName) {
+                if (popupCooldown) return;
+                const photoUrl = driverPhotos[driverName];
+                if (!photoUrl) return;
+
+                popupCooldown = true;
+                setTimeout(() => { popupCooldown = false; }, 1800);
+
+                const side = Math.random() < 0.5 ? 'left' : 'right';
+                const verticalPos = 15 + Math.random() * 50; // 15-65% od vrchu
+                const colors = getTeamColors(driverName);
+
+                const popup = document.createElement('div');
+                popup.className = `popup-character from-${side}`;
+                popup.style.top = verticalPos + '%';
+                popup.innerHTML = `
+                    <div class="driver-peek" style="--team-color: ${colors.primary}; border-color: ${colors.primary};">
+                        <img src="${photoUrl}" alt="${driverName}">
+                    </div>
+                `;
+
+                document.body.appendChild(popup);
+
+                // Odstraň po animaci
+                setTimeout(() => {
+                    if (popup.parentNode) popup.parentNode.removeChild(popup);
+                }, 1700);
+            }
+
+            function spawnCarPopup(teamName) {
+                if (popupCooldown) return;
+                const carUrl = teamCars[teamName];
+                if (!carUrl) return;
+
+                popupCooldown = true;
+                setTimeout(() => { popupCooldown = false; }, 2000);
+
+                const verticalPos = 30 + Math.random() * 30; // 30-60% od vrchu
+
+                const popup = document.createElement('div');
+                popup.className = 'popup-character car-drive';
+                popup.style.top = verticalPos + '%';
+                popup.innerHTML = `<img src="${carUrl}" alt="${teamName}">`;
+
+                document.body.appendChild(popup);
+
+                // Odstraň po animaci
+                setTimeout(() => {
+                    if (popup.parentNode) popup.parentNode.removeChild(popup);
+                }, 1900);
+            }
+
+            // Napojení na kliknutí v tabulkách
+            document.querySelectorAll('#driversTable tr[data-driver]').forEach(row => {
+                row.addEventListener('click', function() {
+                    const driverName = this.getAttribute('data-driver');
+                    spawnDriverPopup(driverName);
+                });
+            });
+
+            document.querySelectorAll('#teamsTable tr[data-team]').forEach(row => {
+                row.addEventListener('click', function() {
+                    const teamName = this.getAttribute('data-team');
+                    spawnCarPopup(teamName);
+                });
+            });
+
             // Přidáme třídu pro vybrané řádky
             function updateSelectedRows() {
                 // Reset všech vybraných řádků
@@ -2435,27 +2728,29 @@
                 
                 selectedDrivers.forEach(driver => {
                     const photoUrl = driverPhotos[driver.name];
+                    const colors = getTeamColors(driver.name);
                     const cardHTML = `
-                        <div class="preview-card" style="background-image: url('${photoUrl}');">
-                            <div class="preview-card-content">
+                        <div class="preview-card" style="background: linear-gradient(135deg, ${colors.secondary} 0%, ${colors.primary}44 50%, ${colors.secondary} 100%) no-repeat, url('${photoUrl}') no-repeat top center / cover; border-left: 4px solid ${colors.primary};">
+                            <div class="preview-card-content" style="background: linear-gradient(to top, ${colors.secondary}dd, ${colors.primary}33 60%, transparent);">
                                 <div class="driver-name">${driver.name}</div>
-                                <div class="price-tag">${Number(driver.price).toFixed(1)} mil.</div>
+                                <div class="price-tag" style="color: ${colors.accent} !important;">${Number(driver.price).toFixed(1)} mil.</div>
                             </div>
                         </div>
                     `;
                     previewDriversElement.innerHTML += cardHTML;
                 });
-                
-                // VYLEPŠENÉ KARTY TÝMŮ - širší, nižší, lepší čitelnost
+
+                // VYLEPŠENÉ KARTY TÝMŮ - s team colors
                 const previewTeamElement = document.getElementById('preview-team');
                 previewTeamElement.innerHTML = '';
-                
+
                 const carUrl = teamCars[selectedTeam.name];
+                const tColors = getTeamColors(selectedTeam.name);
                 const teamCardHTML = `
-                    <div class="preview-card" style="background-image: url('${carUrl}');">
-                        <div class="preview-card-content">
+                    <div class="preview-card" style="background: linear-gradient(135deg, ${tColors.secondary} 0%, ${tColors.primary}44 50%, ${tColors.secondary} 100%) no-repeat, url('${carUrl}') no-repeat center right / contain; border-left: 4px solid ${tColors.primary};">
+                        <div class="preview-card-content" style="background: linear-gradient(to top, ${tColors.secondary}dd, ${tColors.primary}33 60%, transparent);">
                             <div class="driver-name">${selectedTeam.name}</div>
-                            <div class="price-tag">${Number(selectedTeam.price).toFixed(1)} mil.</div>
+                            <div class="price-tag" style="color: ${tColors.accent} !important;">${Number(selectedTeam.price).toFixed(1)} mil.</div>
                         </div>
                     </div>
                 `;
@@ -3499,6 +3794,245 @@ function renderResults(round) {
     content.innerHTML = html;
 }
 
+// --- 2025 Season Historical View ---
+
+const JOLPICA_BASE = 'https://api.jolpi.ca/ergast/f1/2025';
+let season2025Data = null;
+
+async function fetchSeason2025() {
+    if (season2025Data) return season2025Data;
+
+    const loading = document.getElementById('s25-loading');
+    loading.style.display = 'block';
+    loading.textContent = 'Načítám data z API...';
+
+    try {
+        // Fetch all race results + qualifying in parallel
+        const [racesResp, resultsResp, qualiResp] = await Promise.all([
+            fetch(`${JOLPICA_BASE}.json`),
+            fetch(`${JOLPICA_BASE}/results.json?limit=600`),
+            fetch(`${JOLPICA_BASE}/qualifying.json?limit=600`)
+        ]);
+
+        const racesJson = await racesResp.json();
+        const resultsJson = await resultsResp.json();
+        const qualiJson = await qualiResp.json();
+
+        const races = racesJson.MRData.RaceTable.Races || [];
+        const allResults = resultsJson.MRData.RaceTable.Races || [];
+        const allQuali = qualiJson.MRData.QualifyingTable.Races || [];
+
+        // Build driver stats
+        const driverStats = {};
+        const teamStats = {};
+
+        allResults.forEach(race => {
+            const round = race.round;
+            const qualiRace = allQuali.find(q => q.round === round);
+
+            (race.Results || []).forEach(result => {
+                const driverName = result.Driver.familyName;
+                const driverId = result.Driver.driverId;
+                const team = result.Constructor.name;
+                const racePos = result.positionText === 'R' || result.status !== 'Finished' && !result.status.startsWith('+') ? result.status : parseInt(result.position);
+                const grid = parseInt(result.grid) || 0;
+                const fastestLapRank = result.FastestLap ? parseInt(result.FastestLap.rank) : null;
+                const hasFastestLap = fastestLapRank === 1;
+
+                if (!driverStats[driverName]) {
+                    driverStats[driverName] = {
+                        driverId, team, races: [], wins: 0, podiums: 0, poles: 0,
+                        fastestLaps: 0, dnfs: 0, totalPoints: 0, bestFinish: 99
+                    };
+                }
+
+                const ds = driverStats[driverName];
+
+                // Qualifying position
+                let qualiPos = grid;
+                if (qualiRace) {
+                    const qr = (qualiRace.QualifyingResults || []).find(q => q.Driver.driverId === driverId);
+                    if (qr) qualiPos = parseInt(qr.position);
+                }
+
+                const isFinished = typeof racePos === 'number';
+                const posChange = isFinished ? (qualiPos - racePos) : 0;
+                const finishPos = isFinished ? racePos : racePos; // status string for DNF etc
+
+                ds.races.push({
+                    round, raceName: race.raceName,
+                    qualiPos, racePos: finishPos, posChange,
+                    fastestLap: hasFastestLap, pole: qualiPos === 1,
+                    points: parseInt(result.points) || 0
+                });
+
+                if (isFinished) {
+                    if (racePos === 1) ds.wins++;
+                    if (racePos <= 3) ds.podiums++;
+                    if (racePos < ds.bestFinish) ds.bestFinish = racePos;
+                } else {
+                    ds.dnfs++;
+                }
+                if (qualiPos === 1) ds.poles++;
+                if (hasFastestLap) ds.fastestLaps++;
+                ds.totalPoints += parseInt(result.points) || 0;
+
+                // Team stats
+                if (!teamStats[team]) {
+                    teamStats[team] = { drivers: new Set(), totalPoints: 0, wins: 0, podiums: 0 };
+                }
+                teamStats[team].drivers.add(driverName);
+                teamStats[team].totalPoints += parseInt(result.points) || 0;
+                if (isFinished && racePos === 1) teamStats[team].wins++;
+                if (isFinished && racePos <= 3) teamStats[team].podiums++;
+            });
+        });
+
+        // Convert driver sets to arrays for teams
+        Object.values(teamStats).forEach(t => { t.drivers = [...t.drivers]; });
+
+        season2025Data = { races, driverStats, teamStats, totalRounds: allResults.length };
+        loading.style.display = 'none';
+        return season2025Data;
+
+    } catch (e) {
+        console.error('Error fetching 2025 data:', e);
+        loading.textContent = 'Chyba při načítání dat. Zkuste to znovu.';
+        return null;
+    }
+}
+
+function renderSeason2025Drivers() {
+    const data = season2025Data;
+    if (!data) return;
+
+    const content = document.getElementById('s25-content');
+    const sortedDrivers = Object.entries(data.driverStats)
+        .sort((a, b) => b[1].totalPoints - a[1].totalPoints);
+
+    let html = `<h3 style="color:#e10600; margin-top:0;">Jezdci - Sezóna 2025 (${data.totalRounds} závodů)</h3>`;
+
+    // Summary table
+    html += `<div style="overflow-x:auto;"><table class="s25-driver-table">
+        <thead><tr>
+            <th>#</th><th>Jezdec</th><th>Tým</th><th>Body</th>
+            <th>Výhry</th><th>Pódia</th><th>Poles</th><th>FL</th><th>DNF</th><th>Nejlepší</th>
+        </tr></thead><tbody>`;
+
+    sortedDrivers.forEach(([name, stats], idx) => {
+        html += `<tr>
+            <td>${idx + 1}</td>
+            <td>${name}</td>
+            <td style="font-size:0.85em;">${stats.team}</td>
+            <td style="font-weight:bold; color:#e10600;">${stats.totalPoints}</td>
+            <td>${stats.wins || '-'}</td>
+            <td>${stats.podiums || '-'}</td>
+            <td>${stats.poles || '-'}</td>
+            <td>${stats.fastestLaps || '-'}</td>
+            <td>${stats.dnfs || '-'}</td>
+            <td>${stats.bestFinish < 99 ? 'P' + stats.bestFinish : '-'}</td>
+        </tr>`;
+    });
+
+    html += `</tbody></table></div>`;
+
+    // Detailed race-by-race grid
+    html += `<h3 style="color:#e10600; margin-top:24px;">Výsledky závod po závodu</h3>`;
+    html += `<div style="overflow-x:auto;"><table class="s25-driver-table">
+        <thead><tr><th>Jezdec</th>`;
+
+    // Use round numbers as headers
+    for (let i = 1; i <= data.totalRounds; i++) {
+        const race = data.races.find(r => r.round === String(i));
+        const shortName = race ? race.raceName.replace(' Grand Prix', '').substring(0, 3).toUpperCase() : `R${i}`;
+        html += `<th title="${race ? race.raceName : 'R' + i}">${shortName}</th>`;
+    }
+    html += `<th>Body</th></tr></thead><tbody>`;
+
+    sortedDrivers.forEach(([name, stats]) => {
+        html += `<tr><td>${name}</td>`;
+        for (let i = 1; i <= data.totalRounds; i++) {
+            const race = stats.races.find(r => r.round === String(i));
+            if (race) {
+                const pos = typeof race.racePos === 'number' ? race.racePos : race.racePos;
+                const isNum = typeof race.racePos === 'number';
+                const color = isNum && race.racePos === 1 ? 'color:gold; font-weight:bold;' :
+                              isNum && race.racePos <= 3 ? 'color:#388e3c; font-weight:bold;' :
+                              isNum && race.racePos <= 10 ? 'color:#15151e;' : 'color:#999;';
+                const label = isNum ? `P${pos}` : 'DNF';
+                const extras = [];
+                if (race.fastestLap) extras.push('FL');
+                if (race.pole) extras.push('PP');
+                const extraStr = extras.length > 0 ? `<br><span style="font-size:0.7em; color:#e10600;">${extras.join(' ')}</span>` : '';
+                html += `<td style="${color}" title="${race.raceName}: ${label}">${label}${extraStr}</td>`;
+            } else {
+                html += `<td>-</td>`;
+            }
+        }
+        html += `<td style="font-weight:bold;">${stats.totalPoints}</td></tr>`;
+    });
+
+    html += `</tbody></table></div>`;
+    content.innerHTML = html;
+}
+
+function renderSeason2025Teams() {
+    const data = season2025Data;
+    if (!data) return;
+
+    const content = document.getElementById('s25-content');
+    const sortedTeams = Object.entries(data.teamStats)
+        .sort((a, b) => b[1].totalPoints - a[1].totalPoints);
+
+    let html = `<h3 style="color:#e10600; margin-top:0;">Konstruktéři - Sezóna 2025</h3>`;
+
+    html += `<div style="overflow-x:auto;"><table class="s25-driver-table">
+        <thead><tr>
+            <th>#</th><th>Tým</th><th>Body</th><th>Výhry</th><th>Pódia</th><th>Jezdci</th>
+        </tr></thead><tbody>`;
+
+    sortedTeams.forEach(([name, stats], idx) => {
+        html += `<tr>
+            <td>${idx + 1}</td>
+            <td style="font-weight:bold;">${name}</td>
+            <td style="font-weight:bold; color:#e10600;">${stats.totalPoints}</td>
+            <td>${stats.wins || '-'}</td>
+            <td>${stats.podiums || '-'}</td>
+            <td style="font-size:0.85em;">${stats.drivers.join(', ')}</td>
+        </tr>`;
+    });
+
+    html += `</tbody></table></div>`;
+
+    // Per-driver breakdown for each team
+    sortedTeams.forEach(([teamName, teamStats]) => {
+        html += `<div class="admin-section" style="margin-top:16px;">`;
+        html += `<h4>${teamName} - ${teamStats.totalPoints} bodů</h4>`;
+
+        teamStats.drivers.forEach(driverName => {
+            const ds = data.driverStats[driverName];
+            if (!ds) return;
+            html += `<p style="margin:4px 0;"><strong>${driverName}</strong>: ${ds.totalPoints} bodů | ${ds.wins} výher | ${ds.podiums} pódií | ${ds.poles} poles | ${ds.fastestLaps} FL | ${ds.dnfs} DNF</p>`;
+        });
+
+        html += `</div>`;
+    });
+
+    content.innerHTML = html;
+}
+
+async function showSeason2025(view) {
+    document.getElementById('season2025-overlay').style.display = 'block';
+    const data = await fetchSeason2025();
+    if (!data) return;
+
+    if (view === 'teams') {
+        renderSeason2025Teams();
+    } else {
+        renderSeason2025Drivers();
+    }
+}
+
 // --- Init pick system ---
 
 async function initPickSystem() {
@@ -3571,6 +4105,23 @@ async function initPickSystem() {
         document.getElementById('settings-overlay').style.display = 'none';
     });
     document.getElementById('settings-overlay').addEventListener('click', function(e) {
+        if (e.target === this) this.style.display = 'none';
+    });
+
+    // Season 2025 button
+    document.getElementById('season2025-button').addEventListener('click', function() {
+        showSeason2025('drivers');
+    });
+    document.getElementById('s25-view-drivers').addEventListener('click', function() {
+        renderSeason2025Drivers();
+    });
+    document.getElementById('s25-view-teams').addEventListener('click', function() {
+        renderSeason2025Teams();
+    });
+    document.getElementById('s25-close').addEventListener('click', function() {
+        document.getElementById('season2025-overlay').style.display = 'none';
+    });
+    document.getElementById('season2025-overlay').addEventListener('click', function(e) {
         if (e.target === this) this.style.display = 'none';
     });
 
