@@ -682,6 +682,31 @@
                 margin-top: 15px;
                 padding: 15px;
             }
+
+            /* Skládací selection panel na mobilu */
+            .selection-area.collapsed .selected-grid,
+            .selection-area.collapsed .budget,
+            .selection-area.collapsed .progress-container,
+            .selection-area.collapsed h3,
+            .selection-area.collapsed #selected-team,
+            .selection-area.collapsed #status-message {
+                display: none;
+            }
+
+            .selection-toggle {
+                display: block;
+                width: 100%;
+                background: #15151e;
+                color: white;
+                border: none;
+                padding: 10px;
+                font-size: 0.85em;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                border-radius: 6px;
+                margin-bottom: 10px;
+                cursor: pointer;
+            }
             
             /* Odstranění margin-right pro tlačítka na malých obrazovkách */
             button {
@@ -761,6 +786,11 @@
         }
         
         
+        /* Skrýt toggle na desktopu */
+        .selection-toggle {
+            display: none;
+        }
+
         /* Zvýraznění vybraných řádků */
         tr.selected {
             background-color: #ffecec;
@@ -1461,88 +1491,90 @@
             }
         }
         /* ===== POP-UP DRIVER / CAR ANIMATION ===== */
+
+        /* === DRIVER STACK na levé straně === */
+        .driver-stack-container {
+            position: fixed;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 9998;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: flex-start;
+            gap: 4px;
+        }
+
+        .driver-stack-item {
+            width: 90px;
+            height: 100px;
+            overflow: hidden;
+            transform: translateX(-100px) rotate(12deg);
+            opacity: 0;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            filter: drop-shadow(3px 2px 8px rgba(0,0,0,0.5));
+            border-right: 3px solid var(--team-color, #e10600);
+            background: linear-gradient(90deg, transparent 30%, rgba(0,0,0,0.05));
+        }
+
+        .driver-stack-item.visible {
+            transform: translateX(-30px) rotate(8deg);
+            opacity: 1;
+        }
+
+        .driver-stack-item img {
+            width: 160%;
+            height: 200%;
+            object-fit: cover;
+            object-position: top center;
+            margin-left: -20%;
+        }
+
+        /* === CAR - malé, random směr přes obrazovku === */
         .popup-character {
             position: fixed;
             z-index: 9999;
             pointer-events: none;
-            transition: none;
         }
 
-        /* Jezdec peek - oříznutý na hlavu, vykukne ze strany */
-        .popup-character .driver-peek {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            overflow: hidden;
-            filter: drop-shadow(0 4px 25px rgba(0,0,0,0.6));
-            border: 4px solid var(--team-color, #e10600);
+        .popup-character.car-fly img {
+            height: 60px;
         }
 
-        .popup-character .driver-peek img {
-            width: 100%;
-            height: 250%;
-            object-fit: cover;
-            object-position: top center;
+        /* === CAR NOSE - čumák auta pod stacknutými jezdci === */
+        .car-nose-peek {
+            position: fixed;
+            left: -120px;
+            z-index: 9997;
+            pointer-events: none;
+            transition: left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: drop-shadow(3px 2px 10px rgba(0,0,0,0.4));
         }
 
-        /* Jezdec - vykukne zleva */
-        .popup-character.from-left {
-            left: -220px;
-            animation: peekFromLeft 1.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        .car-nose-peek.visible {
+            left: -40px;
         }
 
-        /* Jezdec - vykukne zprava */
-        .popup-character.from-right {
-            right: -220px;
-            animation: peekFromRight 1.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-
-        @keyframes peekFromLeft {
-            0% { left: -220px; opacity: 0; transform: rotate(-15deg); }
-            20% { left: -60px; opacity: 1; transform: rotate(5deg); }
-            35% { left: -70px; transform: rotate(-2deg); }
-            65% { left: -70px; opacity: 1; transform: rotate(0deg); }
-            100% { left: -220px; opacity: 0; transform: rotate(-10deg); }
-        }
-
-        @keyframes peekFromRight {
-            0% { right: -220px; opacity: 0; transform: rotate(15deg); }
-            20% { right: -60px; opacity: 1; transform: rotate(-5deg); }
-            35% { right: -70px; transform: rotate(2deg); }
-            65% { right: -70px; opacity: 1; transform: rotate(0deg); }
-            100% { right: -220px; opacity: 0; transform: rotate(10deg); }
-        }
-
-        /* Auto - projede zleva doprava (pravá strana auta) */
-        .popup-character.car-drive {
-            left: -400px;
-            animation: carDriveThrough 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-        }
-
-        .popup-character.car-drive img {
-            height: 180px;
-            max-height: 25vh;
-        }
-
-        @keyframes carDriveThrough {
-            0% { left: -400px; opacity: 0; transform: translateY(0); }
-            10% { opacity: 1; }
-            15% { transform: translateY(-3px); }
-            30% { transform: translateY(2px); }
-            45% { transform: translateY(-2px); }
-            60% { transform: translateY(1px); }
-            90% { opacity: 1; }
-            100% { left: 110vw; opacity: 0; transform: translateY(0); }
+        .car-nose-peek img {
+            height: 50px;
+            clip-path: inset(0 50% 0 0);
+            transform: scaleX(1);
         }
 
         @media (max-width: 767px) {
-            .popup-character .driver-peek {
-                width: 130px;
-                height: 130px;
+            .driver-stack-item {
+                width: 70px;
+                height: 80px;
             }
-            .popup-character.car-drive img {
-                height: 120px;
-                max-height: 18vh;
+            .driver-stack-item.visible {
+                transform: translateX(-20px) rotate(8deg);
+            }
+            .popup-character.car-fly img {
+                height: 45px;
+            }
+            .car-nose-peek img {
+                height: 40px;
             }
         }
     </style>
@@ -1945,7 +1977,8 @@
             </div>
             
             <div class="layout-right">
-                <div class="selection-area">
+                <div class="selection-area" id="selection-area">
+                    <button class="selection-toggle" id="selection-toggle" style="display:none;">Váš výběr ▼</button>
                     <h2>Váš výběr</h2>
                     
                     <div class="progress-container">
@@ -2444,58 +2477,150 @@
             applyTeamColors();
 
             // ===== POP-UP ANIMACE JEZDCŮ A AUT =====
-            let popupCooldown = false;
+
+            // Driver stack na levé straně
+            let driverStack = [];
+            const MAX_STACK = 5;
+            let stackContainer = null;
+            let carNoseEl = null;
+            let stackClearTimer = null;
+
+            function ensureStackContainer() {
+                if (!stackContainer) {
+                    stackContainer = document.createElement('div');
+                    stackContainer.className = 'driver-stack-container';
+                    document.body.appendChild(stackContainer);
+                }
+                if (!carNoseEl) {
+                    carNoseEl = document.createElement('div');
+                    carNoseEl.className = 'car-nose-peek';
+                    carNoseEl.innerHTML = '<img src="" alt="car">';
+                    document.body.appendChild(carNoseEl);
+                }
+                return stackContainer;
+            }
+
+            function updateCarNosePosition() {
+                if (!carNoseEl || !stackContainer) return;
+                const rect = stackContainer.getBoundingClientRect();
+                carNoseEl.style.top = (rect.bottom + 5) + 'px';
+            }
 
             function spawnDriverPopup(driverName) {
-                if (popupCooldown) return;
                 const photoUrl = driverPhotos[driverName];
                 if (!photoUrl) return;
 
-                popupCooldown = true;
-                setTimeout(() => { popupCooldown = false; }, 1800);
-
-                const side = Math.random() < 0.5 ? 'left' : 'right';
-                const verticalPos = 15 + Math.random() * 50; // 15-65% od vrchu
                 const colors = getTeamColors(driverName);
+                const container = ensureStackContainer();
 
-                const popup = document.createElement('div');
-                popup.className = `popup-character from-${side}`;
-                popup.style.top = verticalPos + '%';
-                popup.innerHTML = `
-                    <div class="driver-peek" style="--team-color: ${colors.primary}; border-color: ${colors.primary};">
-                        <img src="${photoUrl}" alt="${driverName}">
-                    </div>
-                `;
+                // Pokud je stack plný, odeber nejstaršího
+                if (driverStack.length >= MAX_STACK) {
+                    const oldest = driverStack.shift();
+                    oldest.classList.remove('visible');
+                    setTimeout(() => { if (oldest.parentNode) oldest.parentNode.removeChild(oldest); }, 500);
+                }
 
-                document.body.appendChild(popup);
+                const item = document.createElement('div');
+                item.className = 'driver-stack-item';
+                item.style.setProperty('--team-color', colors.primary);
+                item.style.borderColor = colors.primary;
+                item.innerHTML = `<img src="${photoUrl}" alt="${driverName}">`;
 
-                // Odstraň po animaci
-                setTimeout(() => {
-                    if (popup.parentNode) popup.parentNode.removeChild(popup);
-                }, 1700);
+                container.appendChild(item);
+                driverStack.push(item);
+
+                // Animuj dovnitř
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        item.classList.add('visible');
+                    });
+                });
+
+                updateCarNosePosition();
+
+                // Reset clear timer - po 4s všechno zmizí
+                clearTimeout(stackClearTimer);
+                stackClearTimer = setTimeout(() => {
+                    driverStack.forEach(el => {
+                        el.classList.remove('visible');
+                        setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 500);
+                    });
+                    driverStack = [];
+                    if (carNoseEl) carNoseEl.classList.remove('visible');
+                }, 4000);
             }
 
+            // Auto - malé, random směr přes celou obrazovku
+            let carCooldown = false;
+
             function spawnCarPopup(teamName) {
-                if (popupCooldown) return;
+                if (carCooldown) return;
                 const carUrl = teamCars[teamName];
                 if (!carUrl) return;
 
-                popupCooldown = true;
-                setTimeout(() => { popupCooldown = false; }, 2000);
+                carCooldown = true;
+                setTimeout(() => { carCooldown = false; }, 2000);
 
-                const verticalPos = 30 + Math.random() * 30; // 30-60% od vrchu
+                const colors = getTeamColors(teamName);
+
+                // Také ukáž čumák auta nalevo pod jezdci
+                ensureStackContainer();
+                carNoseEl.querySelector('img').src = carUrl;
+                carNoseEl.classList.add('visible');
+                updateCarNosePosition();
+                setTimeout(() => { if (carNoseEl) carNoseEl.classList.remove('visible'); }, 2500);
+
+                // Random směr - 0=L→R, 1=R→L, 2=T→B, 3=B→T, 4-7=diagonály
+                const dir = Math.floor(Math.random() * 6);
+                let startX, startY, endX, endY, rotation;
+                const vw = window.innerWidth;
+                const vh = window.innerHeight;
+                const randY = Math.random() * vh * 0.7 + vh * 0.1;
+                const randX = Math.random() * vw * 0.7 + vw * 0.1;
+
+                switch (dir) {
+                    case 0: // L→R
+                        startX = -80; startY = randY; endX = vw + 80; endY = randY + (Math.random() - 0.5) * 100; rotation = 0; break;
+                    case 1: // R→L
+                        startX = vw + 80; startY = randY; endX = -80; endY = randY + (Math.random() - 0.5) * 100; rotation = 180; break;
+                    case 2: // diag TL→BR
+                        startX = -80; startY = -80; endX = vw + 80; endY = vh + 80; rotation = 35; break;
+                    case 3: // diag TR→BL
+                        startX = vw + 80; startY = -80; endX = -80; endY = vh + 80; rotation = 145; break;
+                    case 4: // diag BL→TR
+                        startX = -80; startY = vh + 80; endX = vw + 80; endY = -80; rotation = -35; break;
+                    case 5: // diag BR→TL
+                        startX = vw + 80; startY = vh + 80; endX = -80; endY = -80; rotation = 215; break;
+                }
 
                 const popup = document.createElement('div');
-                popup.className = 'popup-character car-drive';
-                popup.style.top = verticalPos + '%';
-                popup.innerHTML = `<img src="${carUrl}" alt="${teamName}">`;
-
+                popup.className = 'popup-character car-fly';
+                popup.style.left = startX + 'px';
+                popup.style.top = startY + 'px';
+                popup.innerHTML = `<img src="${carUrl}" alt="${teamName}" style="transform: rotate(${rotation}deg); filter: drop-shadow(0 2px 8px ${colors.primary});">`;
                 document.body.appendChild(popup);
 
-                // Odstraň po animaci
-                setTimeout(() => {
-                    if (popup.parentNode) popup.parentNode.removeChild(popup);
-                }, 1900);
+                const duration = 1600;
+                const startTime = performance.now();
+
+                function animateCar(now) {
+                    const elapsed = now - startTime;
+                    const t = Math.min(elapsed / duration, 1);
+                    // ease-in-out
+                    const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+                    const x = startX + (endX - startX) * ease;
+                    const y = startY + (endY - startY) * ease;
+                    popup.style.left = x + 'px';
+                    popup.style.top = y + 'px';
+                    popup.style.opacity = t < 0.1 ? t * 10 : t > 0.85 ? (1 - t) / 0.15 : 1;
+
+                    if (t < 1) {
+                        requestAnimationFrame(animateCar);
+                    } else {
+                        if (popup.parentNode) popup.parentNode.removeChild(popup);
+                    }
+                }
+                requestAnimationFrame(animateCar);
             }
 
             // Napojení na kliknutí v tabulkách
@@ -2512,6 +2637,32 @@
                     spawnCarPopup(teamName);
                 });
             });
+
+            // ===== MOBILE: Skládací selection panel =====
+            (function() {
+                const toggle = document.getElementById('selection-toggle');
+                const area = document.getElementById('selection-area');
+                if (!toggle || !area) return;
+
+                function checkMobile() {
+                    if (window.innerWidth <= 767) {
+                        toggle.style.display = 'block';
+                        area.classList.add('collapsed');
+                    } else {
+                        toggle.style.display = 'none';
+                        area.classList.remove('collapsed');
+                    }
+                }
+
+                toggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    area.classList.toggle('collapsed');
+                    toggle.textContent = area.classList.contains('collapsed') ? 'Váš výběr ▼' : 'Váš výběr ▲';
+                });
+
+                checkMobile();
+                window.addEventListener('resize', checkMobile);
+            })();
 
             // Přidáme třídu pro vybrané řádky
             function updateSelectedRows() {
