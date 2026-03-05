@@ -81,40 +81,52 @@
             background-color: #f9f9f9;
         }
         
-        /* Logo týmu v tabulce - kulaté */
+        /* Logo týmu v tabulce - kulaté s team color */
         .team-logo {
             width: 40px;
             height: 40px;
-            object-fit: cover;
-            margin-right: 10px;
+            object-fit: contain;
+            margin-right: 12px;
             vertical-align: middle;
             border-radius: 50%;
-            border: 2px solid #e10600;
-            background: white;
-            padding: 2px;
+            padding: 5px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
         }
-        
+
         .team-cell {
             display: flex;
             align-items: center;
         }
-        
+
+        /* Týmový řádek - barevný proužek vlevo */
+        #teamsTable tr[data-team],
+        #driversTable tr[data-driver] {
+            border-left: 4px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        #teamsTable tr[data-team]:hover,
+        #driversTable tr[data-driver]:hover {
+            background-color: rgba(0,0,0,0.03);
+            transform: scale(1.005);
+        }
+
         /* Logo týmu u jezdce v tabulce - malé kulaté */
         .driver-team-logo {
-            width: 25px;
-            height: 25px;
-            object-fit: cover;
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
             border-radius: 50%;
-            border: 1px solid #ddd;
-            background: white;
-            padding: 1px;
-            margin-right: 8px;
+            padding: 3px;
+            margin-right: 10px;
             vertical-align: middle;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.15);
         }
-        
+
         .driver-cell {
             display: flex;
             align-items: center;
+            font-weight: 500;
         }
         
         /* Výběr oblast */
@@ -224,46 +236,46 @@
         }
         
         .selected-card {
-            border: 1px solid #eee;
-            border-radius: 8px;
+            border: none;
+            border-radius: 12px;
             overflow: hidden;
-            background-color: white;
             text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
             position: relative;
             height: 200px;
-            background-size: cover;
-            background-position: center;
+            background-size: contain;
+            background-position: center right;
             background-repeat: no-repeat;
         }
-        
+
         .selected-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
         }
-        
+
         .selected-card h4 {
             display: none;
         }
-        
+
         .selected-card .card-content {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7), transparent);
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.4) 60%, transparent);
             color: white;
-            padding: 20px 10px 10px;
+            padding: 25px 12px 12px;
             z-index: 2;
         }
-        
+
         .selected-card p {
-            margin: 5px 0;
+            margin: 4px 0;
             padding: 0;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+            font-weight: 600;
         }
-        
+
         /* Skrýt původní fotky, používáme background-image */
         .card-photo, .car-photo {
             display: none;
@@ -344,27 +356,27 @@
             justify-items: center;
         }
         
-        /* IMPROVED PREVIEW CARDS - Better dimensions and readability */
+        /* IMPROVED PREVIEW CARDS - Team color backgrounds */
         .preview-card {
             position: relative;
             width: 280px;
-            height: 140px;
-            background-size: cover;
-            background-position: center;
+            height: 150px;
+            background-size: contain;
+            background-position: center right;
             background-repeat: no-repeat;
-            border-radius: 12px;
+            border-radius: 14px;
             overflow: hidden;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
-            border: 2px solid #e10600;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            border: none;
             margin: 0 auto;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
-        
+
         .preview-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
         }
-        
+
         /* IMPROVED TEXT OVERLAY - Better contrast and readability */
         .preview-card-content {
             position: absolute;
@@ -376,7 +388,7 @@
             flex-direction: column;
             justify-content: flex-end;
             padding: 16px 14px 12px 14px;
-            background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.1) 65%);
+            background: linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0.1) 60%, transparent);
             color: #fff !important;
         }
         
@@ -2194,6 +2206,27 @@
             'Audi': 'Týmy/2025kicksaubercarright.avif',
             'Cadillac': 'Týmy/2026cadillaccarright.avif'
         };
+
+        // Týmové barvy - primární a sekundární
+        const teamColors = {
+            'Red Bull Racing': { primary: '#3671C6', secondary: '#1B2A4A', accent: '#FFD700' },
+            'McLaren': { primary: '#FF8000', secondary: '#2C2C2C', accent: '#FFD700' },
+            'Ferrari': { primary: '#E8002D', secondary: '#1E1E1E', accent: '#FFF200' },
+            'Mercedes': { primary: '#27F4D2', secondary: '#0A1628', accent: '#FFFFFF' },
+            'Aston Martin': { primary: '#229971', secondary: '#0A2E1F', accent: '#CEDC00' },
+            'Alpine': { primary: '#0093CC', secondary: '#0A1628', accent: '#FF69B4' },
+            'Racing Bulls': { primary: '#6692FF', secondary: '#1B2D5B', accent: '#FF0000' },
+            'Williams': { primary: '#64C4FF', secondary: '#0A1628', accent: '#FFFFFF' },
+            'Haas': { primary: '#B6BABD', secondary: '#1E1E1E', accent: '#E10600' },
+            'Audi': { primary: '#00A651', secondary: '#0A0A0A', accent: '#FFFFFF' },
+            'Cadillac': { primary: '#1E3A5F', secondary: '#0D1B2A', accent: '#C4A747' }
+        };
+
+        // Získání barvy týmu pro jezdce
+        function getTeamColors(driverOrTeamName) {
+            const teamName = driverTeams[driverOrTeamName] || driverOrTeamName;
+            return teamColors[teamName] || { primary: '#e10600', secondary: '#15151e', accent: '#FFFFFF' };
+        }
         
         // Mapování jezdců na týmy pro zobrazení log
         const driverTeams = {
@@ -2221,29 +2254,31 @@
             'Bottas': 'Cadillac'
         };
         
-        // Funkce pro vytvoření karty s fotkou na pozadí
+        // Funkce pro vytvoření karty s fotkou na pozadí + team color
         function createDriverCard(driver, index) {
             const photoUrl = driverPhotos[driver.name];
+            const colors = getTeamColors(driver.name);
             return `
-                <div class="selected-card" style="background-image: url('${photoUrl}');">
+                <div class="selected-card" style="background-image: url('${photoUrl}'); background-color: ${colors.secondary}; background: linear-gradient(135deg, ${colors.secondary} 0%, ${colors.primary}33 50%, ${colors.secondary} 100%) no-repeat, url('${photoUrl}') no-repeat center right / contain;">
                     <h4>Jezdec ${index + 1}</h4>
-                    <div class="card-content">
+                    <div class="card-content" style="background: linear-gradient(to top, ${colors.secondary}ee, ${colors.primary}55 60%, transparent);">
                         <p><span class="flag">${driver.flag}</span> ${driver.name}</p>
-                        <p><span class="price-tag">${Number(driver.price).toFixed(1)} mil.</span></p>
+                        <p><span class="price-tag" style="color: ${colors.accent};">${Number(driver.price).toFixed(1)} mil.</span></p>
                     </div>
                 </div>
             `;
         }
-        
-        // Funkce pro vytvoření karty týmu s autem na pozadí
+
+        // Funkce pro vytvoření karty týmu s autem na pozadí + team color
         function createTeamCard(team) {
             const carUrl = teamCars[team.name];
+            const colors = getTeamColors(team.name);
             return `
-                <div class="selected-card" style="background-image: url('${carUrl}');">
+                <div class="selected-card" style="background: linear-gradient(135deg, ${colors.secondary} 0%, ${colors.primary}33 50%, ${colors.secondary} 100%) no-repeat, url('${carUrl}') no-repeat center right / contain;">
                     <h4>Tým</h4>
-                    <div class="card-content">
+                    <div class="card-content" style="background: linear-gradient(to top, ${colors.secondary}ee, ${colors.primary}55 60%, transparent);">
                         <p><span class="flag">${team.flag}</span> ${team.name}</p>
-                        <p><span class="price-tag">${Number(team.price).toFixed(1)} mil.</span></p>
+                        <p><span class="price-tag" style="color: ${colors.accent};">${Number(team.price).toFixed(1)} mil.</span></p>
                     </div>
                 </div>
             `;
@@ -2295,6 +2330,34 @@
                 });
             });
             
+            // Aplikovat týmové barvy na řádky tabulky a loga
+            function applyTeamColors() {
+                // Týmy tabulka - barevný proužek + logo pozadí
+                document.querySelectorAll('#teamsTable tr[data-team]').forEach(row => {
+                    const teamName = row.getAttribute('data-team');
+                    const colors = getTeamColors(teamName);
+                    row.style.borderLeft = `4px solid ${colors.primary}`;
+                    const logo = row.querySelector('.team-logo');
+                    if (logo) {
+                        logo.style.background = colors.primary;
+                        logo.style.border = `2px solid ${colors.primary}`;
+                    }
+                });
+
+                // Jezdci tabulka - barevný proužek + logo pozadí
+                document.querySelectorAll('#driversTable tr[data-driver]').forEach(row => {
+                    const driverName = row.getAttribute('data-driver');
+                    const colors = getTeamColors(driverName);
+                    row.style.borderLeft = `4px solid ${colors.primary}`;
+                    const logo = row.querySelector('.driver-team-logo');
+                    if (logo) {
+                        logo.style.background = colors.primary;
+                        logo.style.border = `2px solid ${colors.primary}`;
+                    }
+                });
+            }
+            applyTeamColors();
+
             // Přidáme třídu pro vybrané řádky
             function updateSelectedRows() {
                 // Reset všech vybraných řádků
@@ -2510,27 +2573,29 @@
                 
                 selectedDrivers.forEach(driver => {
                     const photoUrl = driverPhotos[driver.name];
+                    const colors = getTeamColors(driver.name);
                     const cardHTML = `
-                        <div class="preview-card" style="background-image: url('${photoUrl}');">
-                            <div class="preview-card-content">
+                        <div class="preview-card" style="background: linear-gradient(135deg, ${colors.secondary} 0%, ${colors.primary}44 50%, ${colors.secondary} 100%) no-repeat, url('${photoUrl}') no-repeat center right / contain; border-left: 4px solid ${colors.primary};">
+                            <div class="preview-card-content" style="background: linear-gradient(to top, ${colors.secondary}dd, ${colors.primary}33 60%, transparent);">
                                 <div class="driver-name">${driver.name}</div>
-                                <div class="price-tag">${Number(driver.price).toFixed(1)} mil.</div>
+                                <div class="price-tag" style="color: ${colors.accent} !important;">${Number(driver.price).toFixed(1)} mil.</div>
                             </div>
                         </div>
                     `;
                     previewDriversElement.innerHTML += cardHTML;
                 });
-                
-                // VYLEPŠENÉ KARTY TÝMŮ - širší, nižší, lepší čitelnost
+
+                // VYLEPŠENÉ KARTY TÝMŮ - s team colors
                 const previewTeamElement = document.getElementById('preview-team');
                 previewTeamElement.innerHTML = '';
-                
+
                 const carUrl = teamCars[selectedTeam.name];
+                const tColors = getTeamColors(selectedTeam.name);
                 const teamCardHTML = `
-                    <div class="preview-card" style="background-image: url('${carUrl}');">
-                        <div class="preview-card-content">
+                    <div class="preview-card" style="background: linear-gradient(135deg, ${tColors.secondary} 0%, ${tColors.primary}44 50%, ${tColors.secondary} 100%) no-repeat, url('${carUrl}') no-repeat center right / contain; border-left: 4px solid ${tColors.primary};">
+                        <div class="preview-card-content" style="background: linear-gradient(to top, ${tColors.secondary}dd, ${tColors.primary}33 60%, transparent);">
                             <div class="driver-name">${selectedTeam.name}</div>
-                            <div class="price-tag">${Number(selectedTeam.price).toFixed(1)} mil.</div>
+                            <div class="price-tag" style="color: ${tColors.accent} !important;">${Number(selectedTeam.price).toFixed(1)} mil.</div>
                         </div>
                     </div>
                 `;
