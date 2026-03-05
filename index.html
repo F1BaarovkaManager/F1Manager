@@ -2621,27 +2621,22 @@
                 }
                 updateTeamIndicatorPosition();
 
-                // Random směr
-                const dir = Math.floor(Math.random() * 6);
-                let startX, startY, endX, endY, rotation;
+                // Vždy zleva doprava, random výška a mírný úhel
                 const vw = window.innerWidth;
                 const vh = window.innerHeight;
-                const randY = Math.random() * vh * 0.7 + vh * 0.1;
-
-                switch (dir) {
-                    case 0: startX = -80; startY = randY; endX = vw + 80; endY = randY + (Math.random() - 0.5) * 100; rotation = 0; break;
-                    case 1: startX = vw + 80; startY = randY; endX = -80; endY = randY + (Math.random() - 0.5) * 100; rotation = 180; break;
-                    case 2: startX = -80; startY = -80; endX = vw + 80; endY = vh + 80; rotation = 35; break;
-                    case 3: startX = vw + 80; startY = -80; endX = -80; endY = vh + 80; rotation = 145; break;
-                    case 4: startX = -80; startY = vh + 80; endX = vw + 80; endY = -80; rotation = -35; break;
-                    case 5: startX = vw + 80; startY = vh + 80; endX = -80; endY = -80; rotation = 215; break;
-                }
+                const startY = Math.random() * vh * 0.6 + vh * 0.1;
+                const endYOffset = (Math.random() - 0.5) * vh * 0.3;
+                const startX = -80;
+                const endX = vw + 80;
+                const endY = startY + endYOffset;
+                // Úhel podle směru jízdy (mírný sklon nahoru/dolů)
+                const angle = Math.atan2(endY - startY, endX - startX) * (180 / Math.PI);
 
                 const popup = document.createElement('div');
                 popup.className = 'popup-character car-fly';
                 popup.style.left = startX + 'px';
                 popup.style.top = startY + 'px';
-                popup.innerHTML = `<img src="${carUrl}" alt="${teamName}" style="transform: rotate(${rotation}deg); filter: drop-shadow(0 2px 8px ${colors.primary});">`;
+                popup.innerHTML = `<img src="${carUrl}" alt="${teamName}" style="transform: rotate(${angle.toFixed(1)}deg); filter: drop-shadow(0 2px 8px ${colors.primary});">`;
                 document.body.appendChild(popup);
 
                 const duration = 1600;
@@ -2669,19 +2664,8 @@
                 requestAnimationFrame(animateCar);
             }
 
-            // Napojení na kliknutí v tabulkách - jezdci: přidej/odeber ze stacku
-            document.querySelectorAll('#driversTable tr[data-driver]').forEach(row => {
-                row.addEventListener('click', function() {
-                    const driverName = this.getAttribute('data-driver');
-                    const checkbox = this.querySelector('input[type="checkbox"]');
-                    // checkbox.checked je už přepnutý po kliknutí na řádek
-                    if (checkbox && checkbox.checked) {
-                        addDriverToStack(driverName);
-                    } else {
-                        removeDriverFromStack(driverName);
-                    }
-                });
-            });
+            // Napojení na kliknutí v tabulkách - jezdci: animace přes checkbox change
+            // (row click nemusí mít checkbox ještě přepnutý, proto hookujeme do change)
 
             document.querySelectorAll('#teamsTable tr[data-team]').forEach(row => {
                 row.addEventListener('click', function() {
@@ -2793,12 +2777,14 @@
                             alert('Můžete vybrat maximálně 5 jezdců!');
                             return;
                         }
-                        
+
                         // Přidat jezdce - ujistíme se, že cena je číslo
                         selectedDrivers.push({ name, price: Number(price), flag });
+                        addDriverToStack(name);
                     } else {
                         // Odebrat jezdce
                         selectedDrivers = selectedDrivers.filter(driver => driver.name !== name);
+                        removeDriverFromStack(name);
                     }
                     
                     // Aktualizovat zobrazení
