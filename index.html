@@ -4038,109 +4038,118 @@ function renderResults(round) {
 // --- 2025 Season Historical View ---
 
 const JOLPICA_BASE = 'https://api.jolpi.ca/ergast/f1/2025';
-let season2025Data = null;
+// ===== HARDCODED SEASON 2025 DATA (prvních 5 závodů) =====
+const season2025Data = (function() {
+    // Race results: [familyName, constructor, position, grid, qualiPos, points, fastestLap, status]
+    // status: 0=Finished, 1=Retired, 2=Lapped, 3=Disqualified
+    const R = [
+        // R1: Australian GP
+        [1,'Australian Grand Prix',[
+            ['Norris','McLaren',1,1,1,25,true,0],['Verstappen','Red Bull',2,3,3,18,false,0],
+            ['Russell','Mercedes',3,4,4,15,false,0],['Antonelli','Mercedes',4,16,16,12,false,0],
+            ['Albon','Williams',5,6,6,10,false,0],['Stroll','Aston Martin',6,13,13,8,false,0],
+            ['Hülkenberg','Sauber',7,17,17,6,false,0],['Leclerc','Ferrari',8,7,7,4,false,0],
+            ['Piastri','McLaren',9,2,2,2,false,0],['Hamilton','Ferrari',10,8,8,1,false,0],
+            ['Gasly','Alpine',11,9,9,0,false,0],['Tsunoda','RB',12,5,5,0,false,0],
+            ['Ocon','Haas',13,19,19,0,false,0],['Bearman','Haas',14,20,20,0,false,0],
+            ['Lawson','Red Bull',15,18,18,0,false,1],['Bortoleto','Sauber',16,15,15,0,false,1],
+            ['Alonso','Aston Martin',17,12,12,0,false,1],['Sainz','Williams',18,10,10,0,false,1],
+            ['Doohan','Alpine',19,14,14,0,false,1],['Hadjar','RB',20,11,11,0,false,1]
+        ]],
+        // R2: Chinese GP
+        [2,'Chinese Grand Prix',[
+            ['Piastri','McLaren',1,1,1,25,false,0],['Norris','McLaren',2,3,3,18,true,0],
+            ['Russell','Mercedes',3,2,2,15,false,0],['Verstappen','Red Bull',4,4,4,12,false,0],
+            ['Ocon','Haas',5,11,11,10,false,0],['Antonelli','Mercedes',6,8,8,8,false,0],
+            ['Albon','Williams',7,10,10,6,false,0],['Bearman','Haas',8,17,17,4,false,0],
+            ['Stroll','Aston Martin',9,14,14,2,false,0],['Sainz','Williams',10,15,15,1,false,0],
+            ['Hadjar','RB',11,7,7,0,false,0],['Lawson','Red Bull',12,20,20,0,false,0],
+            ['Doohan','Alpine',13,18,18,0,false,0],['Bortoleto','Sauber',14,19,19,0,false,2],
+            ['Hülkenberg','Sauber',15,12,12,0,false,2],['Tsunoda','RB',16,9,9,0,false,2],
+            ['Alonso','Aston Martin',17,13,13,0,false,1],['Leclerc','Ferrari',18,6,6,0,false,3],
+            ['Hamilton','Ferrari',19,5,5,0,false,3],['Gasly','Alpine',20,16,16,0,false,3]
+        ]],
+        // R3: Japanese GP
+        [3,'Japanese Grand Prix',[
+            ['Verstappen','Red Bull',1,1,1,25,false,0],['Norris','McLaren',2,2,2,18,false,0],
+            ['Piastri','McLaren',3,3,3,15,false,0],['Leclerc','Ferrari',4,4,4,12,false,0],
+            ['Russell','Mercedes',5,5,5,10,false,0],['Antonelli','Mercedes',6,6,6,8,true,0],
+            ['Hamilton','Ferrari',7,8,8,6,false,0],['Hadjar','RB',8,7,7,4,false,0],
+            ['Albon','Williams',9,9,9,2,false,0],['Bearman','Haas',10,10,10,1,false,0],
+            ['Alonso','Aston Martin',11,12,13,0,false,0],['Tsunoda','Red Bull',12,14,15,0,false,0],
+            ['Gasly','Alpine',13,11,11,0,false,0],['Sainz','Williams',14,15,12,0,false,0],
+            ['Doohan','Alpine',15,19,19,0,false,0],['Hülkenberg','Sauber',16,16,16,0,false,0],
+            ['Lawson','RB',17,13,14,0,false,0],['Ocon','Haas',18,18,18,0,false,0],
+            ['Bortoleto','Sauber',19,17,17,0,false,0],['Stroll','Aston Martin',20,20,20,0,false,2]
+        ]],
+        // R4: Bahrain GP
+        [4,'Bahrain Grand Prix',[
+            ['Piastri','McLaren',1,1,1,25,true,0],['Russell','Mercedes',2,3,2,18,false,0],
+            ['Norris','McLaren',3,6,6,15,false,0],['Leclerc','Ferrari',4,2,3,12,false,0],
+            ['Hamilton','Ferrari',5,9,9,10,false,0],['Verstappen','Red Bull',6,7,7,8,false,0],
+            ['Gasly','Alpine',7,4,5,6,false,0],['Ocon','Haas',8,14,14,4,false,0],
+            ['Tsunoda','Red Bull',9,10,10,2,false,0],['Bearman','Haas',10,20,20,1,false,0],
+            ['Antonelli','Mercedes',11,5,4,0,false,0],['Albon','Williams',12,15,15,0,false,0],
+            ['Hadjar','RB',13,12,12,0,false,0],['Doohan','Alpine',14,11,11,0,false,0],
+            ['Alonso','Aston Martin',15,13,13,0,false,0],['Lawson','RB',16,17,17,0,false,0],
+            ['Stroll','Aston Martin',17,19,19,0,false,0],['Bortoleto','Sauber',18,18,18,0,false,0],
+            ['Sainz','Williams',19,8,8,0,false,1],['Hülkenberg','Sauber',20,16,16,0,false,3]
+        ]],
+        // R5: Saudi Arabian GP
+        [5,'Saudi Arabian Grand Prix',[
+            ['Piastri','McLaren',1,2,2,25,false,0],['Verstappen','Red Bull',2,1,1,18,false,0],
+            ['Leclerc','Ferrari',3,4,4,15,false,0],['Norris','McLaren',4,10,10,12,true,0],
+            ['Russell','Mercedes',5,3,3,10,false,0],['Antonelli','Mercedes',6,5,5,8,false,0],
+            ['Hamilton','Ferrari',7,7,7,6,false,0],['Sainz','Williams',8,6,6,4,false,0],
+            ['Albon','Williams',9,11,11,2,false,0],['Hadjar','RB',10,14,14,1,false,0],
+            ['Alonso','Aston Martin',11,13,13,0,false,0],['Lawson','RB',12,12,12,0,false,0],
+            ['Bearman','Haas',13,15,15,0,false,0],['Ocon','Haas',14,19,19,0,false,0],
+            ['Hülkenberg','Sauber',15,18,18,0,false,2],['Stroll','Aston Martin',16,16,16,0,false,2],
+            ['Doohan','Alpine',17,17,17,0,false,2],['Bortoleto','Sauber',18,20,20,0,false,2],
+            ['Tsunoda','Red Bull',19,8,8,0,false,1],['Gasly','Alpine',20,9,9,0,false,1]
+        ]]
+    ];
 
-async function fetchSeason2025() {
-    if (season2025Data) return season2025Data;
+    const races = R.map(r => ({ round: String(r[0]), raceName: r[1] }));
+    const driverStats = {};
+    const teamStats = {};
 
-    const loading = document.getElementById('s25-loading');
-    loading.style.display = 'block';
-    loading.textContent = 'Načítám data z API...';
+    R.forEach(([round, raceName, results]) => {
+        results.forEach(([name, team, pos, grid, qualiPos, points, fl, status]) => {
+            if (!driverStats[name]) {
+                driverStats[name] = { team, races: [], wins: 0, podiums: 0, poles: 0, fastestLaps: 0, dnfs: 0, totalPoints: 0, bestFinish: 99 };
+            }
+            const ds = driverStats[name];
+            const isFinished = status === 0 || status === 2; // Finished or Lapped
+            const racePos = isFinished ? pos : (status === 3 ? 'DSQ' : 'DNF');
+            const posChange = isFinished ? (qualiPos - pos) : 0;
 
-    try {
-        // Fetch all race results + qualifying in parallel
-        const [racesResp, resultsResp, qualiResp] = await Promise.all([
-            fetch(`${JOLPICA_BASE}.json`),
-            fetch(`${JOLPICA_BASE}/results.json?limit=600`),
-            fetch(`${JOLPICA_BASE}/qualifying.json?limit=600`)
-        ]);
+            ds.races.push({ round: String(round), raceName, qualiPos, racePos, posChange, fastestLap: fl, pole: qualiPos === 1, points });
 
-        const racesJson = await racesResp.json();
-        const resultsJson = await resultsResp.json();
-        const qualiJson = await qualiResp.json();
+            if (isFinished) {
+                if (pos === 1) ds.wins++;
+                if (pos <= 3) ds.podiums++;
+                if (pos < ds.bestFinish) ds.bestFinish = pos;
+            } else { ds.dnfs++; }
+            if (qualiPos === 1) ds.poles++;
+            if (fl) ds.fastestLaps++;
+            ds.totalPoints += points;
 
-        const races = racesJson.MRData.RaceTable.Races || [];
-        const allResults = resultsJson.MRData.RaceTable.Races || [];
-        const allQuali = qualiJson.MRData.QualifyingTable.Races || [];
-
-        // Build driver stats
-        const driverStats = {};
-        const teamStats = {};
-
-        allResults.forEach(race => {
-            const round = race.round;
-            const qualiRace = allQuali.find(q => q.round === round);
-
-            (race.Results || []).forEach(result => {
-                const driverName = result.Driver.familyName;
-                const driverId = result.Driver.driverId;
-                const team = result.Constructor.name;
-                const racePos = result.positionText === 'R' || result.status !== 'Finished' && !result.status.startsWith('+') ? result.status : parseInt(result.position);
-                const grid = parseInt(result.grid) || 0;
-                const fastestLapRank = result.FastestLap ? parseInt(result.FastestLap.rank) : null;
-                const hasFastestLap = fastestLapRank === 1;
-
-                if (!driverStats[driverName]) {
-                    driverStats[driverName] = {
-                        driverId, team, races: [], wins: 0, podiums: 0, poles: 0,
-                        fastestLaps: 0, dnfs: 0, totalPoints: 0, bestFinish: 99
-                    };
-                }
-
-                const ds = driverStats[driverName];
-
-                // Qualifying position
-                let qualiPos = grid;
-                if (qualiRace) {
-                    const qr = (qualiRace.QualifyingResults || []).find(q => q.Driver.driverId === driverId);
-                    if (qr) qualiPos = parseInt(qr.position);
-                }
-
-                const isFinished = typeof racePos === 'number';
-                const posChange = isFinished ? (qualiPos - racePos) : 0;
-                const finishPos = isFinished ? racePos : racePos; // status string for DNF etc
-
-                ds.races.push({
-                    round, raceName: race.raceName,
-                    qualiPos, racePos: finishPos, posChange,
-                    fastestLap: hasFastestLap, pole: qualiPos === 1,
-                    points: parseInt(result.points) || 0
-                });
-
-                if (isFinished) {
-                    if (racePos === 1) ds.wins++;
-                    if (racePos <= 3) ds.podiums++;
-                    if (racePos < ds.bestFinish) ds.bestFinish = racePos;
-                } else {
-                    ds.dnfs++;
-                }
-                if (qualiPos === 1) ds.poles++;
-                if (hasFastestLap) ds.fastestLaps++;
-                ds.totalPoints += parseInt(result.points) || 0;
-
-                // Team stats
-                if (!teamStats[team]) {
-                    teamStats[team] = { drivers: new Set(), totalPoints: 0, wins: 0, podiums: 0 };
-                }
-                teamStats[team].drivers.add(driverName);
-                teamStats[team].totalPoints += parseInt(result.points) || 0;
-                if (isFinished && racePos === 1) teamStats[team].wins++;
-                if (isFinished && racePos <= 3) teamStats[team].podiums++;
-            });
+            if (!teamStats[team]) { teamStats[team] = { drivers: [], totalPoints: 0, wins: 0, podiums: 0 }; }
+            const ts = teamStats[team];
+            if (!ts.drivers.includes(name)) ts.drivers.push(name);
+            ts.totalPoints += points;
+            if (isFinished && pos === 1) ts.wins++;
+            if (isFinished && pos <= 3) ts.podiums++;
         });
+    });
 
-        // Convert driver sets to arrays for teams
-        Object.values(teamStats).forEach(t => { t.drivers = [...t.drivers]; });
+    return { races, driverStats, teamStats, totalRounds: R.length };
+})();
 
-        season2025Data = { races, driverStats, teamStats, totalRounds: allResults.length };
-        loading.style.display = 'none';
-        return season2025Data;
-
-    } catch (e) {
-        console.error('Error fetching 2025 data:', e);
-        loading.textContent = 'Chyba při načítání dat. Zkuste to znovu.';
-        return null;
-    }
+function fetchSeason2025() {
+    document.getElementById('s25-loading').style.display = 'none';
+    return season2025Data;
 }
 
 function renderSeason2025Drivers() {
@@ -4262,9 +4271,9 @@ function renderSeason2025Teams() {
     content.innerHTML = html;
 }
 
-async function showSeason2025(view) {
+function showSeason2025(view) {
     document.getElementById('season2025-overlay').style.display = 'block';
-    const data = await fetchSeason2025();
+    const data = fetchSeason2025();
     if (!data) return;
 
     if (view === 'teams') {
