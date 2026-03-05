@@ -2333,7 +2333,7 @@
             const photoUrl = driverPhotos[driver.name];
             const colors = getTeamColors(driver.name);
             return `
-                <div class="selected-card" style="background-image: url('${photoUrl}'); background-color: ${colors.secondary}; background: linear-gradient(135deg, ${colors.secondary} 0%, ${colors.primary}33 50%, ${colors.secondary} 100%) no-repeat, url('${photoUrl}') no-repeat center right / contain;">
+                <div class="selected-card" style="background: linear-gradient(135deg, ${colors.secondary} 0%, ${colors.primary}33 50%, ${colors.secondary} 100%) no-repeat, url('${photoUrl}') no-repeat top center / cover;">
                     <h4>Jezdec ${index + 1}</h4>
                     <div class="card-content" style="background: linear-gradient(to top, ${colors.secondary}ee, ${colors.primary}55 60%, transparent);">
                         <p><span class="flag">${driver.flag}</span> ${driver.name}</p>
@@ -2714,7 +2714,7 @@
                     const photoUrl = driverPhotos[driver.name];
                     const colors = getTeamColors(driver.name);
                     const cardHTML = `
-                        <div class="preview-card" style="background: linear-gradient(135deg, ${colors.secondary} 0%, ${colors.primary}44 50%, ${colors.secondary} 100%) no-repeat, url('${photoUrl}') no-repeat center right / contain; border-left: 4px solid ${colors.primary};">
+                        <div class="preview-card" style="background: linear-gradient(135deg, ${colors.secondary} 0%, ${colors.primary}44 50%, ${colors.secondary} 100%) no-repeat, url('${photoUrl}') no-repeat top center / cover; border-left: 4px solid ${colors.primary};">
                             <div class="preview-card-content" style="background: linear-gradient(to top, ${colors.secondary}dd, ${colors.primary}33 60%, transparent);">
                                 <div class="driver-name">${driver.name}</div>
                                 <div class="price-tag" style="color: ${colors.accent} !important;">${Number(driver.price).toFixed(1)} mil.</div>
