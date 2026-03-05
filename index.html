@@ -1502,8 +1502,9 @@
             100% { right: -300px; opacity: 0; transform: scale(0.8) rotate(15deg); }
         }
 
-        /* Auto - projede zprava doleva */
+        /* Auto - projede zleva doprava (pravá strana auta) */
         .popup-character.car-drive {
+            left: -400px;
             animation: carDriveThrough 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
         }
 
@@ -1513,14 +1514,14 @@
         }
 
         @keyframes carDriveThrough {
-            0% { right: -400px; opacity: 0; transform: translateY(0) scaleX(1); }
+            0% { left: -400px; opacity: 0; transform: translateY(0); }
             10% { opacity: 1; }
-            15% { transform: translateY(-3px) scaleX(1); }
-            30% { transform: translateY(2px) scaleX(1); }
-            45% { transform: translateY(-2px) scaleX(1); }
-            60% { transform: translateY(1px) scaleX(1); }
+            15% { transform: translateY(-3px); }
+            30% { transform: translateY(2px); }
+            45% { transform: translateY(-2px); }
+            60% { transform: translateY(1px); }
             90% { opacity: 1; }
-            100% { right: 110vw; opacity: 0; transform: translateY(0) scaleX(1); }
+            100% { left: 110vw; opacity: 0; transform: translateY(0); }
         }
 
         @media (max-width: 767px) {
@@ -2228,28 +2229,28 @@
         
         // Databáze fotek jezdců a týmů - vaše GitHub struktura
         const driverPhotos = {
-            'Verstappen': 'Jezdci/2025redbullracingmaxver01right.avif',
-            'Hadjar': 'Jezdci/2025racingbullsisahad01right.avif',
-            'Norris': 'Jezdci/2025mclarenlannor01right.avif',
-            'Piastri': 'Jezdci/2025mclarenoscpia01right.avif',
-            'Leclerc': 'Jezdci/2025ferrarichalec01right.avif',
-            'Hamilton': 'Jezdci/2025ferrarilewham01right.avif',
-            'Russel': 'Jezdci/2025mercedesgeorus01right.avif',
-            'Antonelli': 'Jezdci/2025mercedesandant01right.avif',
-            'Alonso': 'Jezdci/2025astonmartinferalo01right.avif',
-            'Stroll': 'Jezdci/2025astonmartinlanstr01right.avif',
-            'Gasly': 'Jezdci/2025alpinepiegas01right.avif',
-            'Colapinto': 'Jezdci/2025alpinefracol01right.avif',
-            'Albon': 'Jezdci/2025williamsalealb01right.avif',
-            'Sainz': 'Jezdci/2025williamscarsai01right.avif',
-            'Lawson': 'Jezdci/2025racingbullslialaw01right.avif',
-            'Lindblad': 'Jezdci/2026racingbullsarvlin01right.avif',
-            'Ocon': 'Jezdci/2025haasestoco01right.avif',
-            'Bearman': 'Jezdci/2025haasolibea01right.avif',
-            'Hulkenberg': 'Jezdci/2025kicksaubernichul01right.avif',
-            'Bortoleto': 'Jezdci/2025kicksaubergabbor01right.avif',
-            'Perez': 'Jezdci/2026cadillacserper01right.avif',
-            'Bottas': 'Jezdci/2026cadillacvalbot01right.avif'
+            'Verstappen': '2026 fotos/2026redbullracingmaxver01right.avif',
+            'Hadjar': '2026 fotos/2026redbullracingisahad01right.avif',
+            'Norris': '2026 fotos/2026mclarenlannor01right.avif',
+            'Piastri': '2026 fotos/2026mclarenoscpia01right.avif',
+            'Leclerc': '2026 fotos/2026ferrarichalec01right.avif',
+            'Hamilton': '2026 fotos/2026ferrarilewham01right.avif',
+            'Russel': '2026 fotos/2026mercedesgeorus01right.avif',
+            'Antonelli': '2026 fotos/2026mercedesandant01right.avif',
+            'Alonso': '2026 fotos/2026astonmartinferalo01right.avif',
+            'Stroll': '2026 fotos/2026astonmartinlanstr01right.avif',
+            'Gasly': '2026 fotos/2026alpinepiegas01right.avif',
+            'Colapinto': '2026 fotos/2026alpinefracol01right.avif',
+            'Albon': '2026 fotos/2026williamsalealb01right.avif',
+            'Sainz': '2026 fotos/2026williamscarsai01right.avif',
+            'Lawson': '2026 fotos/2026racingbullslialaw01right.avif',
+            'Lindblad': '2026 fotos/2026racingbullsarvlin01right.avif',
+            'Ocon': '2026 fotos/2026haasf1teamestoco01right.avif',
+            'Bearman': '2026 fotos/2026haasf1teamolibea01right.avif',
+            'Hulkenberg': '2026 fotos/2026audinichul01right.avif',
+            'Bortoleto': '2026 fotos/2026audigabbor01right.avif',
+            'Perez': '2026 fotos/2026cadillacserper01right.avif',
+            'Bottas': '2026 fotos/2026cadillacvalbot01right.avif'
         };
         
         const teamLogos = {
