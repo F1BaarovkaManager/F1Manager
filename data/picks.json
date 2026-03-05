@@ -146,6 +146,19 @@
         "team": "Mercedes",
         "timestamp": "2026-03-05T20:39:25.765Z"
       }
+    },
+    "Piňňáa": {
+      "1": {
+        "drivers": [
+          "Norris",
+          "Sainz",
+          "Hulkenberg",
+          "Antonelli",
+          "Colapinto"
+        ],
+        "team": "Mercedes",
+        "timestamp": "2026-03-05T21:06:17.871Z"
+      }
     }
   }
 }
