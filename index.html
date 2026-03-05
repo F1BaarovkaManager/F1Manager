@@ -1158,6 +1158,244 @@
                 max-width: 100%;
             }
         }
+
+        /* Admin panel styles */
+        .admin-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .admin-box {
+            background: #fff;
+            max-width: 900px;
+            margin: 30px auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.4);
+        }
+
+        .admin-header {
+            background: #15151e;
+            color: white;
+            padding: 18px 24px;
+            border-bottom: 4px solid #e10600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header h3 {
+            margin: 0;
+            font-size: 1.3em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .admin-body {
+            padding: 24px;
+        }
+
+        .admin-section {
+            margin-bottom: 24px;
+            padding: 16px;
+            background: #f8f8f8;
+            border-radius: 8px;
+            border-left: 4px solid #e10600;
+        }
+
+        .admin-section h4 {
+            margin: 0 0 12px;
+            color: #15151e;
+            font-size: 1.1em;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .admin-grid-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #eee;
+        }
+
+        .admin-grid-item label {
+            flex: 1;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .admin-grid-item select {
+            width: 80px;
+            padding: 4px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 0.85em;
+        }
+
+        .admin-bonus-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .admin-bonus-row label {
+            font-weight: bold;
+            min-width: 120px;
+        }
+
+        .admin-bonus-row select {
+            flex: 1;
+            max-width: 200px;
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: center;
+        }
+
+        .admin-actions button {
+            min-width: 150px;
+        }
+
+        .btn-admin-save {
+            background: linear-gradient(135deg, #388e3c, #4caf50) !important;
+        }
+
+        .admin-status {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 0.95em;
+            font-weight: bold;
+        }
+
+        .admin-prefill-note {
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        /* Results/scoring overlay */
+        .results-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 2000;
+            overflow-y: auto;
+        }
+
+        .results-box {
+            background: #fff;
+            max-width: 1000px;
+            margin: 30px auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 30px rgba(0,0,0,0.4);
+        }
+
+        .results-header {
+            background: #15151e;
+            color: white;
+            padding: 18px 24px;
+            border-bottom: 4px solid #e10600;
+        }
+
+        .results-header h3 { margin: 0; }
+
+        .results-body {
+            padding: 24px;
+            overflow-x: auto;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+
+        .results-table th {
+            background: #15151e;
+            color: white;
+            padding: 8px 10px;
+            text-align: center;
+            font-size: 0.85em;
+        }
+
+        .results-table td {
+            padding: 6px 8px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .results-table tr:hover {
+            background: #f0f0f0;
+        }
+
+        .points-positive { color: #388e3c; font-weight: bold; }
+        .points-negative { color: #d32f2f; font-weight: bold; }
+        .points-total { font-weight: bold; font-size: 1.1em; color: #15151e; }
+
+        .admin-trigger {
+            background: none !important;
+            border: none !important;
+            color: #15151e !important;
+            box-shadow: none !important;
+            font-size: 0.7em !important;
+            padding: 2px 6px !important;
+            margin: 0 !important;
+            opacity: 0.15;
+            cursor: pointer;
+            min-width: auto !important;
+            width: auto !important;
+        }
+
+        .admin-trigger:hover {
+            opacity: 1;
+            color: #e10600 !important;
+            transform: none !important;
+        }
+
+        @media (max-width: 767px) {
+            .admin-box, .results-box {
+                margin: 10px;
+            }
+
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-bonus-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+
+            .admin-bonus-row select {
+                max-width: 100%;
+                width: 100%;
+            }
+
+            .admin-trigger {
+                font-size: 0.6em !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1587,6 +1825,8 @@
                     <button id="preview-button" disabled>Náhled</button>
                     <button id="submit-pick-button" class="btn-submit-pick" disabled>Odeslat sestavu</button>
                     <button id="overview-button">Přehled picků</button>
+                    <button id="results-button">Výsledky & Body</button>
+                    <button class="admin-trigger" id="admin-trigger" title="Admin">&#9998;</button>
                 </div>
             </div>
         </div>
@@ -1726,6 +1966,78 @@
                     <button id="settings-close" style="flex:1; background:#666;">Zavřít</button>
                 </div>
                 <div id="settings-status" style="margin-top:10px; text-align:center; font-size:0.9em;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Modal - Race Results Entry -->
+    <div id="admin-overlay" class="admin-overlay">
+        <div class="admin-box">
+            <div class="admin-header">
+                <h3>Zadání výsledků závodu</h3>
+                <button onclick="document.getElementById('admin-overlay').style.display='none'" style="background:#666; padding:6px 14px; font-size:0.9em;">Zavřít</button>
+            </div>
+            <div class="admin-body">
+                <div style="margin-bottom:16px;">
+                    <label style="font-weight:bold;">Závod:</label>
+                    <select id="admin-race-select" style="padding:8px; border-radius:6px; border:1px solid #ccc; margin-left:8px; min-width:200px;"></select>
+                    <button id="admin-load-results" style="margin-left:8px; padding:8px 16px; font-size:0.85em;">Načíst</button>
+                </div>
+
+                <div class="admin-section">
+                    <h4>Kvalifikace (startovní pozice)</h4>
+                    <p class="admin-prefill-note">Vyplňte pozice 1-20 pro každého jezdce. Kvalifikace se propíše do výsledků jako výchozí pořadí.</p>
+                    <div id="admin-quali-grid" class="admin-grid"></div>
+                </div>
+
+                <div class="admin-section">
+                    <h4>Výsledek závodu</h4>
+                    <p class="admin-prefill-note">Cílová pozice nebo DNF/DNS/DSQ. Po vyplnění kvalifikace se automaticky předvyplní.</p>
+                    <div id="admin-race-grid" class="admin-grid"></div>
+                </div>
+
+                <div class="admin-section">
+                    <h4>Bonusy</h4>
+                    <div class="admin-bonus-row">
+                        <label>Pole Position:</label>
+                        <select id="admin-pole"></select>
+                    </div>
+                    <div class="admin-bonus-row">
+                        <label>Fastest Lap:</label>
+                        <select id="admin-fl"></select>
+                    </div>
+                    <div class="admin-bonus-row">
+                        <label>Driver of the Day:</label>
+                        <select id="admin-dotd"></select>
+                    </div>
+                </div>
+
+                <div class="admin-actions">
+                    <button id="admin-save" class="btn-admin-save">Uložit výsledky</button>
+                    <button onclick="document.getElementById('admin-overlay').style.display='none'" style="background:#666;">Zavřít</button>
+                </div>
+                <div id="admin-status" class="admin-status"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results & Scoring Modal -->
+    <div id="results-overlay" class="results-overlay">
+        <div class="results-box">
+            <div class="results-header">
+                <h3>Výsledky & Bodování</h3>
+            </div>
+            <div class="results-body">
+                <div style="margin-bottom:16px;">
+                    <label style="font-weight:bold;">Závod:</label>
+                    <select id="results-race-select" style="padding:8px; border-radius:6px; border:1px solid #ccc; margin-left:8px; min-width:200px;"></select>
+                </div>
+                <div id="results-content">
+                    <p style="text-align:center; color:#888;">Vyber závod pro zobrazení výsledků.</p>
+                </div>
+            </div>
+            <div style="padding:15px; text-align:center; border-top:1px solid #eee;">
+                <button id="results-close">Zavřít</button>
             </div>
         </div>
     </div>
@@ -2184,6 +2496,12 @@ const GITHUB_OWNER = 'F1BaarovkaManager';
 const GITHUB_REPO = 'F1Manager';
 const PICKS_FILE_PATH = 'data/picks.json';
 const MAX_DRIVER_USES = 12;
+const MAX_TEAM_USES = 6;
+
+const POSITION_POINTS = {
+    1: 30, 2: 25, 3: 21, 4: 18, 5: 15, 6: 12, 7: 10,
+    8: 9, 9: 8, 10: 7, 11: 6, 12: 5, 13: 4, 14: 3, 15: 2, 16: 1
+};
 
 let picksData = null;
 let picksSha = null;
@@ -2309,6 +2627,7 @@ function getDefaultPicksData() {
     return {
         season: 2026,
         maxDriverUses: MAX_DRIVER_USES,
+        maxTeamUses: MAX_TEAM_USES,
         players: ["Flyons Racing", "Flygirl", "Salvetus", "F17", "Piňa", "Vzoom", "Martini Motors"],
         races: [
             {round: 1, name: "Australian GP", date: "2026-03-08"},
@@ -2348,6 +2667,18 @@ function getDriverUsage(player, driver) {
     let count = 0;
     for (const round of Object.keys(playerPicks)) {
         if (playerPicks[round].drivers && playerPicks[round].drivers.includes(driver)) {
+            count++;
+        }
+    }
+    return count;
+}
+
+function getTeamUsage(player, team) {
+    if (!picksData || !picksData.picks || !picksData.picks[player]) return 0;
+    const playerPicks = picksData.picks[player];
+    let count = 0;
+    for (const round of Object.keys(playerPicks)) {
+        if (playerPicks[round].team === team) {
             count++;
         }
     }
@@ -2394,6 +2725,46 @@ function updateUsageBadges() {
         }
 
         // Pokud není hráč vybraný, skrýt badge
+        if (!currentPlayer) {
+            badge.style.display = 'none';
+        } else {
+            badge.style.display = '';
+        }
+    });
+
+    // Team usage badges
+    const maxTeamUses = picksData ? (picksData.maxTeamUses || MAX_TEAM_USES) : MAX_TEAM_USES;
+    document.querySelectorAll('#teamsTable tr[data-team]').forEach(row => {
+        const team = row.dataset.team;
+        const usage = currentPlayer ? getTeamUsage(currentPlayer, team) : 0;
+
+        let badge = row.querySelector('.usage-badge');
+        if (!badge) {
+            badge = document.createElement('span');
+            badge.className = 'usage-badge';
+            const nameCell = row.querySelector('.team-cell');
+            if (nameCell) nameCell.appendChild(badge);
+        }
+
+        badge.textContent = `${usage}/${maxTeamUses}`;
+        badge.classList.remove('warning', 'maxed');
+
+        if (usage >= maxTeamUses) {
+            badge.classList.add('maxed');
+            row.classList.add('driver-maxed');
+            const rb = row.querySelector('input[type="radio"]');
+            if (rb) { rb.checked = false; rb.disabled = true; }
+        } else if (usage >= maxTeamUses - 1) {
+            badge.classList.add('warning');
+            row.classList.remove('driver-maxed');
+            const rb = row.querySelector('input[type="radio"]');
+            if (rb) rb.disabled = false;
+        } else {
+            row.classList.remove('driver-maxed');
+            const rb = row.querySelector('input[type="radio"]');
+            if (rb) rb.disabled = false;
+        }
+
         if (!currentPlayer) {
             badge.style.display = 'none';
         } else {
@@ -2507,9 +2878,13 @@ function showConfirmation() {
     });
 
     html += '<div style="font-weight:bold; margin-top:12px; margin-bottom:8px;">Tým:</div>';
+    const teamUsage = getTeamUsage(currentPlayer, selectedTeam.name);
+    const maxTeamUses = picksData.maxTeamUses || MAX_TEAM_USES;
+    const newTeamUsage = teamUsage + 1;
+    const teamWarn = newTeamUsage >= maxTeamUses ? ' color:#d32f2f; font-weight:bold;' : (newTeamUsage >= maxTeamUses - 1 ? ' color:#ff9800;' : '');
     html += `<div class="confirm-summary-item">
         <span>${selectedTeam.flag} ${selectedTeam.name}</span>
-        <span>${Number(selectedTeam.price).toFixed(1)} mil.</span>
+        <span>${Number(selectedTeam.price).toFixed(1)} mil. <span style="font-size:0.85em;${teamWarn}">(${newTeamUsage}/${maxTeamUses})</span></span>
     </div>`;
 
     const total = selectedDrivers.reduce((s, d) => s + Number(d.price), 0) + Number(selectedTeam.price);
@@ -2694,6 +3069,436 @@ async function saveSettings() {
     }
 }
 
+// --- Admin: Race Results Entry ---
+
+const ALL_DRIVERS = [
+    'Verstappen', 'Hadjar', 'Norris', 'Piastri', 'Leclerc', 'Hamilton',
+    'Russel', 'Antonelli', 'Alonso', 'Stroll', 'Gasly', 'Colapinto',
+    'Albon', 'Sainz', 'Lawson', 'Lindblad', 'Ocon', 'Bearman',
+    'Hulkenberg', 'Bortoleto', 'Perez', 'Bottas'
+];
+
+function buildPositionOptions(includeSpecial) {
+    let html = '<option value="">--</option>';
+    for (let i = 1; i <= 22; i++) {
+        html += `<option value="${i}">${i}</option>`;
+    }
+    if (includeSpecial) {
+        html += '<option value="DNF">DNF</option>';
+        html += '<option value="DNS">DNS</option>';
+        html += '<option value="DSQ">DSQ</option>';
+    }
+    return html;
+}
+
+function buildDriverOptions() {
+    let html = '<option value="">--</option>';
+    ALL_DRIVERS.forEach(d => { html += `<option value="${d}">${d}</option>`; });
+    return html;
+}
+
+function populateAdminRaceSelect() {
+    const select = document.getElementById('admin-race-select');
+    select.innerHTML = '<option value="">-- Vyber závod --</option>';
+    if (picksData && picksData.races) {
+        picksData.races.forEach(race => {
+            const hasResults = picksData.raceResults && picksData.raceResults[String(race.round)];
+            const opt = document.createElement('option');
+            opt.value = String(race.round);
+            opt.textContent = `R${race.round}: ${race.name}${hasResults ? ' ✓' : ''}`;
+            select.appendChild(opt);
+        });
+    }
+}
+
+function populateResultsRaceSelect() {
+    const select = document.getElementById('results-race-select');
+    select.innerHTML = '<option value="">-- Vyber závod --</option>';
+    if (picksData && picksData.races) {
+        picksData.races.forEach(race => {
+            const hasResults = picksData.raceResults && picksData.raceResults[String(race.round)];
+            if (hasResults) {
+                const opt = document.createElement('option');
+                opt.value = String(race.round);
+                opt.textContent = `R${race.round}: ${race.name}`;
+                select.appendChild(opt);
+            }
+        });
+    }
+}
+
+function buildAdminGrids() {
+    const qualiGrid = document.getElementById('admin-quali-grid');
+    const raceGrid = document.getElementById('admin-race-grid');
+    const poleSelect = document.getElementById('admin-pole');
+    const flSelect = document.getElementById('admin-fl');
+    const dotdSelect = document.getElementById('admin-dotd');
+
+    let qualiHtml = '';
+    let raceHtml = '';
+
+    ALL_DRIVERS.forEach(driver => {
+        qualiHtml += `<div class="admin-grid-item">
+            <label>${driver}</label>
+            <select id="quali-${driver}" data-driver="${driver}" class="quali-select">${buildPositionOptions(false)}</select>
+        </div>`;
+        raceHtml += `<div class="admin-grid-item">
+            <label>${driver}</label>
+            <select id="race-${driver}" data-driver="${driver}" class="race-select">${buildPositionOptions(true)}</select>
+        </div>`;
+    });
+
+    qualiGrid.innerHTML = qualiHtml;
+    raceGrid.innerHTML = raceHtml;
+    poleSelect.innerHTML = buildDriverOptions();
+    flSelect.innerHTML = buildDriverOptions();
+    dotdSelect.innerHTML = buildDriverOptions();
+
+    // Auto-prefill race from quali
+    document.querySelectorAll('.quali-select').forEach(sel => {
+        sel.addEventListener('change', function() {
+            const driver = this.dataset.driver;
+            const raceSelect = document.getElementById('race-' + driver);
+            if (raceSelect && !raceSelect.value) {
+                raceSelect.value = this.value;
+            }
+        });
+    });
+}
+
+function loadAdminResults(round) {
+    if (!picksData || !picksData.raceResults || !picksData.raceResults[String(round)]) {
+        // Clear all
+        ALL_DRIVERS.forEach(d => {
+            const q = document.getElementById('quali-' + d);
+            const r = document.getElementById('race-' + d);
+            if (q) q.value = '';
+            if (r) r.value = '';
+        });
+        document.getElementById('admin-pole').value = '';
+        document.getElementById('admin-fl').value = '';
+        document.getElementById('admin-dotd').value = '';
+        return;
+    }
+
+    const results = picksData.raceResults[String(round)];
+    ALL_DRIVERS.forEach(d => {
+        const q = document.getElementById('quali-' + d);
+        const r = document.getElementById('race-' + d);
+        if (q && results.qualifying && results.qualifying[d] !== undefined) {
+            q.value = String(results.qualifying[d]);
+        } else if (q) { q.value = ''; }
+        if (r && results.race && results.race[d] !== undefined) {
+            r.value = String(results.race[d]);
+        } else if (r) { r.value = ''; }
+    });
+
+    document.getElementById('admin-pole').value = results.polePosition || '';
+    document.getElementById('admin-fl').value = results.fastestLap || '';
+    document.getElementById('admin-dotd').value = results.dotd || '';
+}
+
+async function saveAdminResults() {
+    const round = document.getElementById('admin-race-select').value;
+    if (!round) { alert('Vyber závod!'); return; }
+
+    const statusEl = document.getElementById('admin-status');
+    statusEl.textContent = 'Ukládám...';
+    statusEl.style.color = '#666';
+
+    const qualifying = {};
+    const race = {};
+
+    ALL_DRIVERS.forEach(d => {
+        const qVal = document.getElementById('quali-' + d).value;
+        const rVal = document.getElementById('race-' + d).value;
+        if (qVal) qualifying[d] = isNaN(qVal) ? qVal : parseInt(qVal);
+        if (rVal) race[d] = isNaN(rVal) ? rVal : parseInt(rVal);
+    });
+
+    const polePosition = document.getElementById('admin-pole').value || '';
+    const fastestLap = document.getElementById('admin-fl').value || '';
+    const dotd = document.getElementById('admin-dotd').value || '';
+
+    if (!picksData.raceResults) picksData.raceResults = {};
+
+    picksData.raceResults[String(round)] = {
+        qualifying,
+        race,
+        polePosition,
+        fastestLap,
+        dotd
+    };
+
+    const raceName = (picksData.races.find(r => String(r.round) === String(round)) || {}).name || `R${round}`;
+    const saved = await savePicksToGitHub(`Results: ${raceName}`);
+
+    if (saved) {
+        statusEl.textContent = 'Výsledky uloženy!';
+        statusEl.style.color = '#388e3c';
+        populateAdminRaceSelect();
+        populateResultsRaceSelect();
+
+        // Export to Google Sheets
+        const sheetsUrl = getSheetsUrl();
+        if (sheetsUrl) {
+            sendToGoogleSheets(sheetsUrl, {
+                type: 'race_results',
+                timestamp: new Date().toISOString(),
+                race: raceName,
+                round: round,
+                qualifying: qualifying,
+                race_result: race,
+                polePosition: polePosition,
+                fastestLap: fastestLap,
+                dotd: dotd
+            });
+        }
+    } else {
+        statusEl.textContent = 'Chyba při ukládání!';
+        statusEl.style.color = '#d32f2f';
+    }
+}
+
+function showAdmin() {
+    buildAdminGrids();
+    populateAdminRaceSelect();
+    document.getElementById('admin-overlay').style.display = 'block';
+}
+
+// --- Scoring System ---
+
+function calculateDriverPoints(driver, raceResults) {
+    if (!raceResults) return { position: 0, posChange: 0, dotd: 0, fl: 0, pole: 0, total: 0, racePos: '-', qualiPos: '-' };
+
+    const quali = raceResults.qualifying || {};
+    const race = raceResults.race || {};
+    const qualiPos = quali[driver];
+    const racePos = race[driver];
+
+    // Position points
+    let positionPts = 0;
+    if (typeof racePos === 'number' && POSITION_POINTS[racePos]) {
+        positionPts = POSITION_POINTS[racePos];
+    }
+
+    // Position change (quali vs race) - only if both are numbers (not DNF etc)
+    let posChangePts = 0;
+    if (typeof qualiPos === 'number' && typeof racePos === 'number') {
+        posChangePts = qualiPos - racePos; // positive if gained positions
+    }
+
+    // Bonus points
+    const dotdPts = (raceResults.dotd === driver) ? 5 : 0;
+    const flPts = (raceResults.fastestLap === driver) ? 5 : 0;
+    const polePts = (raceResults.polePosition === driver) ? 5 : 0;
+
+    const total = positionPts + posChangePts + dotdPts + flPts + polePts;
+
+    return {
+        position: positionPts,
+        posChange: posChangePts,
+        dotd: dotdPts,
+        fl: flPts,
+        pole: polePts,
+        total: total,
+        racePos: racePos || '-',
+        qualiPos: qualiPos || '-'
+    };
+}
+
+function calculateTeamPoints(team, raceResults) {
+    // Find both drivers of the team
+    const teamDrivers = [];
+    for (const [driver, driverTeam] of Object.entries(driverTeams)) {
+        if (driverTeam === team) teamDrivers.push(driver);
+    }
+
+    if (teamDrivers.length === 0) return { total: 0, drivers: [], avg: 0 };
+
+    const driverPoints = teamDrivers.map(d => ({
+        driver: d,
+        points: calculateDriverPoints(d, raceResults)
+    }));
+
+    const totalPoints = driverPoints.reduce((sum, dp) => sum + dp.points.total, 0);
+    const avg = totalPoints / teamDrivers.length;
+
+    return { total: avg, drivers: driverPoints, avg: avg };
+}
+
+function calculatePlayerRoundScore(player, round) {
+    if (!picksData || !picksData.picks || !picksData.picks[player] || !picksData.picks[player][String(round)]) {
+        return null;
+    }
+    if (!picksData.raceResults || !picksData.raceResults[String(round)]) {
+        return null;
+    }
+
+    const pick = picksData.picks[player][String(round)];
+    const raceResults = picksData.raceResults[String(round)];
+
+    // Calculate points for each picked driver
+    const driverScores = (pick.drivers || []).map(driver => ({
+        driver,
+        points: calculateDriverPoints(driver, raceResults)
+    }));
+
+    // Calculate team points (average of both team drivers)
+    const teamScore = calculateTeamPoints(pick.team, raceResults);
+
+    const driversTotal = driverScores.reduce((sum, ds) => sum + ds.points.total, 0);
+    const teamTotal = teamScore.avg;
+
+    return {
+        player,
+        round,
+        drivers: driverScores,
+        team: pick.team,
+        teamScore,
+        driversTotal,
+        teamTotal,
+        grandTotal: driversTotal + teamTotal
+    };
+}
+
+function showResults() {
+    populateResultsRaceSelect();
+    document.getElementById('results-overlay').style.display = 'block';
+}
+
+function renderResults(round) {
+    const content = document.getElementById('results-content');
+
+    if (!round) {
+        content.innerHTML = '<p style="text-align:center; color:#888;">Vyber závod pro zobrazení výsledků.</p>';
+        return;
+    }
+
+    if (!picksData || !picksData.raceResults || !picksData.raceResults[String(round)]) {
+        content.innerHTML = '<p style="text-align:center; color:#888;">Pro tento závod nejsou zadané výsledky.</p>';
+        return;
+    }
+
+    const raceResults = picksData.raceResults[String(round)];
+    const raceName = (picksData.races.find(r => String(r.round) === String(round)) || {}).name || `R${round}`;
+    const players = picksData.players || [];
+
+    // Calculate scores for all players
+    const scores = players.map(player => calculatePlayerRoundScore(player, round)).filter(s => s !== null);
+
+    // Sort by grandTotal descending
+    scores.sort((a, b) => b.grandTotal - a.grandTotal);
+
+    let html = `<h3 style="color:#e10600; margin-top:0;">${raceName}</h3>`;
+
+    // Race info
+    html += `<div style="margin-bottom:16px; padding:10px; background:#f0f0f0; border-radius:8px; font-size:0.9em;">`;
+    if (raceResults.polePosition) html += `<strong>Pole Position:</strong> ${raceResults.polePosition} &nbsp;|&nbsp; `;
+    if (raceResults.fastestLap) html += `<strong>Fastest Lap:</strong> ${raceResults.fastestLap} &nbsp;|&nbsp; `;
+    if (raceResults.dotd) html += `<strong>DotD:</strong> ${raceResults.dotd}`;
+    html += `</div>`;
+
+    if (scores.length === 0) {
+        html += '<p style="text-align:center; color:#888;">Žádní hráči nemají pick pro tento závod.</p>';
+        content.innerHTML = html;
+        return;
+    }
+
+    // Player scoring table
+    scores.forEach((score, idx) => {
+        const medal = idx === 0 ? ' style="border-left:4px solid gold;"' : (idx === 1 ? ' style="border-left:4px solid silver;"' : (idx === 2 ? ' style="border-left:4px solid #cd7f32;"' : ''));
+        html += `<div class="admin-section"${medal}>`;
+        html += `<h4>${idx + 1}. ${score.player} – <span class="points-total">${score.grandTotal.toFixed(1)} bodů</span></h4>`;
+
+        html += `<table class="results-table">
+            <thead><tr>
+                <th>Jezdec/Tým</th>
+                <th>Quali</th>
+                <th>Cíl</th>
+                <th>Pozice b.</th>
+                <th>+/- pozice</th>
+                <th>Pole</th>
+                <th>FL</th>
+                <th>DotD</th>
+                <th>Celkem</th>
+            </tr></thead><tbody>`;
+
+        score.drivers.forEach(ds => {
+            const pts = ds.points;
+            const changeClass = pts.posChange > 0 ? 'points-positive' : (pts.posChange < 0 ? 'points-negative' : '');
+            const changeStr = pts.posChange > 0 ? `+${pts.posChange}` : String(pts.posChange);
+            html += `<tr>
+                <td style="text-align:left; font-weight:500;">${ds.driver}</td>
+                <td>${pts.qualiPos}</td>
+                <td>${pts.racePos}</td>
+                <td>${pts.position}</td>
+                <td class="${changeClass}">${changeStr}</td>
+                <td>${pts.pole ? '+5' : '-'}</td>
+                <td>${pts.fl ? '+5' : '-'}</td>
+                <td>${pts.dotd ? '+5' : '-'}</td>
+                <td class="points-total">${pts.total}</td>
+            </tr>`;
+        });
+
+        // Team row
+        const teamPts = score.teamScore;
+        html += `<tr style="background:#f5f5f5; border-top:2px solid #ddd;">
+            <td style="text-align:left; font-weight:bold;" colspan="8">
+                Tým: ${score.team} (průměr obou jezdců)
+            </td>
+            <td class="points-total">${teamPts.avg.toFixed(1)}</td>
+        </tr>`;
+
+        // Show team driver breakdown
+        if (teamPts.drivers) {
+            teamPts.drivers.forEach(td => {
+                const pts = td.points;
+                const changeClass = pts.posChange > 0 ? 'points-positive' : (pts.posChange < 0 ? 'points-negative' : '');
+                const changeStr = pts.posChange > 0 ? `+${pts.posChange}` : String(pts.posChange);
+                html += `<tr style="background:#fafafa; font-size:0.85em; color:#666;">
+                    <td style="text-align:left; padding-left:20px;">&rarr; ${td.driver}</td>
+                    <td>${pts.qualiPos}</td>
+                    <td>${pts.racePos}</td>
+                    <td>${pts.position}</td>
+                    <td class="${changeClass}">${changeStr}</td>
+                    <td>${pts.pole ? '+5' : '-'}</td>
+                    <td>${pts.fl ? '+5' : '-'}</td>
+                    <td>${pts.dotd ? '+5' : '-'}</td>
+                    <td>${pts.total}</td>
+                </tr>`;
+            });
+        }
+
+        html += `</tbody></table>`;
+        html += `</div>`;
+    });
+
+    // Season standings
+    html += `<div class="admin-section" style="border-left:4px solid #15151e;">`;
+    html += `<h4>Celkové pořadí sezóny</h4>`;
+
+    const seasonStandings = {};
+    players.forEach(player => {
+        seasonStandings[player] = 0;
+        if (picksData.races) {
+            picksData.races.forEach(race => {
+                const s = calculatePlayerRoundScore(player, race.round);
+                if (s) seasonStandings[player] += s.grandTotal;
+            });
+        }
+    });
+
+    const sortedStandings = Object.entries(seasonStandings).sort((a, b) => b[1] - a[1]);
+    html += `<table class="results-table"><thead><tr><th>#</th><th>Hráč</th><th>Body celkem</th></tr></thead><tbody>`;
+    sortedStandings.forEach(([player, pts], idx) => {
+        html += `<tr><td>${idx + 1}</td><td style="text-align:left; font-weight:bold;">${player}</td><td class="points-total">${pts.toFixed(1)}</td></tr>`;
+    });
+    html += `</tbody></table></div>`;
+
+    content.innerHTML = html;
+}
+
 // --- Init pick system ---
 
 async function initPickSystem() {
@@ -2766,6 +3571,41 @@ async function initPickSystem() {
         document.getElementById('settings-overlay').style.display = 'none';
     });
     document.getElementById('settings-overlay').addEventListener('click', function(e) {
+        if (e.target === this) this.style.display = 'none';
+    });
+
+    // Admin trigger
+    document.getElementById('admin-trigger').addEventListener('click', function() {
+        showAdmin();
+    });
+
+    document.getElementById('admin-load-results').addEventListener('click', function() {
+        const round = document.getElementById('admin-race-select').value;
+        if (round) loadAdminResults(round);
+    });
+
+    document.getElementById('admin-save').addEventListener('click', function() {
+        saveAdminResults();
+    });
+
+    document.getElementById('admin-overlay').addEventListener('click', function(e) {
+        if (e.target === this) this.style.display = 'none';
+    });
+
+    // Results button
+    document.getElementById('results-button').addEventListener('click', function() {
+        showResults();
+    });
+
+    document.getElementById('results-race-select').addEventListener('change', function() {
+        renderResults(this.value);
+    });
+
+    document.getElementById('results-close').addEventListener('click', function() {
+        document.getElementById('results-overlay').style.display = 'none';
+    });
+
+    document.getElementById('results-overlay').addEventListener('click', function(e) {
         if (e.target === this) this.style.display = 'none';
     });
 
