@@ -132,30 +132,7 @@
       "date": "2026-12-06"
     }
   ],
-  "picks": {
-    "Salvetus": {
-      "1": {
-        "drivers": [
-          "Albon",
-          "Sainz",
-          "Lawson",
-          "Lindblad",
-          "Gasly"
-        ],
-        "team": "Haas",
-        "timestamp": "2026-02-19T16:48:12.787Z"
-      },
-      "2": {
-        "drivers": [
-          "Albon",
-          "Sainz",
-          "Lawson",
-          "Lindblad",
-          "Ocon"
-        ],
-        "team": "Ferrari",
-        "timestamp": "2026-02-20T18:42:35.660Z"
-      }
+  "picks": 
     }
   }
 }
