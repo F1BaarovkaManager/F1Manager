@@ -1528,10 +1528,11 @@
         }
 
         .driver-stack-item {
-            width: 80px;
-            height: 140px;
+            width: 75px;
+            height: 150px;
             overflow: hidden;
-            transform: translateX(-100px) rotate(12deg);
+            transform: translateX(-100px) rotate(25deg);
+            transform-origin: bottom left;
             opacity: 0;
             transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
             filter: drop-shadow(3px 2px 8px rgba(0,0,0,0.5));
@@ -1540,16 +1541,51 @@
         }
 
         .driver-stack-item.visible {
-            transform: translateX(-25px) rotate(8deg);
+            transform: translateX(-20px) rotate(20deg);
             opacity: 1;
         }
 
         .driver-stack-item img {
-            width: 140%;
-            height: 110%;
+            width: 130%;
+            height: 105%;
             object-fit: cover;
             object-position: top center;
-            margin-left: -15%;
+            margin-left: -10%;
+        }
+
+        /* === Team logo + car nose wrapper === */
+        .team-indicator {
+            position: fixed;
+            left: 0;
+            z-index: 9997;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+            transform: translateX(-100%);
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .team-indicator.visible {
+            transform: translateX(-15px);
+        }
+
+        .team-indicator .car-nose-img {
+            height: 50px;
+            clip-path: inset(0 0 0 45%);
+            transform: translateX(-45%);
+            filter: drop-shadow(3px 2px 10px rgba(0,0,0,0.4));
+        }
+
+        .team-indicator .team-logo-indicator {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 50%;
+            padding: 4px;
+            margin-left: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
 
         /* === CAR - malé, random směr přes obrazovku === */
@@ -1563,39 +1599,25 @@
             height: 60px;
         }
 
-        /* === CAR NOSE - čumák auta pod stacknutými jezdci === */
-        .car-nose-peek {
-            position: fixed;
-            left: -120px;
-            z-index: 9997;
-            pointer-events: none;
-            transition: left 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-            filter: drop-shadow(3px 2px 10px rgba(0,0,0,0.4));
-        }
-
-        .car-nose-peek.visible {
-            left: -40px;
-        }
-
-        .car-nose-peek img {
-            height: 50px;
-            clip-path: inset(0 0 0 50%);
-            transform: translateX(-50%);
-        }
+        /* car-nose-peek replaced by .team-indicator above */
 
         @media (max-width: 767px) {
             .driver-stack-item {
-                width: 60px;
-                height: 110px;
+                width: 55px;
+                height: 120px;
             }
             .driver-stack-item.visible {
-                transform: translateX(-15px) rotate(8deg);
+                transform: translateX(-12px) rotate(20deg);
             }
             .popup-character.car-fly img {
                 height: 45px;
             }
-            .car-nose-peek img {
+            .team-indicator .car-nose-img {
                 height: 40px;
+            }
+            .team-indicator .team-logo-indicator {
+                width: 32px;
+                height: 32px;
             }
         }
     </style>
@@ -2502,12 +2524,10 @@
 
             // ===== POP-UP ANIMACE JEZDCŮ A AUT =====
 
-            // Driver stack na levé straně
-            let driverStack = [];
-            const MAX_STACK = 5;
+            // Driver stack na levé straně - mapuje jméno → DOM element
+            let driverStackMap = {};
             let stackContainer = null;
-            let carNoseEl = null;
-            let stackClearTimer = null;
+            let teamIndicatorEl = null;
 
             function ensureStackContainer() {
                 if (!stackContainer) {
@@ -2515,34 +2535,30 @@
                     stackContainer.className = 'driver-stack-container';
                     document.body.appendChild(stackContainer);
                 }
-                if (!carNoseEl) {
-                    carNoseEl = document.createElement('div');
-                    carNoseEl.className = 'car-nose-peek';
-                    carNoseEl.innerHTML = '<img src="" alt="car">';
-                    document.body.appendChild(carNoseEl);
+                if (!teamIndicatorEl) {
+                    teamIndicatorEl = document.createElement('div');
+                    teamIndicatorEl.className = 'team-indicator';
+                    teamIndicatorEl.innerHTML = `
+                        <img class="car-nose-img" src="" alt="car">
+                        <img class="team-logo-indicator" src="" alt="logo">
+                    `;
+                    document.body.appendChild(teamIndicatorEl);
                 }
-                return stackContainer;
             }
 
-            function updateCarNosePosition() {
-                if (!carNoseEl || !stackContainer) return;
+            function updateTeamIndicatorPosition() {
+                if (!teamIndicatorEl || !stackContainer) return;
                 const rect = stackContainer.getBoundingClientRect();
-                carNoseEl.style.top = (rect.bottom + 5) + 'px';
+                teamIndicatorEl.style.top = (rect.bottom + 8) + 'px';
             }
 
-            function spawnDriverPopup(driverName) {
+            function addDriverToStack(driverName) {
+                if (driverStackMap[driverName]) return; // už je ve stacku
                 const photoUrl = driverPhotos[driverName];
                 if (!photoUrl) return;
 
                 const colors = getTeamColors(driverName);
                 const container = ensureStackContainer();
-
-                // Pokud je stack plný, odeber nejstaršího
-                if (driverStack.length >= MAX_STACK) {
-                    const oldest = driverStack.shift();
-                    oldest.classList.remove('visible');
-                    setTimeout(() => { if (oldest.parentNode) oldest.parentNode.removeChild(oldest); }, 500);
-                }
 
                 const item = document.createElement('div');
                 item.className = 'driver-stack-item';
@@ -2551,26 +2567,33 @@
                 item.innerHTML = `<img src="${photoUrl}" alt="${driverName}">`;
 
                 container.appendChild(item);
-                driverStack.push(item);
+                driverStackMap[driverName] = item;
 
-                // Animuj dovnitř
                 requestAnimationFrame(() => {
                     requestAnimationFrame(() => {
                         item.classList.add('visible');
                     });
                 });
 
-                updateCarNosePosition();
+                updateTeamIndicatorPosition();
+            }
 
-                // Reset clear timer - po 4s všechno zmizí
-                clearTimeout(stackClearTimer);
-                stackClearTimer = setTimeout(() => {
-                    driverStack.forEach(el => {
-                        el.classList.remove('visible');
-                        setTimeout(() => { if (el.parentNode) el.parentNode.removeChild(el); }, 500);
-                    });
-                    driverStack = [];
-                }, 4000);
+            function removeDriverFromStack(driverName) {
+                const item = driverStackMap[driverName];
+                if (!item) return;
+                item.classList.remove('visible');
+                setTimeout(() => { if (item.parentNode) item.parentNode.removeChild(item); }, 500);
+                delete driverStackMap[driverName];
+                updateTeamIndicatorPosition();
+            }
+
+            function clearAllAnimations() {
+                Object.keys(driverStackMap).forEach(name => {
+                    const el = driverStackMap[name];
+                    if (el && el.parentNode) el.parentNode.removeChild(el);
+                });
+                driverStackMap = {};
+                if (teamIndicatorEl) teamIndicatorEl.classList.remove('visible');
             }
 
             // Auto - malé, random směr přes celou obrazovku
@@ -2585,33 +2608,33 @@
                 setTimeout(() => { carCooldown = false; }, 2000);
 
                 const colors = getTeamColors(teamName);
+                const logoUrl = teamLogos[teamName];
 
-                // Čumák auta - ukáže se PO projetí auta a zůstane viditelný
+                // Připrav team indicator (čumák + logo) - ukáže se po projetí
                 ensureStackContainer();
-                carNoseEl.querySelector('img').src = carUrl;
-                updateCarNosePosition();
+                teamIndicatorEl.querySelector('.car-nose-img').src = carUrl;
+                if (logoUrl) {
+                    const logoImg = teamIndicatorEl.querySelector('.team-logo-indicator');
+                    logoImg.src = logoUrl;
+                    logoImg.style.backgroundColor = colors.secondary;
+                    logoImg.style.border = `2px solid ${colors.primary}`;
+                }
+                updateTeamIndicatorPosition();
 
-                // Random směr - 0=L→R, 1=R→L, 2=T→B, 3=B→T, 4-7=diagonály
+                // Random směr
                 const dir = Math.floor(Math.random() * 6);
                 let startX, startY, endX, endY, rotation;
                 const vw = window.innerWidth;
                 const vh = window.innerHeight;
                 const randY = Math.random() * vh * 0.7 + vh * 0.1;
-                const randX = Math.random() * vw * 0.7 + vw * 0.1;
 
                 switch (dir) {
-                    case 0: // L→R
-                        startX = -80; startY = randY; endX = vw + 80; endY = randY + (Math.random() - 0.5) * 100; rotation = 0; break;
-                    case 1: // R→L
-                        startX = vw + 80; startY = randY; endX = -80; endY = randY + (Math.random() - 0.5) * 100; rotation = 180; break;
-                    case 2: // diag TL→BR
-                        startX = -80; startY = -80; endX = vw + 80; endY = vh + 80; rotation = 35; break;
-                    case 3: // diag TR→BL
-                        startX = vw + 80; startY = -80; endX = -80; endY = vh + 80; rotation = 145; break;
-                    case 4: // diag BL→TR
-                        startX = -80; startY = vh + 80; endX = vw + 80; endY = -80; rotation = -35; break;
-                    case 5: // diag BR→TL
-                        startX = vw + 80; startY = vh + 80; endX = -80; endY = -80; rotation = 215; break;
+                    case 0: startX = -80; startY = randY; endX = vw + 80; endY = randY + (Math.random() - 0.5) * 100; rotation = 0; break;
+                    case 1: startX = vw + 80; startY = randY; endX = -80; endY = randY + (Math.random() - 0.5) * 100; rotation = 180; break;
+                    case 2: startX = -80; startY = -80; endX = vw + 80; endY = vh + 80; rotation = 35; break;
+                    case 3: startX = vw + 80; startY = -80; endX = -80; endY = vh + 80; rotation = 145; break;
+                    case 4: startX = -80; startY = vh + 80; endX = vw + 80; endY = -80; rotation = -35; break;
+                    case 5: startX = vw + 80; startY = vh + 80; endX = -80; endY = -80; rotation = 215; break;
                 }
 
                 const popup = document.createElement('div');
@@ -2627,33 +2650,36 @@
                 function animateCar(now) {
                     const elapsed = now - startTime;
                     const t = Math.min(elapsed / duration, 1);
-                    // ease-in-out
                     const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-                    const x = startX + (endX - startX) * ease;
-                    const y = startY + (endY - startY) * ease;
-                    popup.style.left = x + 'px';
-                    popup.style.top = y + 'px';
+                    popup.style.left = (startX + (endX - startX) * ease) + 'px';
+                    popup.style.top = (startY + (endY - startY) * ease) + 'px';
                     popup.style.opacity = t < 0.1 ? t * 10 : t > 0.85 ? (1 - t) / 0.15 : 1;
 
                     if (t < 1) {
                         requestAnimationFrame(animateCar);
                     } else {
                         if (popup.parentNode) popup.parentNode.removeChild(popup);
-                        // Po projetí auta ukáž čumák zleva - zůstane viditelný
-                        if (carNoseEl) {
-                            carNoseEl.classList.add('visible');
-                            updateCarNosePosition();
+                        // Po projetí: ukáž čumák auta + logo zleva - zůstane viditelný
+                        if (teamIndicatorEl) {
+                            teamIndicatorEl.classList.add('visible');
+                            updateTeamIndicatorPosition();
                         }
                     }
                 }
                 requestAnimationFrame(animateCar);
             }
 
-            // Napojení na kliknutí v tabulkách
+            // Napojení na kliknutí v tabulkách - jezdci: přidej/odeber ze stacku
             document.querySelectorAll('#driversTable tr[data-driver]').forEach(row => {
                 row.addEventListener('click', function() {
                     const driverName = this.getAttribute('data-driver');
-                    spawnDriverPopup(driverName);
+                    const checkbox = this.querySelector('input[type="checkbox"]');
+                    // checkbox.checked je už přepnutý po kliknutí na řádek
+                    if (checkbox && checkbox.checked) {
+                        addDriverToStack(driverName);
+                    } else {
+                        removeDriverFromStack(driverName);
+                    }
                 });
             });
 
@@ -2815,7 +2841,10 @@
                 // Resetovat data
                 selectedDrivers = [];
                 selectedTeam = null;
-                
+
+                // Vyčistit animace
+                clearAllAnimations();
+
                 // Aktualizovat zobrazení
                 updateDisplay();
                 // Aktualizace zvýraznění řádků
@@ -3445,6 +3474,7 @@ async function confirmSubmitPick() {
         }
 
         alert(`Sestava pro ${raceName} úspěšně odeslána!`);
+        clearAllAnimations();
         updatePicksStatus();
         updateSubmitButton();
         populateRaceDropdown();
