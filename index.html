@@ -113,14 +113,15 @@
 
         /* Logo týmu u jezdce v tabulce - malé kulaté */
         .driver-team-logo {
-            width: 28px;
-            height: 28px;
-            object-fit: contain;
+            width: 32px;
+            height: 32px;
+            object-fit: cover;
+            object-position: top center;
             border-radius: 50%;
-            padding: 3px;
             margin-right: 10px;
             vertical-align: middle;
             box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+            border: 2px solid var(--team-color, #e10600);
         }
 
         .driver-cell {
@@ -1530,17 +1531,23 @@
             width: 75px;
             height: 150px;
             overflow: hidden;
-            transform: translateX(-100px) rotate(25deg);
+            transform: translateX(-100px) rotate(82deg);
             transform-origin: bottom left;
             opacity: 0;
             transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
             filter: drop-shadow(3px 2px 8px rgba(0,0,0,0.5));
             border-right: 3px solid var(--team-color, #e10600);
+            pointer-events: auto;
+            cursor: pointer;
         }
 
         .driver-stack-item.visible {
-            transform: translateX(5px) rotate(18deg);
+            transform: translateX(-15px) rotate(82deg);
             opacity: 1;
+        }
+
+        .driver-stack-item.visible.popped {
+            transform: translateX(30px) rotate(40deg);
         }
 
         .driver-stack-item img {
@@ -1605,7 +1612,10 @@
                 height: 120px;
             }
             .driver-stack-item.visible {
-                transform: translateX(3px) rotate(18deg);
+                transform: translateX(-10px) rotate(82deg);
+            }
+            .driver-stack-item.visible.popped {
+                transform: translateX(20px) rotate(40deg);
             }
             .popup-character.car-fly img {
                 height: 45px;
@@ -1800,7 +1810,7 @@
                     <tr data-driver="Verstappen" data-price="7.5" data-flag="🇳🇱">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026redbullracinglogowhite.avif" alt="Red Bull Racing" class="driver-team-logo">
+                                <img src="2026 fotos/2026redbullracingmaxver01right.avif" alt="Verstappen" class="driver-team-logo">
                                 Verstappen
                             </div>
                         </td>
@@ -1810,7 +1820,7 @@
                     <tr data-driver="Hadjar" data-price="5.0" data-flag="🇫🇷">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026redbullracinglogowhite.avif" alt="Red Bull Racing" class="driver-team-logo">
+                                <img src="2026 fotos/2026redbullracingisahad01right.avif" alt="Hadjar" class="driver-team-logo">
                                 Hadjar
                             </div>
                         </td>
@@ -1820,7 +1830,7 @@
                     <tr data-driver="Norris" data-price="8.0" data-flag="🇬🇧">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026mclarenlogowhite.avif" alt="McLaren" class="driver-team-logo">
+                                <img src="2026 fotos/2026mclarenlannor01right.avif" alt="Norris" class="driver-team-logo">
                                 Norris
                             </div>
                         </td>
@@ -1830,7 +1840,7 @@
                     <tr data-driver="Piastri" data-price="7.0" data-flag="🇦🇺">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026mclarenlogowhite.avif" alt="McLaren" class="driver-team-logo">
+                                <img src="2026 fotos/2026mclarenoscpia01right.avif" alt="Piastri" class="driver-team-logo">
                                 Piastri
                             </div>
                         </td>
@@ -1840,7 +1850,7 @@
                     <tr data-driver="Leclerc" data-price="7.0" data-flag="🇲🇨">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026ferrarilogowhite.avif" alt="Ferrari" class="driver-team-logo">
+                                <img src="2026 fotos/2026ferrarichalec01right.avif" alt="Leclerc" class="driver-team-logo">
                                 Leclerc
                             </div>
                         </td>
@@ -1850,7 +1860,7 @@
                     <tr data-driver="Hamilton" data-price="5.5" data-flag="🇬🇧">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026ferrarilogowhite.avif" alt="Ferrari" class="driver-team-logo">
+                                <img src="2026 fotos/2026ferrarilewham01right.avif" alt="Hamilton" class="driver-team-logo">
                                 Hamilton
                             </div>
                         </td>
@@ -1860,7 +1870,7 @@
                     <tr data-driver="Russel" data-price="7.0" data-flag="🇬🇧">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026mercedeslogowhite.avif" alt="Mercedes" class="driver-team-logo">
+                                <img src="2026 fotos/2026mercedesgeorus01right.avif" alt="Russel" class="driver-team-logo">
                                 Russel
                             </div>
                         </td>
@@ -1870,7 +1880,7 @@
                     <tr data-driver="Antonelli" data-price="6.0" data-flag="🇮🇹">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026mercedeslogowhite.avif" alt="Mercedes" class="driver-team-logo">
+                                <img src="2026 fotos/2026mercedesandant01right.avif" alt="Antonelli" class="driver-team-logo">
                                 Antonelli
                             </div>
                         </td>
@@ -1880,7 +1890,7 @@
                     <tr data-driver="Alonso" data-price="3.5" data-flag="🇪🇸">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026astonmartinlogowhite.avif" alt="Aston Martin" class="driver-team-logo">
+                                <img src="2026 fotos/2026astonmartinferalo01right.avif" alt="Alonso" class="driver-team-logo">
                                 Alonso
                             </div>
                         </td>
@@ -1890,7 +1900,7 @@
                     <tr data-driver="Stroll" data-price="2.0" data-flag="🇨🇦">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026astonmartinlogowhite.avif" alt="Aston Martin" class="driver-team-logo">
+                                <img src="2026 fotos/2026astonmartinlanstr01right.avif" alt="Stroll" class="driver-team-logo">
                                 Stroll
                             </div>
                         </td>
@@ -1900,7 +1910,7 @@
                     <tr data-driver="Gasly" data-price="3.0" data-flag="🇫🇷">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026alpinelogowhite.avif" alt="Alpine" class="driver-team-logo">
+                                <img src="2026 fotos/2026alpinepiegas01right.avif" alt="Gasly" class="driver-team-logo">
                                 Gasly
                             </div>
                         </td>
@@ -1910,7 +1920,7 @@
                     <tr data-driver="Colapinto" data-price="2.5" data-flag="🇦🇷">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026alpinelogowhite.avif" alt="Alpine" class="driver-team-logo">
+                                <img src="2026 fotos/2026alpinefracol01right.avif" alt="Colapinto" class="driver-team-logo">
                                 Colapinto
                             </div>
                         </td>
@@ -1920,7 +1930,7 @@
                     <tr data-driver="Albon" data-price="4.0" data-flag="🇹🇭">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026williamslogowhite.avif" alt="Williams" class="driver-team-logo">
+                                <img src="2026 fotos/2026williamsalealb01right.avif" alt="Albon" class="driver-team-logo">
                                 Albon
                             </div>
                         </td>
@@ -1930,7 +1940,7 @@
                     <tr data-driver="Sainz" data-price="4.5" data-flag="🇪🇸">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026williamslogowhite.avif" alt="Williams" class="driver-team-logo">
+                                <img src="2026 fotos/2026williamscarsai01right.avif" alt="Sainz" class="driver-team-logo">
                                 Sainz
                             </div>
                         </td>
@@ -1940,7 +1950,7 @@
                     <tr data-driver="Lawson" data-price="3.5" data-flag="🇳🇿">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026racingbullslogowhite.avif" alt="Racing Bulls" class="driver-team-logo">
+                                <img src="2026 fotos/2026racingbullslialaw01right.avif" alt="Lawson" class="driver-team-logo">
                                 Lawson
                             </div>
                         </td>
@@ -1950,7 +1960,7 @@
                     <tr data-driver="Lindblad" data-price="3.0" data-flag="🇬🇧">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026racingbullslogowhite.avif" alt="Racing Bulls" class="driver-team-logo">
+                                <img src="2026 fotos/2026racingbullsarvlin01right.avif" alt="Lindblad" class="driver-team-logo">
                                 Lindblad
                             </div>
                         </td>
@@ -1960,7 +1970,7 @@
                     <tr data-driver="Ocon" data-price="4.0" data-flag="🇫🇷">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026haasf1teamlogowhite.avif" alt="Haas" class="driver-team-logo">
+                                <img src="2026 fotos/2026haasf1teamestoco01right.avif" alt="Ocon" class="driver-team-logo">
                                 Ocon
                             </div>
                         </td>
@@ -1970,7 +1980,7 @@
                     <tr data-driver="Bearman" data-price="4.5" data-flag="🇬🇧">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026haasf1teamlogowhite.avif" alt="Haas" class="driver-team-logo">
+                                <img src="2026 fotos/2026haasf1teamolibea01right.avif" alt="Bearman" class="driver-team-logo">
                                 Bearman
                             </div>
                         </td>
@@ -1980,7 +1990,7 @@
                     <tr data-driver="Hulkenberg" data-price="2.5" data-flag="🇩🇪">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026audilogowhite.avif" alt="Audi" class="driver-team-logo">
+                                <img src="2026 fotos/2026audinichul01right.avif" alt="Hulkenberg" class="driver-team-logo">
                                 Hulkenberg
                             </div>
                         </td>
@@ -1990,7 +2000,7 @@
                     <tr data-driver="Bortoleto" data-price="2.0" data-flag="🇧🇷">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026audilogowhite.avif" alt="Audi" class="driver-team-logo">
+                                <img src="2026 fotos/2026audigabbor01right.avif" alt="Bortoleto" class="driver-team-logo">
                                 Bortoleto
                             </div>
                         </td>
@@ -2000,7 +2010,7 @@
                     <tr data-driver="Perez" data-price="4.0" data-flag="🇲🇽">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026cadillaclogowhite.avif" alt="Cadillac" class="driver-team-logo">
+                                <img src="2026 fotos/2026cadillacserper01right.avif" alt="Perez" class="driver-team-logo">
                                 Perez
                             </div>
                         </td>
@@ -2010,7 +2020,7 @@
                     <tr data-driver="Bottas" data-price="4.0" data-flag="🇫🇮">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026cadillaclogowhite.avif" alt="Cadillac" class="driver-team-logo">
+                                <img src="2026 fotos/2026cadillacvalbot01right.avif" alt="Bottas" class="driver-team-logo">
                                 Bottas
                             </div>
                         </td>
@@ -2380,7 +2390,7 @@
             'Racing Bulls': { primary: '#6692FF', secondary: '#1B2D5B', accent: '#FF0000' },
             'Williams': { primary: '#64C4FF', secondary: '#0A1628', accent: '#FFFFFF' },
             'Haas': { primary: '#B6BABD', secondary: '#1E1E1E', accent: '#E10600' },
-            'Audi': { primary: '#00A651', secondary: '#0A0A0A', accent: '#FFFFFF' },
+            'Audi': { primary: '#FF0000', secondary: '#0A0A0A', accent: '#FFFFFF' },
             'Cadillac': { primary: '#1E3A5F', secondary: '#0D1B2A', accent: '#C4A747' }
         };
 
@@ -2564,6 +2574,10 @@
                 item.style.setProperty('--team-color', colors.primary);
                 item.style.borderColor = colors.primary;
                 item.innerHTML = `<img src="${photoUrl}" alt="${driverName}">`;
+
+                item.addEventListener('click', () => {
+                    item.classList.toggle('popped');
+                });
 
                 container.appendChild(item);
                 driverStackMap[driverName] = item;
