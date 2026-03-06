@@ -2666,7 +2666,7 @@
             document.querySelectorAll('#teamsTable tr[data-team]').forEach(row => {
                 row.addEventListener('click', function() {
                     const teamName = this.getAttribute('data-team');
-                    spawnCarPopup(teamName);
+                    try { spawnCarPopup(teamName); } catch(e) { console.error('spawnCarPopup error:', e); }
                 });
             });
 
@@ -2776,11 +2776,11 @@
 
                         // Přidat jezdce - ujistíme se, že cena je číslo
                         selectedDrivers.push({ name, price: Number(price), flag });
-                        addDriverToStack(name);
+                        try { addDriverToStack(name); } catch(e) { console.error('addDriverToStack error:', e); }
                     } else {
                         // Odebrat jezdce
                         selectedDrivers = selectedDrivers.filter(driver => driver.name !== name);
-                        removeDriverFromStack(name);
+                        try { removeDriverFromStack(name); } catch(e) { console.error('removeDriverFromStack error:', e); }
                     }
                     
                     // Aktualizovat zobrazení
