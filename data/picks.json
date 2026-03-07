@@ -114,7 +114,7 @@
     },
     {
       "round": 21,
-      "name": "SÃÂ£o Paulo GP",
+      "name": "SÃÂÃÂ£o Paulo GP",
       "date": "2026-11-08"
     },
     {
@@ -228,12 +228,8 @@
   },
   "raceResults": {
     "1": {
-      "qualifying": {
-        "Russel": 1
-      },
-      "race": {
-        "Russel": 1
-      },
+      "qualifying": {},
+      "race": {},
       "polePosition": "Russel",
       "fastestLap": "",
       "dotd": ""
