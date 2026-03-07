@@ -114,7 +114,7 @@
     },
     {
       "round": 21,
-      "name": "SÃ£o Paulo GP",
+      "name": "SÃÂ£o Paulo GP",
       "date": "2026-11-08"
     },
     {
@@ -224,6 +224,19 @@
         "team": "Mercedes",
         "timestamp": "2026-03-07T10:02:07.777Z"
       }
+    }
+  },
+  "raceResults": {
+    "1": {
+      "qualifying": {
+        "Russel": 1
+      },
+      "race": {
+        "Russel": 1
+      },
+      "polePosition": "Russel",
+      "fastestLap": "",
+      "dotd": ""
     }
   }
 }
