@@ -1649,7 +1649,7 @@
         </div>
         <span id="picks-status" class="picks-status">Vyber hráče a závod</span>
         <button class="settings-btn" id="settings-btn" title="Nastavení">&#9881;</button>
-        <button class="settings-btn" id="bar-collapse-btn" title="Schovat panel" style="display:none;">&#9650;</button>
+        <button class="settings-btn" id="bar-collapse-btn" title="Schovat panel" style="display:none; font-size:0.6em; width:auto; border-radius:6px; padding:0 8px;">SCHOVAT</button>
     </div>
     <!-- Tlačítko pro znovuzobrazení player-bar -->
     <button id="bar-expand-btn" class="bar-expand-btn" style="display:none;">&#9660; Výběr</button>
@@ -2232,7 +2232,7 @@
         <div class="admin-box">
             <div class="admin-header">
                 <h3>Zadání výsledků závodu</h3>
-                <button onclick="document.getElementById('admin-overlay').style.display='none'" style="background:#666; padding:6px 14px; font-size:0.9em;">Zavřít</button>
+                <button onclick="document.getElementById('admin-overlay').style.display='none'; showCharacterImages();" style="background:#666; padding:6px 14px; font-size:0.9em;">Zavřít</button>
             </div>
             <div class="admin-body">
                 <div style="margin-bottom:16px;">
@@ -2271,7 +2271,7 @@
 
                 <div class="admin-actions">
                     <button id="admin-save" class="btn-admin-save">Uložit výsledky</button>
-                    <button onclick="document.getElementById('admin-overlay').style.display='none'" style="background:#666;">Zavřít</button>
+                    <button onclick="document.getElementById('admin-overlay').style.display='none'; showCharacterImages();" style="background:#666;">Zavřít</button>
                 </div>
                 <div id="admin-status" class="admin-status"></div>
             </div>
@@ -2603,6 +2603,16 @@
                 if (teamIndicatorEl) teamIndicatorEl.classList.remove('visible');
             }
 
+            // Hide/show driver stack & team indicator when popups/overlays are open
+            function hideCharacterImages() {
+                if (stackContainer) stackContainer.style.display = 'none';
+                if (teamIndicatorEl) teamIndicatorEl.style.display = 'none';
+            }
+            function showCharacterImages() {
+                if (stackContainer) stackContainer.style.display = '';
+                if (teamIndicatorEl) teamIndicatorEl.style.display = '';
+            }
+
             // Auto - malé, random směr přes celou obrazovku
             let carCooldown = false;
 
@@ -2854,12 +2864,14 @@
             // Přidání listeneru na zavření náhledu
             previewClose.addEventListener('click', function() {
                 previewContainer.style.display = 'none';
+                showCharacterImages();
             });
-            
+
             // Zavření náhledu kliknutím mimo obsah
             previewContainer.addEventListener('click', function(e) {
                 if (e.target === previewContainer) {
                     previewContainer.style.display = 'none';
+                    showCharacterImages();
                 }
             });
             
@@ -3006,6 +3018,7 @@
                 
                 // Zobrazení náhledu
                 previewContainer.style.display = 'block';
+                hideCharacterImages();
             }
             
             // Inicializace - ZAJISTIT že náhled je skrytý
@@ -3422,6 +3435,7 @@ function showConfirmation() {
 
     summary.innerHTML = html;
     overlay.style.display = 'block';
+    hideCharacterImages();
 }
 
 async function confirmSubmitPick() {
@@ -3451,6 +3465,7 @@ async function confirmSubmitPick() {
 
     if (saved) {
         overlay.style.display = 'none';
+        showCharacterImages();
 
         // Automatický export do Google Sheets
         const sheetsUrl = getSheetsUrl();
@@ -3509,6 +3524,7 @@ function showPicksOverview() {
     if (!picksData) {
         content.innerHTML = '<p style="text-align:center; color:#888;">Žádná data k zobrazení.</p>';
         overlay.style.display = 'block';
+        hideCharacterImages();
         return;
     }
 
@@ -3540,6 +3556,7 @@ function showPicksOverview() {
     html += '</tbody></table>';
     content.innerHTML = html;
     overlay.style.display = 'block';
+    hideCharacterImages();
 }
 
 // --- Settings ---
@@ -3551,6 +3568,7 @@ function showSettings() {
     document.getElementById('settings-sheets-url').value = getSheetsUrl();
     document.getElementById('settings-status').textContent = '';
     overlay.style.display = 'block';
+    hideCharacterImages();
 }
 
 async function saveSettings() {
@@ -3793,6 +3811,7 @@ function showAdmin() {
     buildAdminGrids();
     populateAdminRaceSelect();
     document.getElementById('admin-overlay').style.display = 'block';
+    hideCharacterImages();
 }
 
 // --- Scoring System ---
@@ -3894,6 +3913,7 @@ function calculatePlayerRoundScore(player, round) {
 function showResults() {
     populateResultsRaceSelect();
     document.getElementById('results-overlay').style.display = 'block';
+    hideCharacterImages();
 }
 
 function renderResults(round) {
@@ -4266,6 +4286,7 @@ function renderSeason2025Teams() {
 
 function showSeason2025(view) {
     document.getElementById('season2025-overlay').style.display = 'block';
+    hideCharacterImages();
     const data = fetchSeason2025();
     if (!data) return;
 
@@ -4321,9 +4342,10 @@ async function initPickSystem() {
     });
     document.getElementById('confirm-cancel').addEventListener('click', function() {
         document.getElementById('confirm-overlay').style.display = 'none';
+        showCharacterImages();
     });
     document.getElementById('confirm-overlay').addEventListener('click', function(e) {
-        if (e.target === this) this.style.display = 'none';
+        if (e.target === this) { this.style.display = 'none'; showCharacterImages(); }
     });
 
     // Overview button
@@ -4332,9 +4354,10 @@ async function initPickSystem() {
     });
     document.getElementById('overview-close').addEventListener('click', function() {
         document.getElementById('overview-overlay').style.display = 'none';
+        showCharacterImages();
     });
     document.getElementById('overview-overlay').addEventListener('click', function(e) {
-        if (e.target === this) this.style.display = 'none';
+        if (e.target === this) { this.style.display = 'none'; showCharacterImages(); }
     });
 
     // Settings button
@@ -4346,9 +4369,10 @@ async function initPickSystem() {
     });
     document.getElementById('settings-close').addEventListener('click', function() {
         document.getElementById('settings-overlay').style.display = 'none';
+        showCharacterImages();
     });
     document.getElementById('settings-overlay').addEventListener('click', function(e) {
-        if (e.target === this) this.style.display = 'none';
+        if (e.target === this) { this.style.display = 'none'; showCharacterImages(); }
     });
 
     // Season 2025 button
@@ -4363,9 +4387,10 @@ async function initPickSystem() {
     });
     document.getElementById('s25-close').addEventListener('click', function() {
         document.getElementById('season2025-overlay').style.display = 'none';
+        showCharacterImages();
     });
     document.getElementById('season2025-overlay').addEventListener('click', function(e) {
-        if (e.target === this) this.style.display = 'none';
+        if (e.target === this) { this.style.display = 'none'; showCharacterImages(); }
     });
 
     // Admin trigger
@@ -4383,7 +4408,7 @@ async function initPickSystem() {
     });
 
     document.getElementById('admin-overlay').addEventListener('click', function(e) {
-        if (e.target === this) this.style.display = 'none';
+        if (e.target === this) { this.style.display = 'none'; showCharacterImages(); }
     });
 
     // Results button
@@ -4397,10 +4422,11 @@ async function initPickSystem() {
 
     document.getElementById('results-close').addEventListener('click', function() {
         document.getElementById('results-overlay').style.display = 'none';
+        showCharacterImages();
     });
 
     document.getElementById('results-overlay').addEventListener('click', function(e) {
-        if (e.target === this) this.style.display = 'none';
+        if (e.target === this) { this.style.display = 'none'; showCharacterImages(); }
     });
 
     // Hook do existujícího updateDisplay pro aktualizaci submit buttonu
