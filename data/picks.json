@@ -114,7 +114,7 @@
     },
     {
       "round": 21,
-      "name": "SÃÂÃÂ£o Paulo GP",
+      "name": "SÃÂÃÂÃÂÃÂ£o Paulo GP",
       "date": "2026-11-08"
     },
     {
@@ -228,11 +228,57 @@
   },
   "raceResults": {
     "1": {
-      "qualifying": {},
-      "race": {},
+      "qualifying": {
+        "Verstappen": 20,
+        "Hadjar": 3,
+        "Norris": 6,
+        "Piastri": 5,
+        "Leclerc": 4,
+        "Hamilton": 7,
+        "Russel": 1,
+        "Antonelli": 2,
+        "Alonso": 17,
+        "Stroll": 22,
+        "Gasly": 14,
+        "Colapinto": 16,
+        "Albon": 15,
+        "Sainz": 21,
+        "Lawson": 8,
+        "Lindblad": 9,
+        "Ocon": 13,
+        "Bearman": 12,
+        "Hulkenberg": 11,
+        "Bortoleto": 10,
+        "Perez": 18,
+        "Bottas": 19
+      },
+      "race": {
+        "Verstappen": 6,
+        "Hadjar": "DNF",
+        "Norris": 5,
+        "Piastri": "DNS",
+        "Leclerc": 3,
+        "Hamilton": 4,
+        "Russel": 1,
+        "Antonelli": 2,
+        "Alonso": "DNF",
+        "Stroll": 17,
+        "Gasly": 10,
+        "Colapinto": 14,
+        "Albon": 12,
+        "Sainz": 15,
+        "Lawson": 13,
+        "Lindblad": 8,
+        "Ocon": 11,
+        "Bearman": 7,
+        "Hulkenberg": "DNS",
+        "Bortoleto": 9,
+        "Perez": 16,
+        "Bottas": "DNF"
+      },
       "polePosition": "Russel",
-      "fastestLap": "",
-      "dotd": ""
+      "fastestLap": "Verstappen",
+      "dotd": "Verstappen"
     }
   }
 }
