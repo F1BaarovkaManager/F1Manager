@@ -2972,6 +2972,12 @@ const POSITION_POINTS = {
     8: 9, 9: 8, 10: 7, 11: 6, 12: 5, 13: 4, 14: 3, 15: 2, 16: 1
 };
 
+const PENALTY_POINTS = {
+    'DSQ': -20,
+    'DNS': -10,
+    'DNF': -10
+};
+
 let picksData = null;
 let picksSha = null;
 let currentPlayer = localStorage.getItem('f1_current_player') || '';
@@ -3745,7 +3751,7 @@ function showAdmin() {
 // --- Scoring System ---
 
 function calculateDriverPoints(driver, raceResults) {
-    if (!raceResults) return { position: 0, posChange: 0, dotd: 0, fl: 0, pole: 0, total: 0, racePos: '-', qualiPos: '-' };
+    if (!raceResults) return { position: 0, posChange: 0, penalty: 0, dotd: 0, fl: 0, pole: 0, total: 0, racePos: '-', qualiPos: '-' };
 
     const quali = raceResults.qualifying || {};
     const race = raceResults.race || {};
@@ -3764,16 +3770,23 @@ function calculateDriverPoints(driver, raceResults) {
         posChangePts = qualiPos - racePos; // positive if gained positions
     }
 
+    // Penalty points for DSQ/DNS/DNF
+    let penaltyPts = 0;
+    if (typeof racePos === 'string' && PENALTY_POINTS[racePos]) {
+        penaltyPts = PENALTY_POINTS[racePos];
+    }
+
     // Bonus points
     const dotdPts = (raceResults.dotd === driver) ? 5 : 0;
     const flPts = (raceResults.fastestLap === driver) ? 5 : 0;
     const polePts = (raceResults.polePosition === driver) ? 5 : 0;
 
-    const total = positionPts + posChangePts + dotdPts + flPts + polePts;
+    const total = positionPts + posChangePts + penaltyPts + dotdPts + flPts + polePts;
 
     return {
         position: positionPts,
         posChange: posChangePts,
+        penalty: penaltyPts,
         dotd: dotdPts,
         fl: flPts,
         pole: polePts,
@@ -3895,6 +3908,7 @@ function renderResults(round) {
                 <th>Cíl</th>
                 <th>Pozice b.</th>
                 <th>+/- pozice</th>
+                <th>Penalta</th>
                 <th>Pole</th>
                 <th>FL</th>
                 <th>DotD</th>
@@ -3905,12 +3919,14 @@ function renderResults(round) {
             const pts = ds.points;
             const changeClass = pts.posChange > 0 ? 'points-positive' : (pts.posChange < 0 ? 'points-negative' : '');
             const changeStr = pts.posChange > 0 ? `+${pts.posChange}` : String(pts.posChange);
+            const penaltyClass = pts.penalty < 0 ? 'points-negative' : '';
             html += `<tr>
                 <td style="text-align:left; font-weight:500;">${ds.driver}</td>
                 <td>${pts.qualiPos}</td>
                 <td>${pts.racePos}</td>
                 <td>${pts.position}</td>
                 <td class="${changeClass}">${changeStr}</td>
+                <td class="${penaltyClass}">${pts.penalty ? pts.penalty : '-'}</td>
                 <td>${pts.pole ? '+5' : '-'}</td>
                 <td>${pts.fl ? '+5' : '-'}</td>
                 <td>${pts.dotd ? '+5' : '-'}</td>
@@ -3921,7 +3937,7 @@ function renderResults(round) {
         // Team row
         const teamPts = score.teamScore;
         html += `<tr style="background:#f5f5f5; border-top:2px solid #ddd;">
-            <td style="text-align:left; font-weight:bold;" colspan="8">
+            <td style="text-align:left; font-weight:bold;" colspan="9">
                 Tým: ${score.team} (průměr obou jezdců)
             </td>
             <td class="points-total">${teamPts.avg.toFixed(1)}</td>
@@ -3933,12 +3949,14 @@ function renderResults(round) {
                 const pts = td.points;
                 const changeClass = pts.posChange > 0 ? 'points-positive' : (pts.posChange < 0 ? 'points-negative' : '');
                 const changeStr = pts.posChange > 0 ? `+${pts.posChange}` : String(pts.posChange);
+                const teamPenaltyClass = pts.penalty < 0 ? 'points-negative' : '';
                 html += `<tr style="background:#fafafa; font-size:0.85em; color:#666;">
                     <td style="text-align:left; padding-left:20px;">&rarr; ${td.driver}</td>
                     <td>${pts.qualiPos}</td>
                     <td>${pts.racePos}</td>
                     <td>${pts.position}</td>
                     <td class="${changeClass}">${changeStr}</td>
+                    <td class="${teamPenaltyClass}">${pts.penalty ? pts.penalty : '-'}</td>
                     <td>${pts.pole ? '+5' : '-'}</td>
                     <td>${pts.fl ? '+5' : '-'}</td>
                     <td>${pts.dotd ? '+5' : '-'}</td>
