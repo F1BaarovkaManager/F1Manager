@@ -287,14 +287,14 @@
       },
       "2": {
         "drivers": [
-          "Russel",
           "Antonelli",
+          "Russel",
           "Gasly",
-          "Bortoleto",
-          "Hamilton"
+          "Bearman",
+          "Lindblad"
         ],
         "team": "Mercedes",
-        "timestamp": "2026-03-14T07:43:33.785Z"
+        "timestamp": "2026-03-13T04:25:09.231Z"
       }
     }
   },
