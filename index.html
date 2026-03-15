@@ -2169,6 +2169,18 @@
                     <button id="admin-load-results" style="margin-left:8px; padding:8px 16px; font-size:0.85em;">Načíst</button>
                 </div>
 
+                <div id="admin-sprint-section" class="admin-section" style="display:none; border-left:4px solid #ff6600;">
+                    <h4 style="color:#ff6600;">🏁 Sprint kvalifikace</h4>
+                    <p class="admin-prefill-note">Pozice ve sprintové kvalifikaci (SQ). Body jsou poloviční oproti hlavnímu závodu.</p>
+                    <div id="admin-sprint-quali-grid" class="admin-grid"></div>
+                </div>
+
+                <div id="admin-sprint-race-section" class="admin-section" style="display:none; border-left:4px solid #ff6600;">
+                    <h4 style="color:#ff6600;">🏁 Sprint závod</h4>
+                    <p class="admin-prefill-note">Výsledek sprintového závodu. Body jsou poloviční. DNF/DNS/DSQ penalizace také poloviční.</p>
+                    <div id="admin-sprint-race-grid" class="admin-grid"></div>
+                </div>
+
                 <div class="admin-section">
                     <h4>Kvalifikace (startovní pozice)</h4>
                     <p class="admin-prefill-note">Vyplňte pozice 1-20 pro každého jezdce. Kvalifikace se propíše do výsledků jako výchozí pořadí.</p>
@@ -3019,7 +3031,7 @@ async function loadPicksFromGitHub() {
         if (resp.ok) {
             const data = await resp.json();
             picksSha = data.sha;
-            picksData = JSON.parse(atob(data.content));
+            picksData = JSON.parse(decodeURIComponent(escape(atob(data.content))));
             return picksData;
         } else if (resp.status === 404) {
             picksData = getDefaultPicksData();
@@ -3103,31 +3115,31 @@ function getDefaultPicksData() {
         season: 2026,
         maxDriverUses: MAX_DRIVER_USES,
         maxTeamUses: MAX_TEAM_USES,
-        players: ["Flyons Racing", "Flygirl", "Salvetus", "F17", "Piňa", "Vzoom", "Martini Motors"],
+        players: ["Flyons Racing", "Flygirl", "Salvetus Motorsport", "F17", "Pi\u0148a", "Vzoom", "Martini Motors"],
         races: [
             {round: 1, name: "Australian GP", date: "2026-03-08"},
-            {round: 2, name: "Chinese GP", date: "2026-03-15"},
+            {round: 2, name: "Chinese GP", date: "2026-03-15", sprint: true},
             {round: 3, name: "Japanese GP", date: "2026-03-29"},
             {round: 4, name: "Bahrain GP", date: "2026-04-12"},
             {round: 5, name: "Saudi Arabian GP", date: "2026-04-19"},
-            {round: 6, name: "Miami GP", date: "2026-05-03"},
+            {round: 6, name: "Miami GP", date: "2026-05-03", sprint: true},
             {round: 7, name: "Canadian GP", date: "2026-05-24"},
             {round: 8, name: "Monaco GP", date: "2026-06-07"},
             {round: 9, name: "Barcelona GP", date: "2026-06-14"},
             {round: 10, name: "Austrian GP", date: "2026-06-28"},
             {round: 11, name: "British GP", date: "2026-07-05"},
-            {round: 12, name: "Belgian GP", date: "2026-07-19"},
+            {round: 12, name: "Belgian GP", date: "2026-07-19", sprint: true},
             {round: 13, name: "Hungarian GP", date: "2026-07-26"},
             {round: 14, name: "Dutch GP", date: "2026-08-23"},
             {round: 15, name: "Italian GP", date: "2026-09-06"},
             {round: 16, name: "Madrid GP", date: "2026-09-14"},
             {round: 17, name: "Azerbaijan GP", date: "2026-09-26"},
             {round: 18, name: "Singapore GP", date: "2026-10-11"},
-            {round: 19, name: "United States GP", date: "2026-10-25"},
+            {round: 19, name: "United States GP", date: "2026-10-25", sprint: true},
             {round: 20, name: "Mexico City GP", date: "2026-11-01"},
-            {round: 21, name: "São Paulo GP", date: "2026-11-08"},
+            {round: 21, name: "São Paulo GP", date: "2026-11-08", sprint: true},
             {round: 22, name: "Las Vegas GP", date: "2026-11-21"},
-            {round: 23, name: "Qatar GP", date: "2026-11-29"},
+            {round: 23, name: "Qatar GP", date: "2026-11-29", sprint: true},
             {round: 24, name: "Abu Dhabi GP", date: "2026-12-06"}
         ],
         picks: {}
@@ -3578,6 +3590,12 @@ function buildDriverOptions() {
     return html;
 }
 
+function isSprintRound(round) {
+    if (!picksData || !picksData.races) return false;
+    const race = picksData.races.find(r => String(r.round) === String(round));
+    return race && race.sprint === true;
+}
+
 function populateAdminRaceSelect() {
     const select = document.getElementById('admin-race-select');
     select.innerHTML = '<option value="">-- Vyber závod --</option>';
@@ -3586,7 +3604,7 @@ function populateAdminRaceSelect() {
             const hasResults = picksData.raceResults && picksData.raceResults[String(race.round)];
             const opt = document.createElement('option');
             opt.value = String(race.round);
-            opt.textContent = `R${race.round}: ${race.name}${hasResults ? ' ✓' : ''}`;
+            opt.textContent = `R${race.round}: ${race.name}${race.sprint ? ' 🏁' : ''}${hasResults ? ' ✓' : ''}`;
             select.appendChild(opt);
         });
     }
@@ -3601,7 +3619,7 @@ function populateResultsRaceSelect() {
             if (hasResults) {
                 const opt = document.createElement('option');
                 opt.value = String(race.round);
-                opt.textContent = `R${race.round}: ${race.name}`;
+                opt.textContent = `R${race.round}: ${race.name}${race.sprint ? ' 🏁' : ''}`;
                 select.appendChild(opt);
             }
         });
@@ -3611,12 +3629,16 @@ function populateResultsRaceSelect() {
 function buildAdminGrids() {
     const qualiGrid = document.getElementById('admin-quali-grid');
     const raceGrid = document.getElementById('admin-race-grid');
+    const sprintQualiGrid = document.getElementById('admin-sprint-quali-grid');
+    const sprintRaceGrid = document.getElementById('admin-sprint-race-grid');
     const poleSelect = document.getElementById('admin-pole');
     const flSelect = document.getElementById('admin-fl');
     const dotdSelect = document.getElementById('admin-dotd');
 
     let qualiHtml = '';
     let raceHtml = '';
+    let sprintQualiHtml = '';
+    let sprintRaceHtml = '';
 
     ALL_DRIVERS.forEach(driver => {
         qualiHtml += `<div class="admin-grid-item">
@@ -3627,10 +3649,20 @@ function buildAdminGrids() {
             <label>${driver}</label>
             <select id="race-${driver}" data-driver="${driver}" class="race-select">${buildPositionOptions(true)}</select>
         </div>`;
+        sprintQualiHtml += `<div class="admin-grid-item">
+            <label>${driver}</label>
+            <select id="sq-${driver}" data-driver="${driver}" class="sq-select">${buildPositionOptions(false)}</select>
+        </div>`;
+        sprintRaceHtml += `<div class="admin-grid-item">
+            <label>${driver}</label>
+            <select id="sr-${driver}" data-driver="${driver}" class="sr-select">${buildPositionOptions(true)}</select>
+        </div>`;
     });
 
     qualiGrid.innerHTML = qualiHtml;
     raceGrid.innerHTML = raceHtml;
+    sprintQualiGrid.innerHTML = sprintQualiHtml;
+    sprintRaceGrid.innerHTML = sprintRaceHtml;
     poleSelect.innerHTML = buildDriverOptions();
     flSelect.innerHTML = buildDriverOptions();
     dotdSelect.innerHTML = buildDriverOptions();
@@ -3645,16 +3677,39 @@ function buildAdminGrids() {
             }
         });
     });
+
+    // Auto-prefill sprint race from sprint quali
+    document.querySelectorAll('.sq-select').forEach(sel => {
+        sel.addEventListener('change', function() {
+            const driver = this.dataset.driver;
+            const srSelect = document.getElementById('sr-' + driver);
+            if (srSelect && !srSelect.value) {
+                srSelect.value = this.value;
+            }
+        });
+    });
+}
+
+function toggleSprintSections(round) {
+    const isSprint = isSprintRound(round);
+    document.getElementById('admin-sprint-section').style.display = isSprint ? 'block' : 'none';
+    document.getElementById('admin-sprint-race-section').style.display = isSprint ? 'block' : 'none';
 }
 
 function loadAdminResults(round) {
+    toggleSprintSections(round);
+
     if (!picksData || !picksData.raceResults || !picksData.raceResults[String(round)]) {
         // Clear all
         ALL_DRIVERS.forEach(d => {
             const q = document.getElementById('quali-' + d);
             const r = document.getElementById('race-' + d);
+            const sq = document.getElementById('sq-' + d);
+            const sr = document.getElementById('sr-' + d);
             if (q) q.value = '';
             if (r) r.value = '';
+            if (sq) sq.value = '';
+            if (sr) sr.value = '';
         });
         document.getElementById('admin-pole').value = '';
         document.getElementById('admin-fl').value = '';
@@ -3666,12 +3721,20 @@ function loadAdminResults(round) {
     ALL_DRIVERS.forEach(d => {
         const q = document.getElementById('quali-' + d);
         const r = document.getElementById('race-' + d);
+        const sq = document.getElementById('sq-' + d);
+        const sr = document.getElementById('sr-' + d);
         if (q && results.qualifying && results.qualifying[d] !== undefined) {
             q.value = String(results.qualifying[d]);
         } else if (q) { q.value = ''; }
         if (r && results.race && results.race[d] !== undefined) {
             r.value = String(results.race[d]);
         } else if (r) { r.value = ''; }
+        if (sq && results.sprintQualifying && results.sprintQualifying[d] !== undefined) {
+            sq.value = String(results.sprintQualifying[d]);
+        } else if (sq) { sq.value = ''; }
+        if (sr && results.sprintRace && results.sprintRace[d] !== undefined) {
+            sr.value = String(results.sprintRace[d]);
+        } else if (sr) { sr.value = ''; }
     });
 
     document.getElementById('admin-pole').value = results.polePosition || '';
@@ -3689,12 +3752,21 @@ async function saveAdminResults() {
 
     const qualifying = {};
     const race = {};
+    const sprintQualifying = {};
+    const sprintRace = {};
 
     ALL_DRIVERS.forEach(d => {
         const qVal = document.getElementById('quali-' + d).value;
         const rVal = document.getElementById('race-' + d).value;
         if (qVal) qualifying[d] = isNaN(qVal) ? qVal : parseInt(qVal);
         if (rVal) race[d] = isNaN(rVal) ? rVal : parseInt(rVal);
+
+        if (isSprintRound(round)) {
+            const sqVal = document.getElementById('sq-' + d).value;
+            const srVal = document.getElementById('sr-' + d).value;
+            if (sqVal) sprintQualifying[d] = isNaN(sqVal) ? sqVal : parseInt(sqVal);
+            if (srVal) sprintRace[d] = isNaN(srVal) ? srVal : parseInt(srVal);
+        }
     });
 
     const polePosition = document.getElementById('admin-pole').value || '';
@@ -3703,13 +3775,20 @@ async function saveAdminResults() {
 
     if (!picksData.raceResults) picksData.raceResults = {};
 
-    picksData.raceResults[String(round)] = {
+    const resultData = {
         qualifying,
         race,
         polePosition,
         fastestLap,
         dotd
     };
+
+    if (isSprintRound(round)) {
+        resultData.sprintQualifying = sprintQualifying;
+        resultData.sprintRace = sprintRace;
+    }
+
+    picksData.raceResults[String(round)] = resultData;
 
     const raceName = (picksData.races.find(r => String(r.round) === String(round)) || {}).name || `R${round}`;
     const saved = await savePicksToGitHub(`Results: ${raceName}`);
@@ -3730,6 +3809,8 @@ async function saveAdminResults() {
                 round: round,
                 qualifying: qualifying,
                 race_result: race,
+                sprintQualifying: isSprintRound(round) ? sprintQualifying : undefined,
+                sprintRace: isSprintRound(round) ? sprintRace : undefined,
                 polePosition: polePosition,
                 fastestLap: fastestLap,
                 dotd: dotd
@@ -3751,7 +3832,7 @@ function showAdmin() {
 // --- Scoring System ---
 
 function calculateDriverPoints(driver, raceResults) {
-    if (!raceResults) return { position: 0, posChange: 0, penalty: 0, dotd: 0, fl: 0, pole: 0, total: 0, racePos: '-', qualiPos: '-' };
+    if (!raceResults) return { position: 0, posChange: 0, penalty: 0, dotd: 0, fl: 0, pole: 0, sprint: 0, total: 0, racePos: '-', qualiPos: '-', sprintQualiPos: '-', sprintRacePos: '-' };
 
     const quali = raceResults.qualifying || {};
     const race = raceResults.race || {};
@@ -3781,7 +3862,27 @@ function calculateDriverPoints(driver, raceResults) {
     const flPts = (raceResults.fastestLap === driver) ? 5 : 0;
     const polePts = (raceResults.polePosition === driver) ? 5 : 0;
 
-    const total = positionPts + posChangePts + penaltyPts + dotdPts + flPts + polePts;
+    // Sprint points (halved) - same logic as main race but /2
+    let sprintPts = 0;
+    const sprintQualiPos = (raceResults.sprintQualifying || {})[driver];
+    const sprintRacePos = (raceResults.sprintRace || {})[driver];
+
+    if (raceResults.sprintRace) {
+        // Sprint position points (halved)
+        if (typeof sprintRacePos === 'number' && POSITION_POINTS[sprintRacePos]) {
+            sprintPts += POSITION_POINTS[sprintRacePos] / 2;
+        }
+        // Sprint position change (halved)
+        if (typeof sprintQualiPos === 'number' && typeof sprintRacePos === 'number') {
+            sprintPts += (sprintQualiPos - sprintRacePos) / 2;
+        }
+        // Sprint penalty (halved)
+        if (typeof sprintRacePos === 'string' && PENALTY_POINTS[sprintRacePos]) {
+            sprintPts += PENALTY_POINTS[sprintRacePos] / 2;
+        }
+    }
+
+    const total = positionPts + posChangePts + penaltyPts + dotdPts + flPts + polePts + sprintPts;
 
     return {
         position: positionPts,
@@ -3790,9 +3891,12 @@ function calculateDriverPoints(driver, raceResults) {
         dotd: dotdPts,
         fl: flPts,
         pole: polePts,
+        sprint: sprintPts,
         total: total,
         racePos: racePos || '-',
-        qualiPos: qualiPos || '-'
+        qualiPos: qualiPos || '-',
+        sprintQualiPos: sprintQualiPos || '-',
+        sprintRacePos: sprintRacePos || '-'
     };
 }
 
@@ -3872,6 +3976,7 @@ function renderResults(round) {
 
     const raceResults = picksData.raceResults[String(round)];
     const raceName = (picksData.races.find(r => String(r.round) === String(round)) || {}).name || `R${round}`;
+    const isSprint = isSprintRound(round);
     const players = picksData.players || [];
 
     // Calculate scores for all players
@@ -3880,7 +3985,7 @@ function renderResults(round) {
     // Sort by grandTotal descending
     scores.sort((a, b) => b.grandTotal - a.grandTotal);
 
-    let html = `<h3 style="color:#e10600; margin-top:0;">${raceName}</h3>`;
+    let html = `<h3 style="color:#e10600; margin-top:0;">${raceName}${isSprint ? ' <span style="color:#ff6600; font-size:0.7em;">🏁 SPRINT VÍKEND</span>' : ''}</h3>`;
 
     // Race info
     html += `<div style="margin-bottom:16px; padding:10px; background:#f0f0f0; border-radius:8px; font-size:0.9em;">`;
@@ -3904,29 +4009,36 @@ function renderResults(round) {
         html += `<table class="results-table">
             <thead><tr>
                 <th>Jezdec/Tým</th>
+                ${isSprint ? '<th>SQ</th><th>Sprint</th>' : ''}
                 <th>Quali</th>
                 <th>Cíl</th>
                 <th>Pozice b.</th>
                 <th>+/- pozice</th>
                 <th>Penalta</th>
+                ${isSprint ? '<th>Sprint b.</th>' : ''}
                 <th>Pole</th>
                 <th>FL</th>
                 <th>DotD</th>
                 <th>Celkem</th>
             </tr></thead><tbody>`;
 
+        const colSpan = isSprint ? 12 : 9;
+
         score.drivers.forEach(ds => {
             const pts = ds.points;
             const changeClass = pts.posChange > 0 ? 'points-positive' : (pts.posChange < 0 ? 'points-negative' : '');
             const changeStr = pts.posChange > 0 ? `+${pts.posChange}` : String(pts.posChange);
             const penaltyClass = pts.penalty < 0 ? 'points-negative' : '';
+            const sprintClass = pts.sprint > 0 ? 'points-positive' : (pts.sprint < 0 ? 'points-negative' : '');
             html += `<tr>
                 <td style="text-align:left; font-weight:500;">${ds.driver}</td>
+                ${isSprint ? `<td>${pts.sprintQualiPos}</td><td>${pts.sprintRacePos}</td>` : ''}
                 <td>${pts.qualiPos}</td>
                 <td>${pts.racePos}</td>
                 <td>${pts.position}</td>
                 <td class="${changeClass}">${changeStr}</td>
                 <td class="${penaltyClass}">${pts.penalty ? pts.penalty : '-'}</td>
+                ${isSprint ? `<td class="${sprintClass}">${pts.sprint ? pts.sprint.toFixed(1) : '-'}</td>` : ''}
                 <td>${pts.pole ? '+5' : '-'}</td>
                 <td>${pts.fl ? '+5' : '-'}</td>
                 <td>${pts.dotd ? '+5' : '-'}</td>
@@ -3937,7 +4049,7 @@ function renderResults(round) {
         // Team row
         const teamPts = score.teamScore;
         html += `<tr style="background:#f5f5f5; border-top:2px solid #ddd;">
-            <td style="text-align:left; font-weight:bold;" colspan="9">
+            <td style="text-align:left; font-weight:bold;" colspan="${colSpan}">
                 Tým: ${score.team} (průměr obou jezdců)
             </td>
             <td class="points-total">${teamPts.avg.toFixed(1)}</td>
@@ -3950,13 +4062,16 @@ function renderResults(round) {
                 const changeClass = pts.posChange > 0 ? 'points-positive' : (pts.posChange < 0 ? 'points-negative' : '');
                 const changeStr = pts.posChange > 0 ? `+${pts.posChange}` : String(pts.posChange);
                 const teamPenaltyClass = pts.penalty < 0 ? 'points-negative' : '';
+                const sprintClass = pts.sprint > 0 ? 'points-positive' : (pts.sprint < 0 ? 'points-negative' : '');
                 html += `<tr style="background:#fafafa; font-size:0.85em; color:#666;">
                     <td style="text-align:left; padding-left:20px;">&rarr; ${td.driver}</td>
+                    ${isSprint ? `<td>${pts.sprintQualiPos}</td><td>${pts.sprintRacePos}</td>` : ''}
                     <td>${pts.qualiPos}</td>
                     <td>${pts.racePos}</td>
                     <td>${pts.position}</td>
                     <td class="${changeClass}">${changeStr}</td>
                     <td class="${teamPenaltyClass}">${pts.penalty ? pts.penalty : '-'}</td>
+                    ${isSprint ? `<td class="${sprintClass}">${pts.sprint ? pts.sprint.toFixed(1) : '-'}</td>` : ''}
                     <td>${pts.pole ? '+5' : '-'}</td>
                     <td>${pts.fl ? '+5' : '-'}</td>
                     <td>${pts.dotd ? '+5' : '-'}</td>
