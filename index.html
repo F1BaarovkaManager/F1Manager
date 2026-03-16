@@ -2181,6 +2181,22 @@
                     <div id="admin-sprint-race-grid" class="admin-grid"></div>
                 </div>
 
+                <div id="admin-sprint-bonus-section" class="admin-section" style="display:none; border-left:4px solid #ff6600;">
+                    <h4 style="color:#ff6600;">🏁 Sprint bonusy <span style="font-weight:normal; font-size:0.8em;">(2.5b každý)</span></h4>
+                    <div class="admin-bonus-row">
+                        <label>Sprint Pole Position:</label>
+                        <select id="admin-sprint-pole"></select>
+                    </div>
+                    <div class="admin-bonus-row">
+                        <label>Sprint Fastest Lap:</label>
+                        <select id="admin-sprint-fl"></select>
+                    </div>
+                    <div class="admin-bonus-row">
+                        <label>Sprint DotD:</label>
+                        <select id="admin-sprint-dotd"></select>
+                    </div>
+                </div>
+
                 <div class="admin-section">
                     <h4>Kvalifikace (startovní pozice)</h4>
                     <p class="admin-prefill-note">Vyplňte pozice 1-20 pro každého jezdce. Kvalifikace se propíše do výsledků jako výchozí pořadí.</p>
@@ -3667,6 +3683,10 @@ function buildAdminGrids() {
     flSelect.innerHTML = buildDriverOptions();
     dotdSelect.innerHTML = buildDriverOptions();
 
+    document.getElementById('admin-sprint-pole').innerHTML = buildDriverOptions();
+    document.getElementById('admin-sprint-fl').innerHTML = buildDriverOptions();
+    document.getElementById('admin-sprint-dotd').innerHTML = buildDriverOptions();
+
     // Auto-prefill race from quali
     document.querySelectorAll('.quali-select').forEach(sel => {
         sel.addEventListener('change', function() {
@@ -3694,6 +3714,7 @@ function toggleSprintSections(round) {
     const isSprint = isSprintRound(round);
     document.getElementById('admin-sprint-section').style.display = isSprint ? 'block' : 'none';
     document.getElementById('admin-sprint-race-section').style.display = isSprint ? 'block' : 'none';
+    document.getElementById('admin-sprint-bonus-section').style.display = isSprint ? 'block' : 'none';
 }
 
 function loadAdminResults(round) {
@@ -3714,6 +3735,9 @@ function loadAdminResults(round) {
         document.getElementById('admin-pole').value = '';
         document.getElementById('admin-fl').value = '';
         document.getElementById('admin-dotd').value = '';
+        document.getElementById('admin-sprint-pole').value = '';
+        document.getElementById('admin-sprint-fl').value = '';
+        document.getElementById('admin-sprint-dotd').value = '';
         return;
     }
 
@@ -3740,6 +3764,9 @@ function loadAdminResults(round) {
     document.getElementById('admin-pole').value = results.polePosition || '';
     document.getElementById('admin-fl').value = results.fastestLap || '';
     document.getElementById('admin-dotd').value = results.dotd || '';
+    document.getElementById('admin-sprint-pole').value = results.sprintPolePosition || '';
+    document.getElementById('admin-sprint-fl').value = results.sprintFastestLap || '';
+    document.getElementById('admin-sprint-dotd').value = results.sprintDotd || '';
 }
 
 async function saveAdminResults() {
@@ -3786,6 +3813,9 @@ async function saveAdminResults() {
     if (isSprintRound(round)) {
         resultData.sprintQualifying = sprintQualifying;
         resultData.sprintRace = sprintRace;
+        resultData.sprintPolePosition = document.getElementById('admin-sprint-pole').value || '';
+        resultData.sprintFastestLap = document.getElementById('admin-sprint-fl').value || '';
+        resultData.sprintDotd = document.getElementById('admin-sprint-dotd').value || '';
     }
 
     picksData.raceResults[String(round)] = resultData;
@@ -3832,7 +3862,7 @@ function showAdmin() {
 // --- Scoring System ---
 
 function calculateDriverPoints(driver, raceResults) {
-    if (!raceResults) return { position: 0, posChange: 0, penalty: 0, dotd: 0, fl: 0, pole: 0, sprint: 0, total: 0, racePos: '-', qualiPos: '-', sprintQualiPos: '-', sprintRacePos: '-' };
+    if (!raceResults) return { position: 0, posChange: 0, penalty: 0, dotd: 0, fl: 0, pole: 0, sprint: 0, sprintBonus: 0, total: 0, racePos: '-', qualiPos: '-', sprintQualiPos: '-', sprintRacePos: '-' };
 
     const quali = raceResults.qualifying || {};
     const race = raceResults.race || {};
@@ -3864,6 +3894,7 @@ function calculateDriverPoints(driver, raceResults) {
 
     // Sprint points (halved) - same logic as main race but /2
     let sprintPts = 0;
+    let sprintBonusPts = 0;
     const sprintQualiPos = (raceResults.sprintQualifying || {})[driver];
     const sprintRacePos = (raceResults.sprintRace || {})[driver];
 
@@ -3880,9 +3911,13 @@ function calculateDriverPoints(driver, raceResults) {
         if (typeof sprintRacePos === 'string' && PENALTY_POINTS[sprintRacePos]) {
             sprintPts += PENALTY_POINTS[sprintRacePos] / 2;
         }
+        // Sprint bonuses (halved: 5/2 = 2.5 each)
+        if (raceResults.sprintPolePosition === driver) sprintBonusPts += 2.5;
+        if (raceResults.sprintFastestLap === driver) sprintBonusPts += 2.5;
+        if (raceResults.sprintDotd === driver) sprintBonusPts += 2.5;
     }
 
-    const total = positionPts + posChangePts + penaltyPts + dotdPts + flPts + polePts + sprintPts;
+    const total = positionPts + posChangePts + penaltyPts + dotdPts + flPts + polePts + sprintPts + sprintBonusPts;
 
     return {
         position: positionPts,
@@ -3892,6 +3927,7 @@ function calculateDriverPoints(driver, raceResults) {
         fl: flPts,
         pole: polePts,
         sprint: sprintPts,
+        sprintBonus: sprintBonusPts,
         total: total,
         racePos: racePos || '-',
         qualiPos: qualiPos || '-',
@@ -4015,14 +4051,14 @@ function renderResults(round) {
                 <th>Pozice b.</th>
                 <th>+/- pozice</th>
                 <th>Penalta</th>
-                ${isSprint ? '<th>Sprint b.</th>' : ''}
+                ${isSprint ? '<th>Sprint b.</th><th>S.Bonus</th>' : ''}
                 <th>Pole</th>
                 <th>FL</th>
                 <th>DotD</th>
                 <th>Celkem</th>
             </tr></thead><tbody>`;
 
-        const colSpan = isSprint ? 12 : 9;
+        const colSpan = isSprint ? 13 : 9;
 
         score.drivers.forEach(ds => {
             const pts = ds.points;
@@ -4038,7 +4074,7 @@ function renderResults(round) {
                 <td>${pts.position}</td>
                 <td class="${changeClass}">${changeStr}</td>
                 <td class="${penaltyClass}">${pts.penalty ? pts.penalty : '-'}</td>
-                ${isSprint ? `<td class="${sprintClass}">${pts.sprint ? pts.sprint.toFixed(1) : '-'}</td>` : ''}
+                ${isSprint ? `<td class="${sprintClass}">${pts.sprint ? pts.sprint.toFixed(1) : '-'}</td><td class="${pts.sprintBonus > 0 ? 'points-positive' : ''}">${pts.sprintBonus ? '+' + pts.sprintBonus.toFixed(1) : '-'}</td>` : ''}
                 <td>${pts.pole ? '+5' : '-'}</td>
                 <td>${pts.fl ? '+5' : '-'}</td>
                 <td>${pts.dotd ? '+5' : '-'}</td>
@@ -4071,7 +4107,7 @@ function renderResults(round) {
                     <td>${pts.position}</td>
                     <td class="${changeClass}">${changeStr}</td>
                     <td class="${teamPenaltyClass}">${pts.penalty ? pts.penalty : '-'}</td>
-                    ${isSprint ? `<td class="${sprintClass}">${pts.sprint ? pts.sprint.toFixed(1) : '-'}</td>` : ''}
+                    ${isSprint ? `<td class="${sprintClass}">${pts.sprint ? pts.sprint.toFixed(1) : '-'}</td><td class="${pts.sprintBonus > 0 ? 'points-positive' : ''}">${pts.sprintBonus ? '+' + pts.sprintBonus.toFixed(1) : '-'}</td>` : ''}
                     <td>${pts.pole ? '+5' : '-'}</td>
                     <td>${pts.fl ? '+5' : '-'}</td>
                     <td>${pts.dotd ? '+5' : '-'}</td>
