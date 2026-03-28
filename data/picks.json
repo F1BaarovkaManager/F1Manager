@@ -306,6 +306,17 @@
         ],
         "team": "Mercedes",
         "timestamp": "2026-03-13T04:25:09.231Z"
+      },
+      "3": {
+        "drivers": [
+          "Leclerc",
+          "Russel",
+          "Sainz",
+          "Colapinto",
+          "Bearman"
+        ],
+        "team": "Haas",
+        "timestamp": "2026-03-28T05:04:54.053Z"
       }
     }
   },
