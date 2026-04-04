@@ -197,6 +197,17 @@
         ],
         "team": "Ferrari",
         "timestamp": "2026-03-12T20:19:07.758Z"
+      },
+      "3": {
+        "drivers": [
+          "Hamilton",
+          "Leclerc",
+          "Russel",
+          "Ocon",
+          "Bortoleto"
+        ],
+        "team": "Haas",
+        "timestamp": "2026-04-04T15:48:31.104Z"
       }
     },
     "F17": {
