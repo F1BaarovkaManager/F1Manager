@@ -3296,10 +3296,13 @@ function updatePicksStatus() {
 
 function updateSubmitButton() {
     const btn = document.getElementById('submit-pick-button');
+    const raceInfo = picksData && picksData.races && picksData.races.find(r => String(r.round) === String(currentRound));
+    const isCancelled = raceInfo && raceInfo.cancelled;
     const canSubmit = currentPlayer &&
                       currentRound &&
                       selectedDrivers.length === 5 &&
                       selectedTeam &&
+                      !isCancelled &&
                       !isRoundSubmitted(currentPlayer, currentRound);
 
     const driversTotal = selectedDrivers.reduce((s, d) => s + Number(d.price), 0);
@@ -3336,12 +3339,18 @@ function populateRaceDropdown() {
             const opt = document.createElement('option');
             opt.value = String(race.round);
             const submitted = currentPlayer && isRoundSubmitted(currentPlayer, race.round);
-            opt.textContent = `R${race.round}: ${race.name} (${race.date})${submitted ? ' ✓' : ''}`;
+            if (race.cancelled) {
+                opt.textContent = `R${race.round}: ${race.name} ❌ ZRUŠENO`;
+                opt.disabled = true;
+                opt.style.color = '#999';
+            } else {
+                opt.textContent = `R${race.round}: ${race.name} (${race.date})${submitted ? ' ✓' : ''}`;
+            }
             select.appendChild(opt);
 
-            // Automaticky vybrat nejbližší budoucí závod
+            // Automaticky vybrat nejbližší budoucí závod (přeskočit zrušené)
             const raceDate = new Date(race.date);
-            if (!nearestRound && raceDate >= new Date(now.getTime() - 2*86400000)) {
+            if (!nearestRound && !race.cancelled && raceDate >= new Date(now.getTime() - 2*86400000)) {
                 nearestRound = String(race.round);
             }
         });
@@ -3620,7 +3629,11 @@ function populateAdminRaceSelect() {
             const hasResults = picksData.raceResults && picksData.raceResults[String(race.round)];
             const opt = document.createElement('option');
             opt.value = String(race.round);
-            opt.textContent = `R${race.round}: ${race.name}${race.sprint ? ' 🏁' : ''}${hasResults ? ' ✓' : ''}`;
+            if (race.cancelled) {
+                opt.textContent = `R${race.round}: ${race.name} ❌ ZRUŠENO`;
+            } else {
+                opt.textContent = `R${race.round}: ${race.name}${race.sprint ? ' 🏁' : ''}${hasResults ? ' ✓' : ''}`;
+            }
             select.appendChild(opt);
         });
     }
@@ -3632,10 +3645,14 @@ function populateResultsRaceSelect() {
     if (picksData && picksData.races) {
         picksData.races.forEach(race => {
             const hasResults = picksData.raceResults && picksData.raceResults[String(race.round)];
-            if (hasResults) {
+            if (hasResults || race.cancelled) {
                 const opt = document.createElement('option');
                 opt.value = String(race.round);
-                opt.textContent = `R${race.round}: ${race.name}${race.sprint ? ' 🏁' : ''}`;
+                if (race.cancelled) {
+                    opt.textContent = `R${race.round}: ${race.name} ❌ ZRUŠENO`;
+                } else {
+                    opt.textContent = `R${race.round}: ${race.name}${race.sprint ? ' 🏁' : ''}`;
+                }
                 select.appendChild(opt);
             }
         });
@@ -4005,13 +4022,23 @@ function renderResults(round) {
         return;
     }
 
+    const raceInfo = picksData && picksData.races && picksData.races.find(r => String(r.round) === String(round));
+    if (raceInfo && raceInfo.cancelled) {
+        content.innerHTML = `<div style="text-align:center; padding:40px;">
+            <div style="font-size:3em;">❌</div>
+            <h3 style="color:#e10600; margin:12px 0 8px;">${raceInfo.name}</h3>
+            <p style="color:#888; font-size:1.1em;">Závod byl zrušen.</p>
+        </div>`;
+        return;
+    }
+
     if (!picksData || !picksData.raceResults || !picksData.raceResults[String(round)]) {
         content.innerHTML = '<p style="text-align:center; color:#888;">Pro tento závod nejsou zadané výsledky.</p>';
         return;
     }
 
     const raceResults = picksData.raceResults[String(round)];
-    const raceName = (picksData.races.find(r => String(r.round) === String(round)) || {}).name || `R${round}`;
+    const raceName = (raceInfo || {}).name || `R${round}`;
     const isSprint = isSprintRound(round);
     const players = picksData.players || [];
 
