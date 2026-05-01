@@ -221,17 +221,6 @@
         ],
         "team": "Haas",
         "timestamp": "2026-04-04T15:48:31.104Z"
-      },
-      "6": {
-        "drivers": [
-          "Verstappen",
-          "Gasly",
-          "Sainz",
-          "Bortoleto",
-          "Leclerc"
-        ],
-        "team": "Red Bull Racing",
-        "timestamp": "2026-05-01T20:06:14.503Z"
       }
     },
     "F17": {
@@ -313,6 +302,17 @@
         ],
         "team": "Mercedes",
         "timestamp": "2026-04-04T15:39:23.741Z"
+      },
+      "6": {
+        "drivers": [
+          "Bortoleto",
+          "Hamilton",
+          "Antonelli",
+          "Gasly",
+          "Verstappen"
+        ],
+        "team": "Ferrari",
+        "timestamp": "2026-05-01T20:10:04.861Z"
       }
     },
     "Flygirl": {
