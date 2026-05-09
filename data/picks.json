@@ -701,13 +701,13 @@
         "Bottas": 19
       },
       "race": {
-        "Verstappen": 4,
+        "Verstappen": 5,
         "Hadjar": "DNF",
         "Norris": 2,
         "Piastri": 3,
         "Leclerc": 8,
         "Hamilton": 6,
-        "Russel": 5,
+        "Russel": 4,
         "Antonelli": 1,
         "Alonso": 15,
         "Stroll": 17,
@@ -725,7 +725,7 @@
         "Bottas": 18
       },
       "polePosition": "Antonelli",
-      "fastestLap": "Verstappen",
+      "fastestLap": "Norris",
       "dotd": "Verstappen",
       "sprintQualifying": {
         "Verstappen": 5,
@@ -776,8 +776,8 @@
         "Bottas": 19
       },
       "sprintPolePosition": "Norris",
-      "sprintFastestLap": "Verstappen",
-      "sprintDotd": ""
+      "sprintFastestLap": "Norris",
+      "sprintDotd": "Verstappen"
     }
   }
 }
