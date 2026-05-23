@@ -1576,11 +1576,169 @@
                 height: 32px;
             }
         }
+        /* ===== MINI GAME ===== */
+        #minigame-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #0a0a12;
+            z-index: 99999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            color: white;
+        }
+        #minigame-overlay.active { display: flex; }
+
+        #mg-title {
+            font-size: 1.4em;
+            letter-spacing: 3px;
+            color: #e10600;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+
+        /* LIGHTS */
+        #mg-lights-container {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+        .mg-light {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #1a1a2e;
+            border: 3px solid #333;
+            transition: background 0.12s, box-shadow 0.12s;
+        }
+        .mg-light.on {
+            background: #e10600;
+            box-shadow: 0 0 18px 6px #e10600aa;
+            border-color: #ff4433;
+        }
+
+        #mg-go-btn {
+            display: none;
+            background: #e10600;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 18px 50px;
+            font-size: 1.3em;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 20px #e1060088;
+            transition: transform 0.1s, box-shadow 0.1s;
+            margin-bottom: 40px;
+        }
+        #mg-go-btn:active { transform: scale(0.96); }
+
+        #mg-reaction-result {
+            font-size: 1em;
+            color: #aaa;
+            margin-top: -30px;
+            margin-bottom: 20px;
+            min-height: 22px;
+        }
+
+        /* CANVAS CORNERS */
+        #mg-corner-section { display: none; flex-direction: column; align-items: center; }
+        #mg-corner-label {
+            font-size: 1em;
+            color: #aaa;
+            margin-bottom: 14px;
+            letter-spacing: 1px;
+        }
+        #mg-canvas {
+            border: 2px solid #333;
+            border-radius: 8px;
+            cursor: crosshair;
+            background: #111;
+            touch-action: none;
+            max-width: 95vw;
+            max-height: 55vw;
+        }
+        #mg-canvas-hint {
+            font-size: 0.75em;
+            color: #555;
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+        #mg-corner-btns {
+            display: flex;
+            gap: 16px;
+            margin-top: 18px;
+        }
+        .mg-btn {
+            background: #1e1e2e;
+            color: white;
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 10px 28px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85em;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: background 0.15s;
+        }
+        .mg-btn:hover { background: #2a2a3e; }
+        .mg-btn.primary { background: #e10600; border-color: #e10600; }
+        .mg-btn.primary:hover { background: #c00400; }
+
+        /* RESULTS */
+        #mg-results-section { display: none; flex-direction: column; align-items: center; gap: 12px; }
+        #mg-final-time {
+            font-size: 3em;
+            color: #e10600;
+            letter-spacing: 4px;
+        }
+        #mg-score-breakdown { font-size: 0.85em; color: #888; text-align: center; line-height: 1.8; }
+        #mg-leaderboard {
+            margin-top: 10px;
+            font-size: 0.8em;
+            color: #aaa;
+            text-align: center;
+        }
+        #mg-leaderboard table { font-family: 'Orbitron', sans-serif; font-size: 0.85em; color: #ccc; background: transparent; box-shadow: none; }
+        #mg-leaderboard th { background: #1a1a2e; color: #e10600; }
+        #mg-leaderboard td { border-bottom: 1px solid #222; }
+
+        #mg-close-btn {
+            position: absolute;
+            top: 18px;
+            right: 24px;
+            background: none;
+            border: none;
+            color: #555;
+            font-size: 1.6em;
+            cursor: pointer;
+            font-family: sans-serif;
+            transition: color 0.15s;
+        }
+        #mg-close-btn:hover { color: #e10600; }
+
+        #mg-wait-msg {
+            font-size: 1em;
+            color: #e10600;
+            letter-spacing: 2px;
+            display: none;
+        }
+        #mg-early-msg {
+            font-size: 0.9em;
+            color: #ff6633;
+            letter-spacing: 1px;
+            display: none;
+            margin-top: 8px;
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>F1 Baarovka Manager</h1>
+        <h1 id="mg-header-trigger" style="cursor:default;">F1 Baarovka Manager</h1>
     </header>
 
     <!-- Player / Race selection bar -->
@@ -2011,6 +2169,7 @@
                     <button id="overview-button">Přehled picků</button>
                     <button id="results-button">Výsledky & Body</button>
                     <button class="admin-trigger" id="admin-trigger" title="Admin">&#9998;</button>
+                    <button class="admin-trigger" id="mg-open-btn" title="F1 Lap Challenge">&#127937;</button>
                 </div>
             </div>
         </div>
@@ -2272,6 +2431,47 @@
         </div>
     </div>
 
+
+    <!-- MINI GAME OVERLAY -->
+    <div id="minigame-overlay">
+        <button id="mg-close-btn" title="Zavřít">&#x2715;</button>
+        <div id="mg-title">F1 Lap Challenge</div>
+
+        <!-- Phase 1: Lights + reaction -->
+        <div id="mg-lights-section">
+            <div id="mg-lights-container">
+                <div class="mg-light" id="mg-l1"></div>
+                <div class="mg-light" id="mg-l2"></div>
+                <div class="mg-light" id="mg-l3"></div>
+                <div class="mg-light" id="mg-l4"></div>
+                <div class="mg-light" id="mg-l5"></div>
+            </div>
+            <div id="mg-wait-msg">WAIT FOR LIGHTS OUT...</div>
+            <button id="mg-go-btn">GO!</button>
+            <div id="mg-reaction-result"></div>
+            <div id="mg-early-msg">TOO EARLY! JUMP START!</div>
+        </div>
+
+        <!-- Phase 2: Corners -->
+        <div id="mg-corner-section">
+            <div id="mg-corner-label">CORNER 1 / 4 — Draw your racing line</div>
+            <canvas id="mg-canvas" width="500" height="320"></canvas>
+            <div id="mg-canvas-hint">Click and drag to draw your line through the corner</div>
+            <div id="mg-corner-btns">
+                <button class="mg-btn" id="mg-clear-btn">Clear</button>
+                <button class="mg-btn primary" id="mg-next-btn">Next Corner</button>
+            </div>
+        </div>
+
+        <!-- Phase 3: Results -->
+        <div id="mg-results-section">
+            <div style="font-size:0.8em; color:#888; letter-spacing:2px; margin-bottom:4px;">YOUR LAP TIME</div>
+            <div id="mg-final-time">1:23.456</div>
+            <div id="mg-score-breakdown"></div>
+            <div id="mg-leaderboard"></div>
+            <button class="mg-btn primary" id="mg-restart-btn" style="margin-top:18px;">Try Again</button>
+        </div>
+    </div>
 
     <script>
         // Základní nastavení
@@ -4298,6 +4498,440 @@ async function initPickSystem() {
 initPickSystem();
 
     }); // konec DOMContentLoaded
+
+    // =============================================
+    // MINI GAME — F1 Lap Challenge
+    // Hidden trigger: click the header title 5x fast
+    // =============================================
+    (function() {
+        let clickCount = 0, clickTimer = null;
+        document.getElementById('mg-header-trigger').addEventListener('click', function() {
+            clickCount++;
+            clearTimeout(clickTimer);
+            clickTimer = setTimeout(() => { clickCount = 0; }, 1500);
+            if (clickCount >= 5) {
+                clickCount = 0;
+                openMiniGame();
+            }
+        });
+
+        // ---- State ----
+        let reactionStart = null;
+        let reactionMs = null;
+        let lightsState = 'idle'; // idle | countdown | ready | gone
+        let cornerIndex = 0;
+        let cornerScores = [];
+        let drawing = false;
+        let userPath = [];
+
+        // ---- Corner definitions ----
+        // Each corner: track bounds, ideal line (bezier), entry/exit arrows
+        const CORNERS = [
+            {
+                name: 'Hairpin',
+                trackColor: '#2a2a2a',
+                // Outer wall polygon, inner wall polygon (canvas 500x320)
+                outer: [{x:60,y:30},{x:440,y:30},{x:440,y:160},{x:380,y:160},{x:380,y:90},{x:120,y:90},{x:120,y:230},{x:440,y:230},{x:440,y:290},{x:60,y:290}],
+                inner: [{x:180,y:150},{x:320,y:150},{x:320,y:170},{x:180,y:170}],
+                ideal: [{x:80,y:60},{x:350,y:60},{x:410,y:130},{x:350,y:210},{x:80,y:210}],
+                entryArrow: {x:80,y:60,dx:1,dy:0},
+                exitArrow: {x:80,y:210,dx:-1,dy:0}
+            },
+            {
+                name: 'Fast Chicane',
+                outer: [{x:40,y:100},{x:180,y:100},{x:180,y:60},{x:320,y:60},{x:320,y:100},{x:460,y:100},{x:460,y:220},{x:320,y:220},{x:320,y:260},{x:180,y:260},{x:180,y:220},{x:40,y:220}],
+                inner: null,
+                ideal: [{x:60,y:160},{x:160,y:160},{x:200,y:80},{x:300,y:80},{x:340,y:160},{x:440,y:160}],
+                entryArrow: {x:60,y:160,dx:1,dy:0},
+                exitArrow: {x:440,y:160,dx:1,dy:0}
+            },
+            {
+                name: 'Long Sweeper',
+                outer: [{x:50,y:220},{x:50,y:80},{x:200,y:40},{x:450,y:40},{x:450,y:160},{x:280,y:160},{x:130,y:160},{x:130,y:260},{x:50,y:260}],
+                inner: null,
+                ideal: [{x:70,y:200},{x:70,y:110},{x:160,y:70},{x:380,y:70},{x:430,y:110},{x:300,y:140},{x:150,y:140},{x:110,y:240}],
+                entryArrow: {x:70,y:200,dx:0,dy:-1},
+                exitArrow: {x:110,y:240,dx:0,dy:1}
+            },
+            {
+                name: 'Double Apex',
+                outer: [{x:40,y:140},{x:160,y:50},{x:340,y:50},{x:460,y:140},{x:460,y:200},{x:340,y:270},{x:160,y:270},{x:40,y:200}],
+                inner: [{x:180,y:130},{x:320,y:130},{x:320,y:190},{x:180,y:190}],
+                ideal: [{x:60,y:170},{x:130,y:80},{x:250,y:110},{x:370,y:80},{x:440,y:170},{x:370,y:240},{x:250,y:210},{x:130,y:240},{x:60,y:170}],
+                entryArrow: {x:60,y:170,dx:1,dy:-1},
+                exitArrow: {x:60,y:170,dx:-1,dy:1}
+            }
+        ];
+
+        function openMiniGame() {
+            document.getElementById('minigame-overlay').classList.add('active');
+            resetGame();
+        }
+
+        function closeMiniGame() {
+            document.getElementById('minigame-overlay').classList.remove('active');
+            stopLightSequence();
+        }
+
+        function resetGame() {
+            reactionMs = null;
+            lightsState = 'idle';
+            cornerIndex = 0;
+            cornerScores = [];
+            userPath = [];
+            drawing = false;
+
+            document.getElementById('mg-lights-section').style.display = '';
+            document.getElementById('mg-corner-section').style.display = 'none';
+            document.getElementById('mg-results-section').style.display = 'none';
+
+            document.getElementById('mg-go-btn').style.display = 'none';
+            document.getElementById('mg-wait-msg').style.display = 'none';
+            document.getElementById('mg-reaction-result').textContent = '';
+            document.getElementById('mg-early-msg').style.display = 'none';
+
+            [1,2,3,4,5].forEach(i => document.getElementById('mg-l'+i).classList.remove('on'));
+
+            startLightSequence();
+        }
+
+        let lightTimers = [];
+        function stopLightSequence() {
+            lightTimers.forEach(clearTimeout);
+            lightTimers = [];
+        }
+
+        function startLightSequence() {
+            stopLightSequence();
+            lightsState = 'countdown';
+            document.getElementById('mg-wait-msg').style.display = 'block';
+
+            // Turn lights on one by one: 0.8s apart
+            [1,2,3,4,5].forEach((i, idx) => {
+                lightTimers.push(setTimeout(() => {
+                    document.getElementById('mg-l'+i).classList.add('on');
+                }, 800 + idx * 800));
+            });
+
+            // After all 5 lit, wait random 0.5–2.5s then go out
+            const holdDelay = 800 + 5*800 + 500 + Math.random()*2000;
+            lightTimers.push(setTimeout(() => {
+                [1,2,3,4,5].forEach(i => document.getElementById('mg-l'+i).classList.remove('on'));
+                lightsState = 'ready';
+                reactionStart = performance.now();
+                document.getElementById('mg-wait-msg').style.display = 'none';
+                document.getElementById('mg-go-btn').style.display = 'block';
+                document.getElementById('mg-go-btn').focus();
+            }, holdDelay));
+        }
+
+        document.getElementById('mg-go-btn').addEventListener('click', function() {
+            if (lightsState === 'countdown') {
+                // Jump start
+                stopLightSequence();
+                lightsState = 'idle';
+                document.getElementById('mg-go-btn').style.display = 'none';
+                document.getElementById('mg-wait-msg').style.display = 'none';
+                document.getElementById('mg-early-msg').style.display = 'block';
+                [1,2,3,4,5].forEach(i => document.getElementById('mg-l'+i).classList.remove('on'));
+                setTimeout(() => {
+                    document.getElementById('mg-early-msg').style.display = 'none';
+                    startLightSequence();
+                }, 1800);
+                return;
+            }
+            if (lightsState !== 'ready') return;
+            reactionMs = Math.round(performance.now() - reactionStart);
+            lightsState = 'gone';
+            this.style.display = 'none';
+
+            let msg = '';
+            if (reactionMs < 150) msg = `⚡ ${reactionMs}ms — Alien reflexes!`;
+            else if (reactionMs < 250) msg = `${reactionMs}ms — Great reaction!`;
+            else if (reactionMs < 400) msg = `${reactionMs}ms — Decent start`;
+            else msg = `${reactionMs}ms — Slow off the line`;
+            document.getElementById('mg-reaction-result').textContent = msg;
+
+            setTimeout(startCornerPhase, 1200);
+        });
+
+        // Also allow Space/Enter for go button
+        document.addEventListener('keydown', function(e) {
+            if (!document.getElementById('minigame-overlay').classList.contains('active')) return;
+            if (e.code === 'Space' || e.code === 'Enter') {
+                const btn = document.getElementById('mg-go-btn');
+                if (btn.style.display !== 'none') btn.click();
+            }
+            if (e.code === 'Escape') closeMiniGame();
+        });
+
+        function startCornerPhase() {
+            document.getElementById('mg-lights-section').style.display = 'none';
+            document.getElementById('mg-corner-section').style.display = 'flex';
+            cornerIndex = 0;
+            loadCorner(0);
+        }
+
+        function loadCorner(idx) {
+            userPath = [];
+            drawing = false;
+            const c = CORNERS[idx];
+            document.getElementById('mg-corner-label').textContent =
+                `CORNER ${idx+1} / 4 — ${c.name} — Draw your racing line`;
+            document.getElementById('mg-canvas-hint').textContent =
+                'Click/drag to draw your line. Green = entry, Red = exit.';
+            drawCornerBackground(idx);
+        }
+
+        const canvas = document.getElementById('mg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        function drawCornerBackground(idx) {
+            const c = CORNERS[idx];
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Tarmac
+            ctx.fillStyle = '#1a1a1a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw track surface using outer polygon
+            ctx.fillStyle = '#2d2d2d';
+            ctx.beginPath();
+            c.outer.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+            ctx.closePath();
+            ctx.fill();
+
+            // Kerbs on outer (dashed red/white stripes along boundary)
+            ctx.strokeStyle = '#555';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([6,4]);
+            ctx.beginPath();
+            c.outer.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+            ctx.closePath();
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Inner kerb if exists
+            if (c.inner) {
+                ctx.fillStyle = '#111';
+                ctx.beginPath();
+                c.inner.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+                ctx.closePath();
+                ctx.fill();
+                ctx.strokeStyle = '#555';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([6,4]);
+                ctx.beginPath();
+                c.inner.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+                ctx.closePath();
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            // Draw ideal line (faint, dashed grey — only shown after scoring)
+            // (intentionally hidden here)
+
+            // Entry arrow (green)
+            drawArrow(ctx, c.entryArrow.x, c.entryArrow.y, c.entryArrow.dx, c.entryArrow.dy, '#00e676');
+            // Exit arrow (red)
+            drawArrow(ctx, c.exitArrow.x, c.exitArrow.y, c.exitArrow.dx, c.exitArrow.dy, '#e10600');
+        }
+
+        function drawArrow(ctx, x, y, dx, dy, color) {
+            const len = 28, hw = 8;
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.fillStyle = color;
+            ctx.lineWidth = 3;
+            ctx.globalAlpha = 0.9;
+            // shaft
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + dx*len, y + dy*len);
+            ctx.stroke();
+            // arrowhead
+            const angle = Math.atan2(dy, dx);
+            ctx.beginPath();
+            ctx.moveTo(x + dx*(len+hw), y + dy*(len+hw));
+            ctx.lineTo(x + dx*len - hw*Math.sin(angle+0.5), y + dy*len + hw*Math.cos(angle+0.5));
+            ctx.lineTo(x + dx*len + hw*Math.sin(angle-0.5), y + dy*len - hw*Math.cos(angle-0.5));
+            ctx.closePath();
+            ctx.fill();
+            ctx.globalAlpha = 1;
+            ctx.restore();
+        }
+
+        function drawUserPath() {
+            if (userPath.length < 2) return;
+            ctx.save();
+            ctx.strokeStyle = '#00bfff';
+            ctx.lineWidth = 3;
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.globalAlpha = 0.85;
+            ctx.beginPath();
+            ctx.moveTo(userPath[0].x, userPath[0].y);
+            for (let i = 1; i < userPath.length; i++) ctx.lineTo(userPath[i].x, userPath[i].y);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+            ctx.restore();
+        }
+
+        function getCanvasPos(e) {
+            const r = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / r.width;
+            const scaleY = canvas.height / r.height;
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: (clientX - r.left)*scaleX, y: (clientY - r.top)*scaleY };
+        }
+
+        canvas.addEventListener('mousedown', e => { drawing = true; userPath = []; userPath.push(getCanvasPos(e)); });
+        canvas.addEventListener('mousemove', e => { if (!drawing) return; userPath.push(getCanvasPos(e)); drawCornerBackground(cornerIndex); drawUserPath(); });
+        canvas.addEventListener('mouseup', () => { drawing = false; });
+        canvas.addEventListener('mouseleave', () => { drawing = false; });
+        canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; userPath = []; userPath.push(getCanvasPos(e)); }, {passive:false});
+        canvas.addEventListener('touchmove', e => { e.preventDefault(); if (!drawing) return; userPath.push(getCanvasPos(e)); drawCornerBackground(cornerIndex); drawUserPath(); }, {passive:false});
+        canvas.addEventListener('touchend', () => { drawing = false; });
+
+        document.getElementById('mg-clear-btn').addEventListener('click', () => {
+            userPath = [];
+            drawCornerBackground(cornerIndex);
+        });
+
+        document.getElementById('mg-next-btn').addEventListener('click', () => {
+            if (userPath.length < 10) {
+                document.getElementById('mg-canvas-hint').textContent = 'Draw a line first!';
+                return;
+            }
+            const score = scoreCorner(cornerIndex, userPath);
+            cornerScores.push(score);
+            showIdealLine(cornerIndex);
+            setTimeout(() => {
+                cornerIndex++;
+                if (cornerIndex < CORNERS.length) {
+                    loadCorner(cornerIndex);
+                } else {
+                    showResults();
+                }
+            }, 900);
+        });
+
+        function showIdealLine(idx) {
+            const ideal = CORNERS[idx].ideal;
+            ctx.save();
+            ctx.strokeStyle = '#ffcc00';
+            ctx.lineWidth = 2.5;
+            ctx.setLineDash([8,5]);
+            ctx.globalAlpha = 0.7;
+            ctx.beginPath();
+            ctx.moveTo(ideal[0].x, ideal[0].y);
+            for (let i = 1; i < ideal.length; i++) ctx.lineTo(ideal[i].x, ideal[i].y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.globalAlpha = 1;
+            ctx.restore();
+            drawUserPath();
+        }
+
+        function scoreCorner(idx, path) {
+            // Resample ideal to 60 pts, find avg min distance from user path
+            const ideal = resamplePath(CORNERS[idx].ideal, 60);
+            const user = resamplePath(path, 60);
+            let totalDist = 0;
+            ideal.forEach(ip => {
+                let minD = Infinity;
+                user.forEach(up => {
+                    const d = Math.hypot(up.x-ip.x, up.y-ip.y);
+                    if (d < minD) minD = d;
+                });
+                totalDist += minD;
+            });
+            const avgDist = totalDist / ideal.length;
+            // score 0-100: dist=0 → 100, dist≥80px → 0
+            return Math.max(0, Math.round(100 - (avgDist / 80) * 100));
+        }
+
+        function resamplePath(pts, n) {
+            if (pts.length === 0) return [];
+            let totalLen = 0;
+            const segs = [];
+            for (let i = 1; i < pts.length; i++) {
+                const d = Math.hypot(pts[i].x-pts[i-1].x, pts[i].y-pts[i-1].y);
+                segs.push(d);
+                totalLen += d;
+            }
+            const step = totalLen / (n - 1);
+            const result = [pts[0]];
+            let dist = 0, seg = 0, carry = 0;
+            for (let i = 1; i < n; i++) {
+                let target = i * step;
+                while (seg < segs.length && carry + segs[seg] < target) {
+                    carry += segs[seg]; seg++;
+                }
+                if (seg >= segs.length) { result.push(pts[pts.length-1]); continue; }
+                const t = (target - carry) / segs[seg];
+                result.push({
+                    x: pts[seg].x + t*(pts[seg+1].x - pts[seg].x),
+                    y: pts[seg].y + t*(pts[seg+1].y - pts[seg].y)
+                });
+            }
+            return result;
+        }
+
+        function showResults() {
+            document.getElementById('mg-corner-section').style.display = 'none';
+            document.getElementById('mg-results-section').style.display = 'flex';
+
+            // Base lap time: 82.000s (1:22.000 — generic fast lap)
+            const BASE = 82000; // ms
+
+            // Reaction penalty: perfect=150ms → 0ms, 600ms → +2500ms, jump start → +5000ms
+            const reactMs = reactionMs !== null ? reactionMs : 600;
+            const reactPenalty = Math.max(0, (reactMs - 150) * 5);
+
+            // Corner penalties: each corner score 0-100, 100=0 penalty, 0=+8000ms
+            const cornerPenalty = cornerScores.reduce((sum, s) => sum + Math.round((100-s) * 80), 0);
+
+            const total = BASE + reactPenalty + cornerPenalty;
+            const mins = Math.floor(total / 60000);
+            const secs = Math.floor((total % 60000) / 1000);
+            const ms = total % 1000;
+            const timeStr = `${mins}:${String(secs).padStart(2,'0')}.${String(ms).padStart(3,'0')}`;
+
+            document.getElementById('mg-final-time').textContent = timeStr;
+
+            const avgCorner = cornerScores.length ? Math.round(cornerScores.reduce((a,b)=>a+b,0)/cornerScores.length) : 0;
+            let reactLabel = reactMs < 200 ? 'Perfect' : reactMs < 350 ? 'Good' : 'Slow';
+            document.getElementById('mg-score-breakdown').innerHTML =
+                `Reaction: <b>${reactMs}ms</b> (${reactLabel})<br>` +
+                `Corner avg: <b>${avgCorner}/100</b> ${cornerScores.map(s=>`<span style="color:${s>=70?'#00e676':s>=40?'#ffcc00':'#e10600'}">${s}</span>`).join(' ')}<br>` +
+                `Reaction penalty: +${(reactPenalty/1000).toFixed(3)}s &nbsp; Corner penalty: +${(cornerPenalty/1000).toFixed(3)}s`;
+
+            // Leaderboard in localStorage
+            const key = 'f1_lapchallenge_lb';
+            let lb = [];
+            try { lb = JSON.parse(localStorage.getItem(key) || '[]'); } catch(e){}
+            lb.push({ time: total, str: timeStr, date: new Date().toLocaleDateString() });
+            lb.sort((a,b) => a.time - b.time);
+            lb = lb.slice(0, 5);
+            try { localStorage.setItem(key, JSON.stringify(lb)); } catch(e){}
+
+            let lbHtml = '<div style="font-size:0.75em;color:#666;margin-bottom:6px;letter-spacing:1px;">BEST TIMES</div><table style="width:220px;"><tr><th>#</th><th>Time</th><th>Date</th></tr>';
+            lb.forEach((e,i) => {
+                const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+                lbHtml += `<tr><td>${medal||i+1}</td><td>${e.str}</td><td>${e.date}</td></tr>`;
+            });
+            lbHtml += '</table>';
+            document.getElementById('mg-leaderboard').innerHTML = lbHtml;
+        }
+
+        document.getElementById('mg-close-btn').addEventListener('click', closeMiniGame);
+        document.getElementById('mg-restart-btn').addEventListener('click', resetGame);
+        document.getElementById('mg-open-btn').addEventListener('click', openMiniGame);
+
+    })();
+
     </script>
 </body>
 </html>
