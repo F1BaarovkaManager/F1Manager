@@ -1578,162 +1578,125 @@
         }
         /* ===== MINI GAME ===== */
         #minigame-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: #0a0a12;
+            display: none; position: fixed; inset: 0;
+            background: #07070f;
             z-index: 99999;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             font-family: 'Orbitron', sans-serif;
             color: white;
+            overflow-y: auto;
         }
-        #minigame-overlay.active { display: flex; }
+        #minigame-overlay.active { display: block; }
+        #mg-close-btn {
+            position: fixed; top: 14px; right: 20px;
+            background: none; border: none; color: #555;
+            font-size: 1.8em; cursor: pointer; z-index: 100001;
+            transition: color 0.15s; font-family: sans-serif;
+        }
+        #mg-close-btn:hover { color: #e10600; }
 
-        #mg-title {
-            font-size: 1.4em;
-            letter-spacing: 3px;
-            color: #e10600;
-            text-transform: uppercase;
-            margin-bottom: 30px;
+        /* LEVEL SELECT */
+        #mg-level-select {
+            min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 30px 16px 40px;
         }
+        .mg-game-title {
+            font-size: 1.6em; letter-spacing: 4px; color: #e10600;
+            text-transform: uppercase; margin-bottom: 6px;
+        }
+        .mg-game-sub { font-size: 0.65em; color: #555; letter-spacing: 2px; margin-bottom: 28px; }
+        #mg-level-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px; width: 100%; max-width: 700px;
+        }
+        .mg-lc {
+            background: #111; border: 1px solid #222; border-radius: 10px;
+            padding: 12px 10px; cursor: pointer; text-align: center;
+            transition: border-color 0.15s, background 0.15s;
+        }
+        .mg-lc:hover { border-color: #e10600; background: #1a0000; }
+        .mg-lc-num { font-size: 0.65em; color: #555; letter-spacing: 1px; }
+        .mg-lc-name { font-size: 0.6em; color: #ccc; margin: 4px 0 5px; line-height: 1.3; }
+        .mg-lc-stars { font-size: 0.7em; }
+        .mg-lc-best { font-size: 0.55em; color: #e10600; margin-top: 4px; }
+        @media(max-width:500px){ #mg-level-grid { grid-template-columns: repeat(2,1fr); } }
+
+        /* SHARED SECTION */
+        .mg-section {
+            display: none; min-height: 100vh;
+            flex-direction: column; align-items: center;
+            justify-content: center; padding: 20px 16px;
+        }
+        .mg-section.active { display: flex; }
+        .mg-corner-hdr {
+            display: flex; gap: 18px; align-items: center;
+            margin-bottom: 6px; font-size: 0.7em; letter-spacing: 1px;
+        }
+        .mg-circuit-tag { color: #e10600; }
+        .mg-prog-tag { color: #555; }
+        .mg-corner-title {
+            font-size: 1.1em; letter-spacing: 2px; color: #fff;
+            text-transform: uppercase; margin-bottom: 2px;
+        }
+        .mg-corner-type { font-size: 0.6em; color: #888; letter-spacing: 2px; margin-bottom: 16px; }
 
         /* LIGHTS */
-        #mg-lights-container {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 40px;
-        }
+        #mg-lights-container { display: flex; gap: 14px; margin-bottom: 28px; }
         .mg-light {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: #1a1a2e;
-            border: 3px solid #333;
-            transition: background 0.12s, box-shadow 0.12s;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: #1a1a2e; border: 3px solid #2a2a3e;
+            transition: background 0.1s, box-shadow 0.1s;
         }
-        .mg-light.on {
-            background: #e10600;
-            box-shadow: 0 0 18px 6px #e10600aa;
-            border-color: #ff4433;
-        }
-
+        .mg-light.on { background: #e10600; box-shadow: 0 0 20px 8px #e10600aa; border-color: #ff4433; }
+        #mg-wait-msg { font-size: 0.9em; color: #e10600; letter-spacing: 3px; display:none; margin-bottom: 10px; }
         #mg-go-btn {
-            display: none;
-            background: #e10600;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 18px 50px;
-            font-size: 1.3em;
-            font-family: 'Orbitron', sans-serif;
-            letter-spacing: 2px;
-            cursor: pointer;
-            text-transform: uppercase;
-            box-shadow: 0 4px 20px #e1060088;
-            transition: transform 0.1s, box-shadow 0.1s;
-            margin-bottom: 40px;
+            display: none; background: #e10600; color: white; border: none;
+            border-radius: 10px; padding: 16px 48px; font-size: 1.2em;
+            font-family: 'Orbitron', sans-serif; letter-spacing: 2px;
+            cursor: pointer; text-transform: uppercase;
+            box-shadow: 0 4px 20px #e1060088; transition: transform 0.1s; margin-bottom: 20px;
         }
-        #mg-go-btn:active { transform: scale(0.96); }
-
-        #mg-reaction-result {
-            font-size: 1em;
-            color: #aaa;
-            margin-top: -30px;
-            margin-bottom: 20px;
-            min-height: 22px;
+        #mg-go-btn:active { transform: scale(0.95); }
+        #mg-reaction-result { font-size: 0.9em; color: #aaa; min-height: 20px; margin-bottom: 8px; }
+        #mg-early-msg { font-size: 0.85em; color: #ff6633; letter-spacing: 1px; display:none; margin-bottom: 8px; }
+        .mg-tip-box {
+            max-width: 500px; text-align: center; font-size: 0.62em;
+            color: #777; letter-spacing: 0.5px; line-height: 1.6;
+            border: 1px solid #222; border-radius: 8px; padding: 10px 16px;
+            margin-top: 10px;
         }
 
-        /* CANVAS CORNERS */
-        #mg-corner-section { display: none; flex-direction: column; align-items: center; }
-        #mg-corner-label {
-            font-size: 1em;
-            color: #aaa;
-            margin-bottom: 14px;
-            letter-spacing: 1px;
-        }
+        /* CANVAS */
         #mg-canvas {
-            border: 2px solid #333;
-            border-radius: 8px;
-            cursor: crosshair;
-            background: #111;
-            touch-action: none;
-            max-width: 95vw;
-            max-height: 55vw;
+            border: 2px solid #222; border-radius: 10px;
+            cursor: crosshair; touch-action: none;
+            width: min(540px, 96vw); height: auto; aspect-ratio: 540/320;
         }
-        #mg-canvas-hint {
-            font-size: 0.75em;
-            color: #555;
-            margin-top: 8px;
-            letter-spacing: 1px;
-        }
-        #mg-corner-btns {
-            display: flex;
-            gap: 16px;
-            margin-top: 18px;
-        }
+        #mg-cv-hint { font-size: 0.62em; color: #555; margin-top: 7px; letter-spacing: 1px; }
+        #mg-cv-tip { font-size: 0.6em; color: #666; max-width: 500px; text-align: center; line-height: 1.6; margin-top: 5px; }
+        #mg-corner-btns { display: flex; gap: 14px; margin-top: 14px; }
+
+        /* BUTTONS */
         .mg-btn {
-            background: #1e1e2e;
-            color: white;
-            border: 1px solid #444;
-            border-radius: 8px;
-            padding: 10px 28px;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.85em;
-            cursor: pointer;
-            letter-spacing: 1px;
-            transition: background 0.15s;
+            background: #1e1e2e; color: white; border: 1px solid #333;
+            border-radius: 8px; padding: 10px 24px;
+            font-family: 'Orbitron', sans-serif; font-size: 0.8em;
+            cursor: pointer; letter-spacing: 1px; transition: background 0.15s;
         }
         .mg-btn:hover { background: #2a2a3e; }
         .mg-btn.primary { background: #e10600; border-color: #e10600; }
         .mg-btn.primary:hover { background: #c00400; }
 
         /* RESULTS */
-        #mg-results-section { display: none; flex-direction: column; align-items: center; gap: 12px; }
-        #mg-final-time {
-            font-size: 3em;
-            color: #e10600;
-            letter-spacing: 4px;
-        }
-        #mg-score-breakdown { font-size: 0.85em; color: #888; text-align: center; line-height: 1.8; }
-        #mg-leaderboard {
-            margin-top: 10px;
-            font-size: 0.8em;
-            color: #aaa;
-            text-align: center;
-        }
-        #mg-leaderboard table { font-family: 'Orbitron', sans-serif; font-size: 0.85em; color: #ccc; background: transparent; box-shadow: none; }
-        #mg-leaderboard th { background: #1a1a2e; color: #e10600; }
-        #mg-leaderboard td { border-bottom: 1px solid #222; }
-
-        #mg-close-btn {
-            position: absolute;
-            top: 18px;
-            right: 24px;
-            background: none;
-            border: none;
-            color: #555;
-            font-size: 1.6em;
-            cursor: pointer;
-            font-family: sans-serif;
-            transition: color 0.15s;
-        }
-        #mg-close-btn:hover { color: #e10600; }
-
-        #mg-wait-msg {
-            font-size: 1em;
-            color: #e10600;
-            letter-spacing: 2px;
-            display: none;
-        }
-        #mg-early-msg {
-            font-size: 0.9em;
-            color: #ff6633;
-            letter-spacing: 1px;
-            display: none;
-            margin-top: 8px;
-        }
+        #mg-final-time { font-size: 2.8em; color: #e10600; letter-spacing: 4px; margin: 4px 0 12px; }
+        #mg-score-breakdown { font-size: 0.75em; color: #888; text-align: center; line-height: 2; }
+        #mg-corner-scores { font-size: 0.7em; color: #aaa; text-align: center; margin-top: 8px; }
+        #mg-leaderboard { margin-top: 12px; font-size: 0.75em; color: #aaa; text-align: center; }
+        #mg-leaderboard table { font-family: 'Orbitron', sans-serif; font-size: 0.85em; color: #ccc; background: transparent; box-shadow: none; min-width: 260px; }
+        #mg-leaderboard th { background: #12122a; color: #e10600; padding: 6px 12px; }
+        #mg-leaderboard td { border-bottom: 1px solid #1a1a2e; padding: 5px 10px; }
+        .mg-results-btns { display: flex; gap: 14px; margin-top: 18px; }
     </style>
 </head>
 <body>
@@ -2434,11 +2397,23 @@
 
     <!-- MINI GAME OVERLAY -->
     <div id="minigame-overlay">
-        <button id="mg-close-btn" title="Zavřít">&#x2715;</button>
-        <div id="mg-title">F1 Lap Challenge</div>
+        <button id="mg-close-btn" title="Close">&#x2715;</button>
 
-        <!-- Phase 1: Lights + reaction -->
-        <div id="mg-lights-section">
+        <!-- Screen 0: Level Select -->
+        <div id="mg-level-select">
+            <div class="mg-game-title">&#127937; F1 Lap Challenge</div>
+            <div class="mg-game-sub">20 LEVELS · 80 REAL F1 CORNERS · DRAW THE PERFECT RACING LINE</div>
+            <div id="mg-level-grid"></div>
+        </div>
+
+        <!-- Screen 1: Lights + Reaction -->
+        <div id="mg-lights-section" class="mg-section">
+            <div class="mg-corner-hdr">
+                <span class="mg-circuit-tag" id="mg-ls-circuit">Monaco 🇲🇨</span>
+                <span class="mg-prog-tag" id="mg-ls-prog">Level 1 · Corner 1/4</span>
+            </div>
+            <div class="mg-corner-title" id="mg-ls-name">Fairmont Hairpin</div>
+            <div class="mg-corner-type" id="mg-ls-type">180° HAIRPIN</div>
             <div id="mg-lights-container">
                 <div class="mg-light" id="mg-l1"></div>
                 <div class="mg-light" id="mg-l2"></div>
@@ -2449,27 +2424,37 @@
             <div id="mg-wait-msg">WAIT FOR LIGHTS OUT...</div>
             <button id="mg-go-btn">GO!</button>
             <div id="mg-reaction-result"></div>
-            <div id="mg-early-msg">TOO EARLY! JUMP START!</div>
+            <div id="mg-early-msg">JUMP START! +3 SEC PENALTY</div>
+            <div class="mg-tip-box" id="mg-ls-tip"></div>
         </div>
 
-        <!-- Phase 2: Corners -->
-        <div id="mg-corner-section">
-            <div id="mg-corner-label">CORNER 1 / 4 — Draw your racing line</div>
-            <canvas id="mg-canvas" width="500" height="320"></canvas>
-            <div id="mg-canvas-hint">Click and drag to draw your line through the corner</div>
+        <!-- Screen 2: Corner Drawing -->
+        <div id="mg-corner-section" class="mg-section">
+            <div class="mg-corner-hdr">
+                <span class="mg-circuit-tag" id="mg-cv-circuit">Monaco 🇲🇨</span>
+                <span class="mg-prog-tag" id="mg-cv-prog">CORNER 1 / 4</span>
+            </div>
+            <div class="mg-corner-title" id="mg-cv-name">Fairmont Hairpin</div>
+            <canvas id="mg-canvas" width="540" height="320"></canvas>
+            <div id="mg-cv-hint">&#9679; Click &amp; drag to draw your racing line  &#9654; from green arrow to red arrow</div>
+            <div id="mg-cv-tip"></div>
             <div id="mg-corner-btns">
-                <button class="mg-btn" id="mg-clear-btn">Clear</button>
-                <button class="mg-btn primary" id="mg-next-btn">Next Corner</button>
+                <button class="mg-btn" id="mg-clear-btn">&#8635; Clear</button>
+                <button class="mg-btn primary" id="mg-next-btn">Submit &#9654;</button>
             </div>
         </div>
 
-        <!-- Phase 3: Results -->
-        <div id="mg-results-section">
-            <div style="font-size:0.8em; color:#888; letter-spacing:2px; margin-bottom:4px;">YOUR LAP TIME</div>
+        <!-- Screen 3: Results -->
+        <div id="mg-results-section" class="mg-section">
+            <div style="font-size:0.7em;color:#555;letter-spacing:3px;margin-bottom:4px;">YOUR LAP TIME</div>
             <div id="mg-final-time">1:23.456</div>
             <div id="mg-score-breakdown"></div>
+            <div id="mg-corner-scores"></div>
             <div id="mg-leaderboard"></div>
-            <button class="mg-btn primary" id="mg-restart-btn" style="margin-top:18px;">Try Again</button>
+            <div class="mg-results-btns">
+                <button class="mg-btn" id="mg-back-btn">&#8592; Levels</button>
+                <button class="mg-btn primary" id="mg-restart-btn">Try Again &#8635;</button>
+            </div>
         </div>
     </div>
 
@@ -4500,435 +4485,618 @@ initPickSystem();
     }); // konec DOMContentLoaded
 
     // =============================================
-    // MINI GAME — F1 Lap Challenge
-    // Hidden trigger: click the header title 5x fast
+    // MINI GAME — F1 Lap Challenge (20 Levels)
     // =============================================
     (function() {
-        let clickCount = 0, clickTimer = null;
-        document.getElementById('mg-header-trigger').addEventListener('click', function() {
-            clickCount++;
-            clearTimeout(clickTimer);
-            clickTimer = setTimeout(() => { clickCount = 0; }, 1500);
-            if (clickCount >= 5) {
-                clickCount = 0;
-                openMiniGame();
-            }
-        });
+        // ── helpers ──────────────────────────────
+        function pts(a) {
+            const r = [];
+            for (let i = 0; i < a.length; i += 2) r.push({x: a[i], y: a[i+1]});
+            return r;
+        }
 
-        // ---- State ----
-        let reactionStart = null;
-        let reactionMs = null;
-        let lightsState = 'idle'; // idle | countdown | ready | gone
-        let cornerIndex = 0;
-        let cornerScores = [];
-        let drawing = false;
-        let userPath = [];
-
-        // ---- Corner definitions ----
-        // Each corner: track bounds, ideal line (bezier), entry/exit arrows
-        const CORNERS = [
-            {
-                name: 'Hairpin',
-                trackColor: '#2a2a2a',
-                // Outer wall polygon, inner wall polygon (canvas 500x320)
-                outer: [{x:60,y:30},{x:440,y:30},{x:440,y:160},{x:380,y:160},{x:380,y:90},{x:120,y:90},{x:120,y:230},{x:440,y:230},{x:440,y:290},{x:60,y:290}],
-                inner: [{x:180,y:150},{x:320,y:150},{x:320,y:170},{x:180,y:170}],
-                ideal: [{x:80,y:60},{x:350,y:60},{x:410,y:130},{x:350,y:210},{x:80,y:210}],
-                entryArrow: {x:80,y:60,dx:1,dy:0},
-                exitArrow: {x:80,y:210,dx:-1,dy:0}
-            },
-            {
-                name: 'Fast Chicane',
-                outer: [{x:40,y:100},{x:180,y:100},{x:180,y:60},{x:320,y:60},{x:320,y:100},{x:460,y:100},{x:460,y:220},{x:320,y:220},{x:320,y:260},{x:180,y:260},{x:180,y:220},{x:40,y:220}],
-                inner: null,
-                ideal: [{x:60,y:160},{x:160,y:160},{x:200,y:80},{x:300,y:80},{x:340,y:160},{x:440,y:160}],
-                entryArrow: {x:60,y:160,dx:1,dy:0},
-                exitArrow: {x:440,y:160,dx:1,dy:0}
-            },
-            {
-                name: 'Long Sweeper',
-                outer: [{x:50,y:220},{x:50,y:80},{x:200,y:40},{x:450,y:40},{x:450,y:160},{x:280,y:160},{x:130,y:160},{x:130,y:260},{x:50,y:260}],
-                inner: null,
-                ideal: [{x:70,y:200},{x:70,y:110},{x:160,y:70},{x:380,y:70},{x:430,y:110},{x:300,y:140},{x:150,y:140},{x:110,y:240}],
-                entryArrow: {x:70,y:200,dx:0,dy:-1},
-                exitArrow: {x:110,y:240,dx:0,dy:1}
-            },
-            {
-                name: 'Double Apex',
-                outer: [{x:40,y:140},{x:160,y:50},{x:340,y:50},{x:460,y:140},{x:460,y:200},{x:340,y:270},{x:160,y:270},{x:40,y:200}],
-                inner: [{x:180,y:130},{x:320,y:130},{x:320,y:190},{x:180,y:190}],
-                ideal: [{x:60,y:170},{x:130,y:80},{x:250,y:110},{x:370,y:80},{x:440,y:170},{x:370,y:240},{x:250,y:210},{x:130,y:240},{x:60,y:170}],
-                entryArrow: {x:60,y:170,dx:1,dy:-1},
-                exitArrow: {x:60,y:170,dx:-1,dy:1}
-            }
+        // ── 20 TRACK SHAPE TEMPLATES ─────────────
+        // Each: t=track centerline, w=track width, b=inner barriers[], r=ideal line, en/ex=[x,y,angleDeg]
+        const SH = [
+            // 0: Hairpin Right (180° — Monaco Fairmont, Spa La Source, Silverstone Stowe, Imola Rivazza)
+            {t:pts([30,130,288,130,372,136,426,160,452,176,426,193,372,216,288,222,30,222]),w:62,b:null,
+             r:pts([30,102,283,102,382,112,441,142,470,176,441,210,382,240,283,248,30,248]),
+             en:[30,176,0],ex:[30,176,180]},
+            // 1: Hairpin Left (180° — Suzuka Hairpin, Singapore T14)
+            {t:pts([510,130,252,130,168,136,114,160,88,176,114,193,168,216,252,222,510,222]),w:62,b:null,
+             r:pts([510,102,257,102,158,112,99,142,70,176,99,210,158,240,257,248,510,248]),
+             en:[510,176,180],ex:[510,176,0]},
+            // 2: 90° Right → Down (Suzuka T1, Bahrain T4, Monza Lesmo area)
+            {t:pts([30,155,212,155,305,158,384,172,430,200,458,248,470,302,472,320]),w:65,b:null,
+             r:pts([30,126,207,126,308,130,392,148,442,182,472,240,485,302,487,320]),
+             en:[30,155,0],ex:[472,320,90]},
+            // 3: 90° Left → Up (Monaco Casino Square, Istanbul T12)
+            {t:pts([30,165,212,165,305,162,384,148,430,120,458,72,470,18,472,0]),w:65,b:null,
+             r:pts([30,194,207,194,308,190,392,172,442,138,472,80,485,18,487,0]),
+             en:[30,165,0],ex:[472,0,270]},
+            // 4: Tight Right → Down (Monaco Saint-Devote, Rascasse, COTA T1, Barcelona T1)
+            {t:pts([30,160,200,160,296,163,372,178,416,208,441,260,451,316,454,320]),w:58,b:null,
+             r:pts([30,130,195,130,299,133,381,153,429,192,456,253,467,317,470,320]),
+             en:[30,160,0],ex:[454,320,90]},
+            // 5: Tight Left → Up (Monaco Massenet, Imola Villeneuve, Hungary T4)
+            {t:pts([30,160,200,160,296,157,372,142,416,112,441,60,451,4,454,0]),w:58,b:null,
+             r:pts([30,190,195,190,299,187,381,167,429,128,456,67,467,3,470,0]),
+             en:[30,160,0],ex:[454,0,270]},
+            // 6: Chicane Right-Left (Monza T1-2, Silverstone Club, Imola Variante Alta)
+            {t:pts([30,160,510,160]),w:88,b:[pts([210,178,325,178,325,210,210,210]),pts([315,110,448,110,448,142,315,142])],
+             r:pts([30,124,198,124,242,146,287,172,345,179,394,170,444,148,488,126,510,124]),
+             en:[30,160,0],ex:[510,160,0]},
+            // 7: Chicane Left-Right (Spa Bus Stop, Suzuka Casio, Singapore T3)
+            {t:pts([30,160,510,160]),w:88,b:[pts([210,110,325,110,325,142,210,142]),pts([315,178,448,178,448,210,315,210])],
+             r:pts([30,196,198,196,242,174,287,148,345,141,394,150,444,172,488,194,510,196]),
+             en:[30,160,0],ex:[510,160,0]},
+            // 8: Sweeper Right (Monza Lesmo 2, Barcelona T3, Istanbul T3, Bahrain T4 approach)
+            {t:pts([30,148,122,154,228,164,334,182,418,204,478,228,510,244]),w:72,b:null,
+             r:pts([30,120,120,126,228,138,336,158,421,184,481,212,510,229]),
+             en:[30,148,0],ex:[510,244,18]},
+            // 9: Sweeper Left (Monaco Tabac, Spa Blanchimont approach, Hungary T13)
+            {t:pts([30,172,122,166,228,156,334,138,418,116,478,92,510,76]),w:72,b:null,
+             r:pts([30,200,120,194,228,182,336,162,421,136,481,108,510,91]),
+             en:[30,172,0],ex:[510,76,342]},
+            // 10: Fast Sweeper Right (Silverstone Copse, Monza Curva Grande)
+            {t:pts([30,150,132,154,244,160,358,172,458,187,510,196]),w:78,b:null,
+             r:pts([30,122,130,126,244,134,360,148,460,166,510,175]),
+             en:[30,150,0],ex:[510,196,8]},
+            // 11: Fast Sweeper Left (Suzuka 130R, Spa Blanchimont, Barcelona T13-14)
+            {t:pts([30,170,132,166,244,160,358,148,458,133,510,124]),w:78,b:null,
+             r:pts([30,198,130,194,244,186,360,172,460,155,510,145]),
+             en:[30,170,0],ex:[510,124,352]},
+            // 12: Double Apex Right (Suzuka Spoon, COTA T16-18)
+            {t:pts([30,132,112,140,208,162,288,184,350,197,420,200,480,190,510,174]),w:70,b:null,
+             r:pts([30,104,110,112,208,136,288,162,350,178,420,182,480,172,510,155]),
+             en:[30,132,0],ex:[510,174,352]},
+            // 13: Double Apex Left (Spa Pouhon, Monza Lesmo sequence)
+            {t:pts([30,188,112,180,208,158,288,136,350,123,420,120,480,130,510,146]),w:70,b:null,
+             r:pts([30,216,110,208,208,182,288,158,350,142,420,138,480,148,510,165]),
+             en:[30,188,0],ex:[510,146,8]},
+            // 14: Parabolica — Increasing Radius Right (Monza Parabolica)
+            {t:pts([30,148,132,148,218,150,305,163,380,184,434,216,470,262,487,308,492,320]),w:68,b:null,
+             r:pts([30,118,127,118,218,121,308,137,386,162,442,202,479,260,497,316,502,320]),
+             en:[30,148,0],ex:[492,320,88]},
+            // 15: Istanbul T8 — Quad-Apex Long Left Curve
+            {t:pts([30,218,90,224,158,228,228,228,290,222,350,208,408,190,458,164,494,136,510,112]),w:80,b:null,
+             r:pts([30,248,90,254,158,258,228,257,290,250,352,234,410,212,460,182,496,150,510,122]),
+             en:[30,218,0],ex:[510,112,335]},
+            // 16: S-Curve Right-Left (Maggotts-Becketts, Suzuka S-Curves, COTA Esses)
+            {t:pts([30,160,110,164,196,174,272,186,328,188,382,180,436,164,484,148,510,144]),w:72,b:null,
+             r:pts([30,132,108,135,196,148,272,168,328,173,384,164,438,148,486,134,510,130]),
+             en:[30,160,0],ex:[510,144,352]},
+            // 17: S-Curve Left-Right (Becketts-Chapel, Singapore T18-19)
+            {t:pts([30,160,110,156,196,146,272,134,328,132,382,140,436,156,484,172,510,176]),w:72,b:null,
+             r:pts([30,188,108,185,196,172,272,152,328,148,384,157,438,173,486,187,510,191]),
+             en:[30,160,0],ex:[510,176,8]},
+            // 18: Triple Chicane (Monza Ascari, Bahrain T11-13)
+            {t:pts([30,160,510,160]),w:78,b:[pts([168,178,258,178,258,208,168,208]),pts([253,112,348,112,348,142,253,142]),pts([343,178,445,178,445,208,343,208])],
+             r:pts([30,124,158,124,202,145,248,172,298,186,344,184,378,165,420,142,462,122,510,120]),
+             en:[30,160,0],ex:[510,160,0]},
+            // 19: Eau Rouge/Raidillon — Uphill Left-Right-Left Complex
+            {t:pts([30,200,108,206,170,208,228,200,276,180,312,158,342,132,376,108,418,93,462,88,504,91,510,93]),w:76,b:null,
+             r:pts([30,224,106,230,170,232,230,220,278,197,314,172,344,143,378,116,420,97,463,87,505,90,510,92]),
+             en:[30,200,0],ex:[510,93,355]}
         ];
 
-        function openMiniGame() {
-            document.getElementById('minigame-overlay').classList.add('active');
-            resetGame();
+        // ── LEVEL DATA (20 levels × 4 corners) ──
+        // Each corner: [shapeIdx, "Name", "Circuit 🏴", "Type", difficultyStars, "Tip"]
+        function C(s,n,c,tp,d,tip){return{s,n,c,tp,d,tip};}
+        const LEVELS=[
+            {name:"Monaco Legends",corners:[
+                C(0,"Fairmont Hairpin","Monaco 🇲🇨","180° Hairpin",1,"Slowest corner in F1! Brake VERY late, turn in past the geometric midpoint, clip the inside wall"),
+                C(4,"Saint-Devote","Monaco 🇲🇨","Tight Right",1,"Uphill right — late apex. Drive wide on entry, turn in at the last moment, exit wide uphill"),
+                C(4,"La Rascasse","Monaco 🇲🇨","Tight Right",1,"Leads to the straight — priority exit! Maximum late apex, every extra km/h counts here"),
+                C(9,"Tabac","Monaco 🇲🇨","Fast Left Sweeper",1,"High-speed near the harbor. Near-geometric line — entry outside, smooth committed arc, exit outside"),
+            ]},
+            {name:"Temple of Speed",corners:[
+                C(6,"Variante del Rettifilo","Monza 🇮🇹","Right-Left Chicane",1,"Sacrifice the RIGHT entry — priority is the LEFT exit onto Curva Grande. One flowing S-arc"),
+                C(10,"Curva Grande","Monza 🇮🇹","Fast Right Sweeper",1,"FLAT OUT at 260 km/h! Pure geometric arc. Wide entry, gentle sweep to inside, back outside"),
+                C(8,"Lesmo 2","Monza 🇮🇹","Right Sweeper",1,"Priority exit feeds the long back straight! Wide entry, late apex, maximum exit speed"),
+                C(14,"Parabolica","Monza 🇮🇹","Increasing Radius",1,"The most famous corner! VERY late apex. The radius opens on exit — unwind smoothly under throttle"),
+            ]},
+            {name:"Spa Classics",corners:[
+                C(0,"La Source","Spa 🇧🇪","Tight Hairpin",1,"Late apex — but crucial: exit position sets up your Eau Rouge entry. Exit on the right side!"),
+                C(19,"Eau Rouge / Raidillon","Spa 🇧🇪","Uphill S-Complex",1,"FLAT OUT! Left-right-left at 300 km/h uphill. Never lift — full commitment through the blind crest"),
+                C(13,"Pouhon","Spa 🇧🇪","Double Apex Left",2,"Double left-hand apex — 4G sustained! Don't rush the first apex, carry speed through both"),
+                C(7,"Bus Stop Chicane","Spa 🇧🇪","Left-Right Chicane",1,"Priority: RIGHT exit onto pit straight. Sacrifice left entry, one S-arc, maximize exit"),
+            ]},
+            {name:"Suzuka Intro",corners:[
+                C(2,"Turn 1","Suzuka 🇯🇵","Medium Right",1,"Wide entry from main straight, medium-late apex. Position left immediately for Turn 2!"),
+                C(16,"S-Curves","Suzuka 🇯🇵","Right-Left Esses",2,"5 direction changes at 250 km/h! Rhythm and flow — exit of final S (T7) governs them all"),
+                C(1,"Hairpin","Suzuka 🇯🇵","Left Hairpin",1,"Classic late apex — exits onto long straight. Every extra km/h carries all the way to Spoon"),
+                C(12,"Spoon Curve","Suzuka 🇯🇵","Double Apex Right",2,"Two consecutive right apexes — can't late-apex the first! Clip both in sequence. Smooth!"),
+            ]},
+            {name:"Silverstone Circuit",corners:[
+                C(10,"Copse","Silverstone 🇬🇧","Fast Right",2,"280+ km/h right-hander. Near-geometric arc — entry outside, smooth sweep, no hard braking"),
+                C(16,"Maggotts-Becketts","Silverstone 🇬🇧","High-Speed S-Curves",3,"Right-left at 280 km/h! 5G lateral forces. Exit of Chapel (last element) feeds the Hangar Straight"),
+                C(0,"Stowe","Silverstone 🇬🇧","Fast Hairpin",2,"Fast hairpin with a long following straight. Wide entry, late apex, full track width on exit"),
+                C(6,"Club Complex","Silverstone 🇬🇧","Right-Left Chicane",2,"Priority exit feeds the main straight. Classic chicane sacrifice — right entry for left exit"),
+            ]},
+            {name:"Monaco Advanced",corners:[
+                C(5,"Massenet","Monaco 🇲🇨","Tight Left",2,"Late apex left, but sacrifice perfectly for Casino Square! Need to be right side immediately after"),
+                C(3,"Casino Square","Monaco 🇲🇨","Medium Left",2,"Medium-speed left downhill. Exit position feeds Mirabeau entry — don't over-apex here"),
+                C(7,"Swimming Pool","Monaco 🇲🇨","Left-Right Chicane",2,"Fastest chicane on the calendar! One S-arc at high speed. Priority: right exit toward Rascasse"),
+                C(2,"Anthony Noghes","Monaco 🇲🇨","Final Right",2,"Last corner of the lap! Wide entry, LATE apex, maximum exit speed onto the main straight"),
+            ]},
+            {name:"Hungaroring",corners:[
+                C(4,"Turn 1","Hungaroring 🇭🇺","Tight Right",2,"Heavy braking into T1. Late apex, position left for T2 immediately — linked corners!"),
+                C(5,"Turn 4","Hungaroring 🇭🇺","Tight Left",2,"Tighter than it looks. Late apex, position for exit toward the stadium section"),
+                C(0,"Turn 11 Hairpin","Hungaroring 🇭🇺","Tight Hairpin",2,"End of longest straight. Maximum late apex — the hairpin exit is key to the whole sector"),
+                C(16,"Turns 13-14","Hungaroring 🇭🇺","S-Curves",2,"Linked esses — T14 exit feeds pit straight. Sacrifice T13 for maximum T14 exit speed"),
+            ]},
+            {name:"Circuit de Barcelona",corners:[
+                C(4,"Turn 1","Barcelona 🇪🇸","Tight Right",2,"Historically fastest braking point! Late apex, position left for T2 immediately after"),
+                C(8,"Turn 3","Barcelona 🇪🇸","Right Sweeper",2,"Medium-speed right — late apex for exit speed toward Turn 4"),
+                C(17,"Turns 9-10","Barcelona 🇪🇸","Left-Right Chicane",2,"Sacrifice left entry for maximum right exit. Classic chicane priority principle"),
+                C(11,"Turns 13-14","Barcelona 🇪🇸","Fast Left",2,"High-speed left, near flat. Geometric line — smooth, committed, full track width used"),
+            ]},
+            {name:"Circuit of the Americas",corners:[
+                C(4,"Turn 1 (Big Red)","COTA 🇺🇸","Uphill Blind Hairpin",2,"BLIND apex uphill! Can't see it coming. Trail-brake, late apex, maximum exit speed"),
+                C(16,"Turns 3-6 (The Esses)","COTA 🇺🇸","Right-Left Esses",2,"Silverstone-inspired! Flow and rhythm through 4 changes. T6 exit sets up the rising esses"),
+                C(0,"Turn 11 Hairpin","COTA 🇺🇸","Tight Hairpin",2,"Slow hairpin into the stadium. Maximum late apex for the straight toward T12-13"),
+                C(12,"Turns 16-18","COTA 🇺🇸","Triple Apex Right",3,"Three sequential apexes — clip all three! Miss the first and it cascades through all of them"),
+            ]},
+            {name:"Bahrain International",corners:[
+                C(6,"Turns 1-3","Bahrain 🇧🇭","Right-Left Chicane",2,"Sacrifice right entries for the best T3 exit. One flowing S through the complex"),
+                C(2,"Turn 4","Bahrain 🇧🇭","Medium Right",2,"Exit position sets up the fast Turns 5-7 approach. Don't over-apex, leave space on outside"),
+                C(11,"Turn 8","Bahrain 🇧🇭","Fast Left",2,"High-speed left into the back section. Near-geometric line, maximize carried speed"),
+                C(18,"Turns 11-13","Bahrain 🇧🇭","Triple Chicane",3,"Three-element chicane! One S through all three. Priority: exit of T13 onto the straight"),
+            ]},
+            {name:"Istanbul Park",corners:[
+                C(4,"Turn 1","Istanbul 🇹🇷","Tight Right",2,"Anti-clockwise circuit! Heavy braking. Late apex, position for Turn 2"),
+                C(8,"Turn 3","Istanbul 🇹🇷","Fast Right Sweeper",2,"Fast downhill right-hander. Geometric arc — maximize speed carried through here"),
+                C(15,"Turn 8","Istanbul 🇹🇷","Quad-Apex Left",4,"THE legendary corner! 4 apexes, 8 seconds, 4.3G sustained. Miss apex 1 = cascade failure"),
+                C(3,"Turn 12","Istanbul 🇹🇷","Medium Left",3,"Setup for T13 hairpin. Don't over-apex — position left for T13 entry immediately after"),
+            ]},
+            {name:"Imola (Emilia-Romagna)",corners:[
+                C(11,"Tamburello","Imola 🇮🇹","Fast Left",2,"Once flat-out at 300 km/h — now chicane area. Smooth geometric arc, wide and fast"),
+                C(5,"Villeneuve","Imola 🇮🇹","Tight Left",3,"Downhill approach into a tight left. Late apex for exit speed toward Tosa hairpin"),
+                C(6,"Variante Alta","Imola 🇮🇹","Right-Left Chicane",3,"Mid-sector chicane. Priority: exit speed toward Rivazza and the pit straight approach"),
+                C(0,"Rivazza","Imola 🇮🇹","Fast Hairpin",3,"Last major corner before pit straight. Late apex, maximum exit speed!"),
+            ]},
+            {name:"Singapore Street Circuit",corners:[
+                C(7,"Turn 3","Singapore 🇸🇬","Left-Right Chicane",3,"Street circuit walls! Sacrifice left entry for right exit speed. Precision over aggression"),
+                C(4,"Turn 10","Singapore 🇸🇬","Tight Right",3,"Main overtaking zone. Late apex, clean exit through the narrow street section"),
+                C(1,"Turn 14 Hairpin","Singapore 🇸🇬","Left Hairpin",3,"Very slow street hairpin. Maximum late apex — exit onto a short but important straight"),
+                C(17,"Turns 18-19","Singapore 🇸🇬","Left-Right Combo",3,"Final complex before main straight — absolute priority exit. Everything for the straight!"),
+            ]},
+            {name:"Suzuka Advanced",corners:[
+                C(2,"Degner 1","Suzuka 🇯🇵","Fast Right",3,"First Degner: fast geometric arc. Entry position here sets up Degner 2 immediately after"),
+                C(4,"Degner 2","Suzuka 🇯🇵","Tight Right",3,"Much tighter! Don't carry too much from Degner 1 — understeer pushes into the wall"),
+                C(11,"130R","Suzuka 🇯🇵","Near-Flat Left",3,"290+ km/h flat! Geometric line. Smallest mid-corner correction = 0.3s lost minimum"),
+                C(7,"Casio Chicane","Suzuka 🇯🇵","Left-Right Chicane",3,"Last chicane before straight — maximum attack. Classic chicane sacrifice, priority right exit"),
+            ]},
+            {name:"Monza Advanced",corners:[
+                C(8,"Lesmo 1","Monza 🇮🇹","Right Sweeper",3,"Don't over-commit! Exit of Lesmo 1 must feed directly into Lesmo 2. Leave space on left"),
+                C(8,"Lesmo 2","Monza 🇮🇹","Priority Right Sweeper",4,"Maximum priority! Exit feeds the long back straight. Every km/h echoes for 800 meters"),
+                C(18,"Variante Ascari","Monza 🇮🇹","Triple Chicane",4,"Three elements — one flowing arc! Left-right-left. Exit of T8 feeds the Parabolica run"),
+                C(14,"Parabolica (Expert)","Monza 🇮🇹","Increasing Radius Expert",4,"330 km/h approach, braking to 130. Apex impossibly late. Radius opens — unwind perfectly"),
+            ]},
+            {name:"Silverstone Advanced",corners:[
+                C(11,"Abbey","Silverstone 🇬🇧","Near-Flat Left",3,"Opening corner after the straight. Near-flat — smooth geometric arc, no hard braking"),
+                C(16,"Maggotts (Advanced)","Silverstone 🇬🇧","High-Speed Right-Left",4,"Right-left at 280+ km/h! 5G forces. Commit completely — hesitation = 0.2s lost"),
+                C(17,"Becketts-Chapel","Silverstone 🇬🇧","Left-Right Priority",4,"CHAPEL EXIT IS EVERYTHING. Feeds the Hangar Straight. All prior corners serve Chapel"),
+                C(10,"Copse (Expert)","Silverstone 🇬🇧","Near-Flat Right Expert",4,"290 km/h flat. Most awe-inspiring corner on calendar. Geometric line, zero hesitation"),
+            ]},
+            {name:"Spa Advanced",corners:[
+                C(0,"La Source (Expert)","Spa 🇧🇪","Hairpin Expert",4,"Analysis level! Perfect La Source exit = perfect Eau Rouge entry. The chain starts here"),
+                C(19,"Eau Rouge/Raidillon (Expert)","Spa 🇧🇪","Uphill Complex Expert",4,"4G uphill, blind crest, 300 km/h. The most spectacular passage in motorsport"),
+                C(11,"Blanchimont","Spa 🇧🇪","High-Speed Left Expert",4,"330 km/h nearly flat! Not fully committed = surrendering 0.5s minimum"),
+                C(13,"Pouhon (Expert)","Spa 🇧🇪","Double Apex Expert",4,"4G sustained through both apexes! Don't sacrifice first apex speed — carry momentum through"),
+            ]},
+            {name:"Expert Masterclass",corners:[
+                C(14,"Parabolica (Master)","Monza 🇮🇹","Increasing Radius Master",5,"Trail-brake deep, apex so late it hurts, unwind under throttle — masterful control"),
+                C(15,"Turn 8 (Expert)","Istanbul 🇹🇷","Quad-Apex Master",5,"8 seconds of 4.3G. Four apexes. One arc. No corrections. The ultimate driver test"),
+                C(12,"Spoon Curve (Expert)","Suzuka 🇯🇵","Double Apex Expert",5,"Two apexes, tires screaming. Balance is everything — smooth is fast"),
+                C(19,"Raidillon Top (Expert)","Spa 🇧🇪","Blind Crest Expert",5,"Cresting blind at 300+ km/h — the car barely contacts the road. Commit or park it"),
+            ]},
+            {name:"Legends Circuit",corners:[
+                C(10,"130R (Maximum)","Suzuka 🇯🇵","Flat Right Max",5,"320 km/h flat out. Ended championships. Single geometric arc, absolute commitment"),
+                C(16,"S-Curves (Maximum)","Suzuka 🇯🇵","5-Apex Maximum",5,"Five direction changes at 250+ km/h. Pure rhythm and feel — mechanical, not analytical"),
+                C(12,"Turns 16-18 (Expert)","COTA 🇺🇸","Triple Apex Expert",5,"Three apexes, each dependent on the last. Miss one and the others are compromised"),
+                C(7,"Casio Chicane (Qualifying)","Suzuka 🇯🇵","Chicane Maximum",5,"Qualifying attack: maximum trail-braking, minimum speed loss. The lap decider"),
+            ]},
+            {name:"Hall of Fame — Ultimate",corners:[
+                C(0,"Fairmont Hairpin (Championship)","Monaco 🇲🇨","Championship",5,"CHAMPIONSHIP MODE: Every millimeter matters. The definition of precision in motorsport"),
+                C(16,"Maggotts-Becketts (Championship)","Silverstone 🇬🇧","Championship",5,"Greatest skill test. Five G-forces. Five apexes. Championship laps are made here"),
+                C(14,"Parabolica (Championship)","Monza 🇮🇹","Championship",5,"The altar of speed. Brake impossibly late. Apex impossibly late. Unwind perfectly"),
+                C(15,"Turn 8 (Championship)","Istanbul 🇹🇷","Championship",5,"Greatest corner in motorsport history. Eight seconds. Flawless. LEGENDARY."),
+            ]},
+        ];
+
+        // ── GAME STATE ───────────────────────────
+        let currentLevel = 0;
+        let cornerIndex = 0;
+        let cornerScores = [];
+        let reactionMs = null;
+        let reactionStart = null;
+        let lightsState = 'idle';
+        let lightTimers = [];
+        let drawing = false;
+        let userPath = [];
+        let jumpStart = false;
+
+        // ── DOM REFS ─────────────────────────────
+        const overlay = document.getElementById('minigame-overlay');
+        const selScreen = document.getElementById('mg-level-select');
+        const lightsScreen = document.getElementById('mg-lights-section');
+        const cornerScreen = document.getElementById('mg-corner-section');
+        const resultsScreen = document.getElementById('mg-results-section');
+        const canvas = document.getElementById('mg-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // ── SCREEN MANAGEMENT ────────────────────
+        function showScreen(id) {
+            [selScreen, lightsScreen, cornerScreen, resultsScreen].forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
         }
 
-        function closeMiniGame() {
-            document.getElementById('minigame-overlay').classList.remove('active');
-            stopLightSequence();
+        // ── LEVEL SELECT ─────────────────────────
+        function renderLevelSelect() {
+            const grid = document.getElementById('mg-level-grid');
+            grid.innerHTML = '';
+            LEVELS.forEach((lv, i) => {
+                const lbKey = 'f1_lc_lb_' + i;
+                let bestStr = '';
+                try {
+                    const lb = JSON.parse(localStorage.getItem(lbKey) || '[]');
+                    if (lb.length) bestStr = lb[0].str;
+                } catch(e){}
+                const stars = '⭐'.repeat(lv.corners[0].d) + (lv.corners[0].d < 5 ? '' : '');
+                const card = document.createElement('div');
+                card.className = 'mg-lc';
+                card.innerHTML = `<div class="mg-lc-num">LEVEL ${i+1}</div>
+                    <div class="mg-lc-name">${lv.name}</div>
+                    <div class="mg-lc-stars">${'⭐'.repeat(lv.corners[0].d)}</div>
+                    ${bestStr ? `<div class="mg-lc-best">${bestStr}</div>` : ''}`;
+                card.addEventListener('click', () => startLevel(i));
+                grid.appendChild(card);
+            });
         }
 
-        function resetGame() {
-            reactionMs = null;
-            lightsState = 'idle';
+        // ── START LEVEL ──────────────────────────
+        function startLevel(lvlIdx) {
+            currentLevel = lvlIdx;
             cornerIndex = 0;
             cornerScores = [];
-            userPath = [];
-            drawing = false;
+            reactionMs = null;
+            jumpStart = false;
+            startLights();
+        }
 
-            document.getElementById('mg-lights-section').style.display = '';
-            document.getElementById('mg-corner-section').style.display = 'none';
-            document.getElementById('mg-results-section').style.display = 'none';
-
+        // ── LIGHTS PHASE ─────────────────────────
+        function startLights() {
+            const lv = LEVELS[currentLevel];
+            const co = lv.corners[cornerIndex];
+            showScreen('mg-lights-section');
+            document.getElementById('mg-ls-circuit').textContent = co.c;
+            document.getElementById('mg-ls-prog').textContent = `Level ${currentLevel+1} · Corner ${cornerIndex+1}/4`;
+            document.getElementById('mg-ls-name').textContent = co.n;
+            document.getElementById('mg-ls-type').textContent = co.tp.toUpperCase();
+            document.getElementById('mg-ls-tip').textContent = co.tip;
             document.getElementById('mg-go-btn').style.display = 'none';
             document.getElementById('mg-wait-msg').style.display = 'none';
             document.getElementById('mg-reaction-result').textContent = '';
             document.getElementById('mg-early-msg').style.display = 'none';
-
             [1,2,3,4,5].forEach(i => document.getElementById('mg-l'+i).classList.remove('on'));
-
-            startLightSequence();
-        }
-
-        let lightTimers = [];
-        function stopLightSequence() {
-            lightTimers.forEach(clearTimeout);
-            lightTimers = [];
-        }
-
-        function startLightSequence() {
-            stopLightSequence();
             lightsState = 'countdown';
-            document.getElementById('mg-wait-msg').style.display = 'block';
-
-            // Turn lights on one by one: 0.8s apart
-            [1,2,3,4,5].forEach((i, idx) => {
-                lightTimers.push(setTimeout(() => {
-                    document.getElementById('mg-l'+i).classList.add('on');
-                }, 800 + idx * 800));
+            stopLights();
+            lightTimers.push(setTimeout(() => document.getElementById('mg-wait-msg').style.display='block', 400));
+            [1,2,3,4,5].forEach((i,idx) => {
+                lightTimers.push(setTimeout(() => document.getElementById('mg-l'+i).classList.add('on'), 900 + idx*800));
             });
-
-            // After all 5 lit, wait random 0.5–2.5s then go out
-            const holdDelay = 800 + 5*800 + 500 + Math.random()*2000;
+            const hold = 900 + 5*800 + 600 + Math.random()*2200;
             lightTimers.push(setTimeout(() => {
                 [1,2,3,4,5].forEach(i => document.getElementById('mg-l'+i).classList.remove('on'));
-                lightsState = 'ready';
-                reactionStart = performance.now();
                 document.getElementById('mg-wait-msg').style.display = 'none';
                 document.getElementById('mg-go-btn').style.display = 'block';
                 document.getElementById('mg-go-btn').focus();
-            }, holdDelay));
+                lightsState = 'ready';
+                reactionStart = performance.now();
+            }, hold));
         }
+
+        function stopLights() { lightTimers.forEach(clearTimeout); lightTimers = []; }
 
         document.getElementById('mg-go-btn').addEventListener('click', function() {
             if (lightsState === 'countdown') {
-                // Jump start
-                stopLightSequence();
+                stopLights();
                 lightsState = 'idle';
-                document.getElementById('mg-go-btn').style.display = 'none';
+                jumpStart = true;
+                this.style.display = 'none';
                 document.getElementById('mg-wait-msg').style.display = 'none';
                 document.getElementById('mg-early-msg').style.display = 'block';
                 [1,2,3,4,5].forEach(i => document.getElementById('mg-l'+i).classList.remove('on'));
                 setTimeout(() => {
                     document.getElementById('mg-early-msg').style.display = 'none';
-                    startLightSequence();
-                }, 1800);
+                    startLights();
+                }, 2000);
                 return;
             }
             if (lightsState !== 'ready') return;
             reactionMs = Math.round(performance.now() - reactionStart);
             lightsState = 'gone';
             this.style.display = 'none';
-
-            let msg = '';
-            if (reactionMs < 150) msg = `⚡ ${reactionMs}ms — Alien reflexes!`;
-            else if (reactionMs < 250) msg = `${reactionMs}ms — Great reaction!`;
-            else if (reactionMs < 400) msg = `${reactionMs}ms — Decent start`;
-            else msg = `${reactionMs}ms — Slow off the line`;
+            const msg = reactionMs < 150 ? `⚡ ${reactionMs}ms — Alien reflexes!`
+                      : reactionMs < 250 ? `${reactionMs}ms — Great reaction!`
+                      : reactionMs < 400 ? `${reactionMs}ms — Decent start`
+                      : `${reactionMs}ms — Slow off the line`;
             document.getElementById('mg-reaction-result').textContent = msg;
-
-            setTimeout(startCornerPhase, 1200);
+            setTimeout(loadCorner, 1400);
         });
 
-        // Also allow Space/Enter for go button
-        document.addEventListener('keydown', function(e) {
-            if (!document.getElementById('minigame-overlay').classList.contains('active')) return;
-            if (e.code === 'Space' || e.code === 'Enter') {
-                const btn = document.getElementById('mg-go-btn');
-                if (btn.style.display !== 'none') btn.click();
-            }
-            if (e.code === 'Escape') closeMiniGame();
-        });
-
-        function startCornerPhase() {
-            document.getElementById('mg-lights-section').style.display = 'none';
-            document.getElementById('mg-corner-section').style.display = 'flex';
-            cornerIndex = 0;
-            loadCorner(0);
+        // ── CORNER DRAWING ───────────────────────
+        function loadCorner() {
+            userPath = []; drawing = false;
+            const lv = LEVELS[currentLevel];
+            const co = lv.corners[cornerIndex];
+            const sh = SH[co.s];
+            showScreen('mg-corner-section');
+            document.getElementById('mg-cv-circuit').textContent = co.c;
+            document.getElementById('mg-cv-prog').textContent = `CORNER ${cornerIndex+1} / 4`;
+            document.getElementById('mg-cv-name').textContent = co.n;
+            document.getElementById('mg-cv-tip').textContent = co.tip;
+            document.getElementById('mg-cv-hint').textContent = 'Click & drag your racing line — green arrow to red arrow';
+            renderCorner(sh, false);
         }
 
-        function loadCorner(idx) {
-            userPath = [];
-            drawing = false;
-            const c = CORNERS[idx];
-            document.getElementById('mg-corner-label').textContent =
-                `CORNER ${idx+1} / 4 — ${c.name} — Draw your racing line`;
-            document.getElementById('mg-canvas-hint').textContent =
-                'Click/drag to draw your line. Green = entry, Red = exit.';
-            drawCornerBackground(idx);
-        }
+        function renderCorner(sh, showIdeal) {
+            const W = canvas.width, H = canvas.height;
+            ctx.clearRect(0, 0, W, H);
 
-        const canvas = document.getElementById('mg-canvas');
-        const ctx = canvas.getContext('2d');
+            // Background
+            ctx.fillStyle = '#0d0d0d';
+            ctx.fillRect(0, 0, W, H);
 
-        function drawCornerBackground(idx) {
-            const c = CORNERS[idx];
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Grass/gravel around track — subtle texture
+            ctx.fillStyle = '#111a11';
+            ctx.fillRect(0, 0, W, H);
 
-            // Tarmac
-            ctx.fillStyle = '#1a1a1a';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Draw track surface using outer polygon
-            ctx.fillStyle = '#2d2d2d';
-            ctx.beginPath();
-            c.outer.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
-            ctx.closePath();
-            ctx.fill();
-
-            // Kerbs on outer (dashed red/white stripes along boundary)
-            ctx.strokeStyle = '#555';
-            ctx.lineWidth = 2;
-            ctx.setLineDash([6,4]);
-            ctx.beginPath();
-            c.outer.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
-            ctx.closePath();
-            ctx.stroke();
-            ctx.setLineDash([]);
-
-            // Inner kerb if exists
-            if (c.inner) {
-                ctx.fillStyle = '#111';
-                ctx.beginPath();
-                c.inner.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
-                ctx.closePath();
-                ctx.fill();
-                ctx.strokeStyle = '#555';
-                ctx.lineWidth = 2;
-                ctx.setLineDash([6,4]);
-                ctx.beginPath();
-                c.inner.forEach((p,i) => i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
-                ctx.closePath();
-                ctx.stroke();
+            // Track surface: white outline first, then gray fill = creates edge lines
+            ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+            if (sh.t.length === 2) {
+                // Straight (chicane): draw as rect
+                const isChicane = true;
+                ctx.strokeStyle = '#505050';
+                ctx.lineWidth = sh.w + 6;
+                ctx.beginPath(); ctx.moveTo(sh.t[0].x, sh.t[0].y); ctx.lineTo(sh.t[1].x, sh.t[1].y); ctx.stroke();
+                ctx.strokeStyle = '#363636';
+                ctx.lineWidth = sh.w;
+                ctx.beginPath(); ctx.moveTo(sh.t[0].x, sh.t[0].y); ctx.lineTo(sh.t[1].x, sh.t[1].y); ctx.stroke();
+                // Center line
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([16,14]);
+                ctx.beginPath(); ctx.moveTo(sh.t[0].x, sh.t[0].y); ctx.lineTo(sh.t[1].x, sh.t[1].y); ctx.stroke();
                 ctx.setLineDash([]);
+            } else {
+                ctx.strokeStyle = '#505050';
+                ctx.lineWidth = sh.w + 6;
+                ctx.beginPath(); sh.t.forEach((p,i) => i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y)); ctx.stroke();
+                ctx.strokeStyle = '#363636';
+                ctx.lineWidth = sh.w;
+                ctx.beginPath(); sh.t.forEach((p,i) => i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y)); ctx.stroke();
             }
 
-            // Draw ideal line (faint, dashed grey — only shown after scoring)
-            // (intentionally hidden here)
+            // Inner barriers (chicane islands)
+            if (sh.b) {
+                sh.b.forEach(poly => {
+                    ctx.fillStyle = '#0d0d0d';
+                    ctx.beginPath(); poly.forEach((p,i) => i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y)); ctx.closePath(); ctx.fill();
+                    // Kerb stripes (alternating red-white)
+                    const bx = Math.min(...poly.map(p=>p.x)), by = Math.min(...poly.map(p=>p.y));
+                    const bw = Math.max(...poly.map(p=>p.x))-bx, bh = Math.max(...poly.map(p=>p.y))-by;
+                    const stripeW = 14;
+                    ctx.save();
+                    ctx.beginPath(); poly.forEach((p,i) => i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y)); ctx.closePath(); ctx.clip();
+                    for (let sx = bx; sx < bx+bw+bh; sx += stripeW*2) {
+                        ctx.fillStyle = '#e10600';
+                        ctx.beginPath(); ctx.moveTo(sx,by); ctx.lineTo(sx+stripeW,by); ctx.lineTo(sx+stripeW-bh,by+bh); ctx.lineTo(sx-bh,by+bh); ctx.closePath(); ctx.fill();
+                    }
+                    ctx.restore();
+                    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+                    ctx.beginPath(); poly.forEach((p,i) => i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y)); ctx.closePath(); ctx.stroke();
+                });
+            }
 
-            // Entry arrow (green)
-            drawArrow(ctx, c.entryArrow.x, c.entryArrow.y, c.entryArrow.dx, c.entryArrow.dy, '#00e676');
-            // Exit arrow (red)
-            drawArrow(ctx, c.exitArrow.x, c.exitArrow.y, c.exitArrow.dx, c.exitArrow.dy, '#e10600');
+            // Ideal racing line (shown after submit)
+            if (showIdeal) {
+                ctx.strokeStyle = '#ffcc00';
+                ctx.lineWidth = 3;
+                ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+                ctx.setLineDash([10,6]);
+                ctx.globalAlpha = 0.85;
+                ctx.beginPath(); sh.r.forEach((p,i) => i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y)); ctx.stroke();
+                ctx.setLineDash([]); ctx.globalAlpha = 1;
+            }
+
+            // Entry / Exit arrows
+            drawArrow(sh.en[0], sh.en[1], sh.en[2], '#00e676', 'GO');
+            drawArrow(sh.ex[0], sh.ex[1], sh.ex[2], '#e10600', '');
+
+            // User line
+            if (userPath.length > 1) {
+                ctx.strokeStyle = '#00bfff'; ctx.lineWidth = 3.5;
+                ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.globalAlpha = 0.9;
+                ctx.beginPath(); userPath.forEach((p,i) => i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y)); ctx.stroke();
+                ctx.globalAlpha = 1;
+            }
         }
 
-        function drawArrow(ctx, x, y, dx, dy, color) {
-            const len = 28, hw = 8;
+        function drawArrow(x, y, angleDeg, color, label) {
+            const rad = (angleDeg - 90) * Math.PI / 180;
+            const len = 24;
+            const ex = x + Math.sin(angleDeg*Math.PI/180) * len;
+            const ey = y - Math.cos(angleDeg*Math.PI/180) * len;
             ctx.save();
-            ctx.strokeStyle = color;
-            ctx.fillStyle = color;
-            ctx.lineWidth = 3;
-            ctx.globalAlpha = 0.9;
-            // shaft
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.lineTo(x + dx*len, y + dy*len);
-            ctx.stroke();
-            // arrowhead
-            const angle = Math.atan2(dy, dx);
-            ctx.beginPath();
-            ctx.moveTo(x + dx*(len+hw), y + dy*(len+hw));
-            ctx.lineTo(x + dx*len - hw*Math.sin(angle+0.5), y + dy*len + hw*Math.cos(angle+0.5));
-            ctx.lineTo(x + dx*len + hw*Math.sin(angle-0.5), y + dy*len - hw*Math.cos(angle-0.5));
-            ctx.closePath();
-            ctx.fill();
-            ctx.globalAlpha = 1;
-            ctx.restore();
-        }
-
-        function drawUserPath() {
-            if (userPath.length < 2) return;
-            ctx.save();
-            ctx.strokeStyle = '#00bfff';
-            ctx.lineWidth = 3;
-            ctx.lineJoin = 'round';
+            ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 3;
             ctx.lineCap = 'round';
-            ctx.globalAlpha = 0.85;
+            ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(ex, ey); ctx.stroke();
+            // arrowhead
+            const a = Math.atan2(ey-y, ex-x);
             ctx.beginPath();
-            ctx.moveTo(userPath[0].x, userPath[0].y);
-            for (let i = 1; i < userPath.length; i++) ctx.lineTo(userPath[i].x, userPath[i].y);
-            ctx.stroke();
-            ctx.globalAlpha = 1;
+            ctx.moveTo(ex, ey);
+            ctx.lineTo(ex - 10*Math.cos(a-0.4), ey - 10*Math.sin(a-0.4));
+            ctx.lineTo(ex - 10*Math.cos(a+0.4), ey - 10*Math.sin(a+0.4));
+            ctx.closePath(); ctx.fill();
+            // dot at base
+            ctx.beginPath(); ctx.arc(x, y, 6, 0, Math.PI*2); ctx.fill();
+            if (label) {
+                ctx.fillStyle = color; ctx.font = 'bold 10px Orbitron,sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(label, x + Math.sin(angleDeg*Math.PI/180)*40, y - Math.cos(angleDeg*Math.PI/180)*40 + 4);
+            }
             ctx.restore();
         }
 
-        function getCanvasPos(e) {
+        // Canvas drawing events
+        function canvasPos(e) {
             const r = canvas.getBoundingClientRect();
-            const scaleX = canvas.width / r.width;
-            const scaleY = canvas.height / r.height;
-            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-            return { x: (clientX - r.left)*scaleX, y: (clientY - r.top)*scaleY };
+            const sx = canvas.width / r.width, sy = canvas.height / r.height;
+            const cx = e.touches ? e.touches[0].clientX : e.clientX;
+            const cy = e.touches ? e.touches[0].clientY : e.clientY;
+            return {x:(cx-r.left)*sx, y:(cy-r.top)*sy};
         }
-
-        canvas.addEventListener('mousedown', e => { drawing = true; userPath = []; userPath.push(getCanvasPos(e)); });
-        canvas.addEventListener('mousemove', e => { if (!drawing) return; userPath.push(getCanvasPos(e)); drawCornerBackground(cornerIndex); drawUserPath(); });
-        canvas.addEventListener('mouseup', () => { drawing = false; });
-        canvas.addEventListener('mouseleave', () => { drawing = false; });
-        canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; userPath = []; userPath.push(getCanvasPos(e)); }, {passive:false});
-        canvas.addEventListener('touchmove', e => { e.preventDefault(); if (!drawing) return; userPath.push(getCanvasPos(e)); drawCornerBackground(cornerIndex); drawUserPath(); }, {passive:false});
-        canvas.addEventListener('touchend', () => { drawing = false; });
+        canvas.addEventListener('mousedown', e => { drawing=true; userPath=[]; userPath.push(canvasPos(e)); });
+        canvas.addEventListener('mousemove', e => { if (!drawing) return; userPath.push(canvasPos(e)); renderCorner(SH[LEVELS[currentLevel].corners[cornerIndex].s], false); });
+        canvas.addEventListener('mouseup', () => { drawing=false; });
+        canvas.addEventListener('mouseleave', () => { drawing=false; });
+        canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing=true; userPath=[]; userPath.push(canvasPos(e)); }, {passive:false});
+        canvas.addEventListener('touchmove', e => { e.preventDefault(); if(!drawing)return; userPath.push(canvasPos(e)); renderCorner(SH[LEVELS[currentLevel].corners[cornerIndex].s], false); }, {passive:false});
+        canvas.addEventListener('touchend', () => { drawing=false; });
 
         document.getElementById('mg-clear-btn').addEventListener('click', () => {
-            userPath = [];
-            drawCornerBackground(cornerIndex);
+            userPath=[];
+            renderCorner(SH[LEVELS[currentLevel].corners[cornerIndex].s], false);
         });
 
         document.getElementById('mg-next-btn').addEventListener('click', () => {
-            if (userPath.length < 10) {
-                document.getElementById('mg-canvas-hint').textContent = 'Draw a line first!';
+            if (userPath.length < 12) {
+                document.getElementById('mg-cv-hint').textContent = '⚠ Draw your line first!';
                 return;
             }
-            const score = scoreCorner(cornerIndex, userPath);
+            const sh = SH[LEVELS[currentLevel].corners[cornerIndex].s];
+            const score = scoreCorner(sh.r, userPath);
             cornerScores.push(score);
-            showIdealLine(cornerIndex);
+            // Show ideal line briefly
+            renderCorner(sh, true);
+            document.getElementById('mg-cv-hint').textContent =
+                score >= 80 ? `✓ Excellent line! Score: ${score}/100`
+              : score >= 55 ? `Good effort! Score: ${score}/100`
+              : `Score: ${score}/100 — Yellow = ideal line`;
             setTimeout(() => {
                 cornerIndex++;
-                if (cornerIndex < CORNERS.length) {
-                    loadCorner(cornerIndex);
+                if (cornerIndex < 4) {
+                    startLights();
                 } else {
                     showResults();
                 }
-            }, 900);
+            }, 1100);
         });
 
-        function showIdealLine(idx) {
-            const ideal = CORNERS[idx].ideal;
-            ctx.save();
-            ctx.strokeStyle = '#ffcc00';
-            ctx.lineWidth = 2.5;
-            ctx.setLineDash([8,5]);
-            ctx.globalAlpha = 0.7;
-            ctx.beginPath();
-            ctx.moveTo(ideal[0].x, ideal[0].y);
-            for (let i = 1; i < ideal.length; i++) ctx.lineTo(ideal[i].x, ideal[i].y);
-            ctx.stroke();
-            ctx.setLineDash([]);
-            ctx.globalAlpha = 1;
-            ctx.restore();
-            drawUserPath();
-        }
-
-        function scoreCorner(idx, path) {
-            // Resample ideal to 60 pts, find avg min distance from user path
-            const ideal = resamplePath(CORNERS[idx].ideal, 60);
-            const user = resamplePath(path, 60);
-            let totalDist = 0;
+        // ── SCORING ──────────────────────────────
+        function scoreCorner(idealPts, userPts) {
+            const ideal = resample(idealPts, 60);
+            const user = resample(userPts, 60);
+            let total = 0;
             ideal.forEach(ip => {
                 let minD = Infinity;
-                user.forEach(up => {
-                    const d = Math.hypot(up.x-ip.x, up.y-ip.y);
-                    if (d < minD) minD = d;
-                });
-                totalDist += minD;
+                user.forEach(up => { const d=Math.hypot(up.x-ip.x,up.y-ip.y); if(d<minD)minD=d; });
+                total += minD;
             });
-            const avgDist = totalDist / ideal.length;
-            // score 0-100: dist=0 → 100, dist≥80px → 0
-            return Math.max(0, Math.round(100 - (avgDist / 80) * 100));
+            const avg = total / ideal.length;
+            return Math.max(0, Math.round(100 - (avg / 75) * 100));
         }
 
-        function resamplePath(pts, n) {
-            if (pts.length === 0) return [];
+        function resample(pts, n) {
+            if (pts.length < 2) return pts;
             let totalLen = 0;
             const segs = [];
-            for (let i = 1; i < pts.length; i++) {
-                const d = Math.hypot(pts[i].x-pts[i-1].x, pts[i].y-pts[i-1].y);
-                segs.push(d);
-                totalLen += d;
+            for (let i=1;i<pts.length;i++) { const d=Math.hypot(pts[i].x-pts[i-1].x,pts[i].y-pts[i-1].y); segs.push(d); totalLen+=d; }
+            const step = totalLen/(n-1);
+            const out = [pts[0]];
+            let carry=0, si=0;
+            for (let i=1;i<n;i++) {
+                const target=i*step;
+                while(si<segs.length && carry+segs[si]<target){carry+=segs[si];si++;}
+                if(si>=segs.length){out.push(pts[pts.length-1]);continue;}
+                const t=(target-carry)/segs[si];
+                out.push({x:pts[si].x+t*(pts[si+1].x-pts[si].x), y:pts[si].y+t*(pts[si+1].y-pts[si].y)});
             }
-            const step = totalLen / (n - 1);
-            const result = [pts[0]];
-            let dist = 0, seg = 0, carry = 0;
-            for (let i = 1; i < n; i++) {
-                let target = i * step;
-                while (seg < segs.length && carry + segs[seg] < target) {
-                    carry += segs[seg]; seg++;
-                }
-                if (seg >= segs.length) { result.push(pts[pts.length-1]); continue; }
-                const t = (target - carry) / segs[seg];
-                result.push({
-                    x: pts[seg].x + t*(pts[seg+1].x - pts[seg].x),
-                    y: pts[seg].y + t*(pts[seg+1].y - pts[seg].y)
-                });
-            }
-            return result;
+            return out;
         }
 
+        // ── RESULTS ──────────────────────────────
         function showResults() {
-            document.getElementById('mg-corner-section').style.display = 'none';
-            document.getElementById('mg-results-section').style.display = 'flex';
-
-            // Base lap time: 82.000s (1:22.000 — generic fast lap)
-            const BASE = 82000; // ms
-
-            // Reaction penalty: perfect=150ms → 0ms, 600ms → +2500ms, jump start → +5000ms
-            const reactMs = reactionMs !== null ? reactionMs : 600;
-            const reactPenalty = Math.max(0, (reactMs - 150) * 5);
-
-            // Corner penalties: each corner score 0-100, 100=0 penalty, 0=+8000ms
-            const cornerPenalty = cornerScores.reduce((sum, s) => sum + Math.round((100-s) * 80), 0);
-
+            showScreen('mg-results-section');
+            const BASE = 82000;
+            const reactPenalty = jumpStart ? 3000 : Math.max(0, ((reactionMs||500)-150)*5);
+            const cornerPenalty = cornerScores.reduce((s,c)=>s+Math.round((100-c)*75),0);
             const total = BASE + reactPenalty + cornerPenalty;
-            const mins = Math.floor(total / 60000);
-            const secs = Math.floor((total % 60000) / 1000);
-            const ms = total % 1000;
-            const timeStr = `${mins}:${String(secs).padStart(2,'0')}.${String(ms).padStart(3,'0')}`;
-
+            const mins=Math.floor(total/60000), secs=Math.floor((total%60000)/1000), ms=total%1000;
+            const timeStr=`${mins}:${String(secs).padStart(2,'0')}.${String(ms).padStart(3,'0')}`;
             document.getElementById('mg-final-time').textContent = timeStr;
 
-            const avgCorner = cornerScores.length ? Math.round(cornerScores.reduce((a,b)=>a+b,0)/cornerScores.length) : 0;
-            let reactLabel = reactMs < 200 ? 'Perfect' : reactMs < 350 ? 'Good' : 'Slow';
+            const avgC = Math.round(cornerScores.reduce((a,b)=>a+b,0)/cornerScores.length);
+            const reactLabel = jumpStart ? 'Jump Start' : reactionMs<200?'Perfect':reactionMs<350?'Good':'Slow';
+            const co = LEVELS[currentLevel].corners;
             document.getElementById('mg-score-breakdown').innerHTML =
-                `Reaction: <b>${reactMs}ms</b> (${reactLabel})<br>` +
-                `Corner avg: <b>${avgCorner}/100</b> ${cornerScores.map(s=>`<span style="color:${s>=70?'#00e676':s>=40?'#ffcc00':'#e10600'}">${s}</span>`).join(' ')}<br>` +
+                `Reaction: <b>${jumpStart?'JUMP START':reactionMs+'ms'}</b> (${reactLabel})` +
+                ` &nbsp;|&nbsp; Corner avg: <b>${avgC}/100</b><br>` +
                 `Reaction penalty: +${(reactPenalty/1000).toFixed(3)}s &nbsp; Corner penalty: +${(cornerPenalty/1000).toFixed(3)}s`;
+            document.getElementById('mg-corner-scores').innerHTML =
+                co.map((c,i)=>`<span style="color:${cornerScores[i]>=75?'#00e676':cornerScores[i]>=50?'#ffcc00':'#e10600'}">${c.n.split(' ')[0]}: ${cornerScores[i]}/100</span>`).join(' &nbsp;·&nbsp; ');
 
-            // Leaderboard in localStorage
-            const key = 'f1_lapchallenge_lb';
-            let lb = [];
-            try { lb = JSON.parse(localStorage.getItem(key) || '[]'); } catch(e){}
-            lb.push({ time: total, str: timeStr, date: new Date().toLocaleDateString() });
-            lb.sort((a,b) => a.time - b.time);
-            lb = lb.slice(0, 5);
-            try { localStorage.setItem(key, JSON.stringify(lb)); } catch(e){}
+            const lbKey = 'f1_lc_lb_' + currentLevel;
+            let lb=[]; try{lb=JSON.parse(localStorage.getItem(lbKey)||'[]');}catch(e){}
+            lb.push({time:total,str:timeStr,date:new Date().toLocaleDateString()});
+            lb.sort((a,b)=>a.time-b.time); lb=lb.slice(0,5);
+            try{localStorage.setItem(lbKey,JSON.stringify(lb));}catch(e){}
 
-            let lbHtml = '<div style="font-size:0.75em;color:#666;margin-bottom:6px;letter-spacing:1px;">BEST TIMES</div><table style="width:220px;"><tr><th>#</th><th>Time</th><th>Date</th></tr>';
-            lb.forEach((e,i) => {
-                const medal = i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
-                lbHtml += `<tr><td>${medal||i+1}</td><td>${e.str}</td><td>${e.date}</td></tr>`;
-            });
-            lbHtml += '</table>';
-            document.getElementById('mg-leaderboard').innerHTML = lbHtml;
+            let lbHtml='<div style="font-size:0.7em;color:#555;letter-spacing:2px;margin-bottom:8px;">LEVEL '+currentLevel+' BEST TIMES</div>';
+            lbHtml+='<table><tr><th>#</th><th>Time</th><th>Date</th></tr>';
+            lb.forEach((e,i)=>{const m=i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1; lbHtml+=`<tr><td>${m}</td><td>${e.str}</td><td>${e.date}</td></tr>`;});
+            lbHtml+='</table>';
+            document.getElementById('mg-leaderboard').innerHTML=lbHtml;
         }
 
+        // ── OPEN / CLOSE ─────────────────────────
+        function openMiniGame() {
+            overlay.classList.add('active');
+            renderLevelSelect();
+            showScreen('mg-level-select');
+            stopLights();
+        }
+        function closeMiniGame() {
+            overlay.classList.remove('active');
+            stopLights();
+        }
+
+        // ── EVENT HANDLERS ───────────────────────
         document.getElementById('mg-close-btn').addEventListener('click', closeMiniGame);
-        document.getElementById('mg-restart-btn').addEventListener('click', resetGame);
+        document.getElementById('mg-restart-btn').addEventListener('click', () => startLevel(currentLevel));
+        document.getElementById('mg-back-btn').addEventListener('click', () => { stopLights(); showScreen('mg-level-select'); renderLevelSelect(); });
         document.getElementById('mg-open-btn').addEventListener('click', openMiniGame);
+
+        document.addEventListener('keydown', e => {
+            if (!overlay.classList.contains('active')) return;
+            if (e.code==='Escape') closeMiniGame();
+            if ((e.code==='Space'||e.code==='Enter') && lightsScreen.classList.contains('active')) {
+                const btn=document.getElementById('mg-go-btn');
+                if(btn.style.display!=='none') btn.click();
+            }
+        });
+
+        // ── HIDDEN 5-CLICK TRIGGER ───────────────
+        let clickCount=0, clickTimer=null;
+        document.getElementById('mg-header-trigger').addEventListener('click', function() {
+            clickCount++;
+            clearTimeout(clickTimer);
+            clickTimer=setTimeout(()=>{clickCount=0;},1500);
+            if(clickCount>=5){clickCount=0;openMiniGame();}
+        });
 
     })();
 
