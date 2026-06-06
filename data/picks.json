@@ -197,6 +197,17 @@
         ],
         "team": "Red Bull Racing",
         "timestamp": "2026-05-22T20:04:12.078Z"
+      },
+      "8": {
+        "drivers": [
+          "Verstappen",
+          "Hamilton",
+          "Lindblad",
+          "Bortoleto",
+          "Antonelli"
+        ],
+        "team": "Ferrari",
+        "timestamp": "2026-06-06T17:22:56.467Z"
       }
     },
     "Martini Motors": {
