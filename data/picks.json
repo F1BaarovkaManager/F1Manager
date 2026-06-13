@@ -311,6 +311,17 @@
         ],
         "team": "Ferrari",
         "timestamp": "2026-06-06T13:42:10.781Z"
+      },
+      "9": {
+        "drivers": [
+          "Antonelli",
+          "Piastri",
+          "Lindblad",
+          "Bortoleto",
+          "Hamilton"
+        ],
+        "team": "Mercedes",
+        "timestamp": "2026-06-13T13:09:50.209Z"
       }
     },
     "Salvetus Motorsport": {
