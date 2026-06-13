@@ -583,6 +583,17 @@
         ],
         "team": "Red Bull Racing",
         "timestamp": "2026-06-05T21:55:00.592Z"
+      },
+      "9": {
+        "drivers": [
+          "Antonelli",
+          "Hamilton",
+          "Gasly",
+          "Bortoleto",
+          "Piastri"
+        ],
+        "team": "Ferrari",
+        "timestamp": "2026-06-13T13:03:19.478Z"
       }
     }
   },
