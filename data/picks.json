@@ -391,6 +391,17 @@
         "team": "Mercedes",
         "timestamp": "2026-05-22T20:11:53.616Z"
       },
+      "8": {
+        "drivers": [
+          "Leclerc",
+          "Hamilton",
+          "Bortoleto",
+          "Stroll",
+          "Verstappen"
+        ],
+        "team": "Ferrari",
+        "timestamp": "2026-06-15T12:58:02.599Z"
+      },
       "9": {
         "drivers": [
           "Hamilton",
