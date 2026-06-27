@@ -682,6 +682,17 @@
         ],
         "team": "Ferrari",
         "timestamp": "2026-06-13T13:03:19.478Z"
+      },
+      "10": {
+        "drivers": [
+          "Piastri",
+          "Hamilton",
+          "Antonelli",
+          "Bortoleto",
+          "Gasly"
+        ],
+        "team": "Mercedes",
+        "timestamp": "2026-06-27T15:04:59.065Z"
       }
     }
   },
