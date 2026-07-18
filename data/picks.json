@@ -489,17 +489,6 @@
         ],
         "team": "Red Bull Racing",
         "timestamp": "2026-07-03T13:53:21.003Z"
-      },
-      "12": {
-        "drivers": [
-          "Verstappen",
-          "Hadjar",
-          "Antonelli",
-          "Gasly",
-          "Hulkenberg"
-        ],
-        "team": "Red Bull Racing",
-        "timestamp": "2026-07-18T11:55:27.804Z"
       }
     },
     "Flygirl": {
@@ -601,6 +590,17 @@
         ],
         "team": "Ferrari",
         "timestamp": "2026-07-03T12:39:19.911Z"
+      },
+      "12": {
+        "drivers": [
+          "Verstappen",
+          "Hulkenberg",
+          "Bortoleto",
+          "Piastri",
+          "Hadjar"
+        ],
+        "team": "Red Bull Racing",
+        "timestamp": "2026-07-18T11:56:12.634Z"
       }
     },
     "Vzoom": {
