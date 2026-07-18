@@ -241,17 +241,6 @@
         ],
         "team": "Mercedes",
         "timestamp": "2026-07-03T14:26:31.999Z"
-      },
-      "12": {
-        "drivers": [
-          "Hamilton",
-          "Antonelli",
-          "Russel",
-          "Lawson",
-          "Bortoleto"
-        ],
-        "team": "Red Bull Racing",
-        "timestamp": "2026-07-18T13:58:24.642Z"
       }
     },
     "Martini Motors": {
@@ -781,6 +770,17 @@
         ],
         "team": "Mercedes",
         "timestamp": "2026-06-27T15:04:59.065Z"
+      },
+      "12": {
+        "drivers": [
+          "Verstappen",
+          "Antonelli",
+          "Stroll",
+          "Hadjar",
+          "Gasly"
+        ],
+        "team": "Mercedes",
+        "timestamp": "2026-07-18T14:00:08.206Z"
       }
     }
   },
