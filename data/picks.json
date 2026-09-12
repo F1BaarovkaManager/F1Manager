@@ -465,17 +465,6 @@
         ],
         "team": "Ferrari",
         "timestamp": "2026-09-05T11:16:31.067Z"
-      },
-      "16": {
-        "drivers": [
-          "Verstappen",
-          "Lindblad",
-          "Piastri",
-          "Hulkenberg",
-          "Antonelli"
-        ],
-        "team": "Racing Bulls",
-        "timestamp": "2026-09-12T13:02:01.588Z"
       }
     },
     "Salvetus Motorsport": {
@@ -599,6 +588,17 @@
         ],
         "team": "Audi",
         "timestamp": "2026-08-21T11:39:16.379Z"
+      },
+      "16": {
+        "drivers": [
+          "Antonelli",
+          "Hamilton",
+          "Gasly",
+          "Piastri",
+          "Bortoleto"
+        ],
+        "team": "Mercedes",
+        "timestamp": "2026-09-12T13:02:31.347Z"
       }
     },
     "Flygirl": {
