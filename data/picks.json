@@ -1280,6 +1280,36 @@
       "fastestLap": "Antonelli",
       "dotd": "Piastri"
     },
+    "4": {
+      "qualifying": {
+        "Verstappen": 1,
+        "Hadjar": 8,
+        "Norris": 5,
+        "Piastri": 6,
+        "Leclerc": 4,
+        "Hamilton": 2,
+        "Russel": 7,
+        "Antonelli": 3,
+        "Alonso": 12,
+        "Stroll": 14,
+        "Gasly": 9,
+        "Colapinto": 15,
+        "Albon": 20,
+        "Sainz": 13,
+        "Lawson": 11,
+        "Lindblad": 16,
+        "Ocon": 19,
+        "Bearman": 18,
+        "Hulkenberg": 17,
+        "Bortoleto": 10,
+        "Perez": 22,
+        "Bottas": 21
+      },
+      "race": {},
+      "polePosition": "",
+      "fastestLap": "",
+      "dotd": ""
+    },
     "6": {
       "qualifying": {
         "Verstappen": 2,
