@@ -11,6 +11,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="theme-color" content="#15151e">
     <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js" defer></script>
     <style>
         /* Import F1-like font */
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@400;700;900&display=swap');
@@ -2217,7 +2218,183 @@
             color: #333;
         }
 
+        /* ===== DASHBOARD ===== */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 6px 0 4px;
+        }
+
+        .dash-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+            padding: 16px 18px;
+        }
+
+        .dash-label {
+            font-size: 0.72em;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #ff4d4d;
+        }
+
+        .dash-sub {
+            font-size: 0.8em;
+            color: var(--text-dim);
+            margin: 2px 0 8px;
+        }
+
+        .race-card-title {
+            font-family: 'Orbitron', 'Segoe UI', Arial, sans-serif;
+            font-size: 1.45em;
+            font-weight: 900;
+            margin: 4px 0 6px;
+        }
+
+        .race-card-countdown {
+            font-size: 0.95em;
+            color: var(--text-dim);
+        }
+
+        .race-card-countdown strong {
+            color: #fff;
+            font-size: 1.25em;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .race-card-built {
+            margin-top: 14px;
+        }
+
+        .chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .chip {
+            font-size: 0.78em;
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: var(--text-dim);
+        }
+
+        .chip.on {
+            background: rgba(46, 204, 113, 0.18);
+            border-color: rgba(46, 204, 113, 0.5);
+            color: #9ff0bf;
+        }
+
+        .chip.me {
+            border-width: 2px;
+            font-weight: 700;
+        }
+
+        .container table.standings {
+            background: none;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            border: none;
+            box-shadow: none;
+            margin: 0;
+            border-radius: 0;
+        }
+
+        .container .standings td {
+            padding: 7px 4px;
+            font-size: 0.92em;
+        }
+
+        .standings .rank {
+            width: 22px;
+            font-weight: 900;
+            color: var(--text-dim);
+        }
+
+        .standings tr:first-child .rank {
+            color: #ffd400;
+        }
+
+        .standings .name {
+            font-weight: 600;
+        }
+
+        .standings .move {
+            font-size: 0.75em;
+            color: var(--text-dim);
+        }
+
+        .standings .move.up {
+            color: #4cd787;
+        }
+
+        .standings .move.down {
+            color: #ff6b6b;
+        }
+
+        .standings .last {
+            text-align: right;
+            font-size: 0.8em;
+            color: var(--text-dim);
+            white-space: nowrap;
+        }
+
+        .standings .pts {
+            text-align: right;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .container .standings tr.me {
+            background: rgba(225, 6, 0, 0.18);
+        }
+
+        /* ===== TOAST ===== */
+        .toast {
+            position: fixed;
+            left: 50%;
+            top: 90px;
+            transform: translateX(-50%);
+            z-index: 10002;
+            background: rgba(14, 14, 24, 0.85);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid rgba(225, 6, 0, 0.6);
+            color: #fff;
+            padding: 14px 20px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            font-size: 1em;
+            width: max-content;
+            max-width: calc(100vw - 32px);
+            text-align: center;
+            animation: toast-in 0.35s ease;
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        .toast.hide {
+            opacity: 0;
+            transform: translate(-50%, -12px);
+        }
+
+        @keyframes toast-in {
+            from { opacity: 0; transform: translate(-50%, -12px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
         @media (max-width: 767px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
             /* the fixed character stack sits over the left buttons; let taps through */
             .driver-stack-item {
                 pointer-events: none;
@@ -2261,6 +2438,7 @@
     <button id="bar-expand-btn" class="bar-expand-btn" style="display:none;">&#9660; Výběr týmu</button>
 
     <div class="container">
+        <div id="dashboard" class="dashboard"></div>
         <div class="layout">
             <div class="layout-left">
                 <h2>Týmy</h2>
@@ -2784,9 +2962,9 @@
                 <h3>Nastavení</h3>
             </div>
             <div class="settings-body">
-                <label>GitHub Personal Access Token</label>
-                <input type="password" id="settings-token" placeholder="ghp_xxxxxxxxxxxx">
-                <div class="hint">Token s oprávněním 'contents' pro repo F1BaarovkaManager/F1Manager</div>
+                <label>Admin klíč</label>
+                <input type="password" id="settings-admin-key" placeholder="jen pro zadávání výsledků a hráčů">
+                <div class="hint">Potřebuje jen ten, kdo zapisuje výsledky nebo mění hráče. Ukládá se jen v tomto zařízení.</div>
 
                 <label>Hráči (jména oddělená čárkou)</label>
                 <input type="text" id="settings-players" placeholder="Pepa, Honza, Kuba, ...">
@@ -2795,44 +2973,8 @@
                 <label>Google Sheets Web App URL</label>
                 <input type="text" id="settings-sheets-url" placeholder="https://script.google.com/macros/s/...../exec">
                 <div class="hint">
-                    URL z Google Apps Script pro automatický zápis sestav do Google Sheets.<br>
-                    Návod: Google Sheet &rarr; Rozšíření &rarr; Apps Script &rarr; vlož kód &rarr; Nasadit jako webovou aplikaci
+                    Adresa backendu (Google Apps Script). Kód je v repozitáři v <code>apps-script/Code.gs</code>.
                 </div>
-                <details style="margin-top:8px; font-size:0.82em; color:#555;">
-                    <summary style="cursor:pointer; color:#e10600; font-weight:bold;">Zobrazit Apps Script kód</summary>
-                    <pre style="background:#f5f5f5; padding:10px; border-radius:6px; overflow-x:auto; margin-top:6px; font-size:0.85em; line-height:1.4;">function doPost(e) {
-  var sheet = SpreadsheetApp
-    .getActiveSpreadsheet()
-    .getActiveSheet();
-  var d = JSON.parse(e.postData.contents);
-  // Bez hráče nic nezapisovat (zabrání prázdným řádkům)
-  if (!d.player) {
-    return ContentService.createTextOutput('{"status":"skipped"}');
-  }
-  // Hlavička (pokud je sheet prázdný)
-  if (sheet.getLastRow() === 0) {
-    sheet.appendRow([
-      'Datum', 'Hráč', 'Závod',
-      'Jezdec 1','Jezdec 2','Jezdec 3',
-      'Jezdec 4','Jezdec 5','Tým','Celkem'
-    ]);
-  }
-  var drivers = d.drivers || [];
-  sheet.appendRow([
-    d.timestamp, d.player, d.race,
-    drivers[0]||'', drivers[1]||'',
-    drivers[2]||'', drivers[3]||'',
-    drivers[4]||'', d.team, d.totalCost
-  ]);
-  return ContentService
-    .createTextOutput(
-      JSON.stringify({status:'ok'})
-    )
-    .setMimeType(
-      ContentService.MimeType.JSON
-    );
-}</pre>
-                </details>
 
                 <div style="margin-top: 20px; display: flex; gap: 10px;">
                     <button id="settings-save" style="flex:1;">Uložit</button>
@@ -3780,7 +3922,34 @@ function getGithubToken() {
 
 // --- GitHub API ---
 
+// 'script' once the Apps Script backend answers, otherwise the old direct-GitHub path
+let backendMode = 'github';
+
+async function callBackend(payload) {
+    const resp = await fetch(getSheetsUrl(), {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+    });
+    const result = await resp.json();
+    if (!result.ok) throw new Error(result.error || 'Chyba serveru');
+    return result;
+}
+
 async function loadPicksFromGitHub() {
+    try {
+        const resp = await fetch(getSheetsUrl() + '?action=data', { cache: 'no-store' });
+        const result = await resp.json();
+        if (result.ok && result.data && result.data.races) {
+            backendMode = 'script';
+            picksData = result.data;
+            return picksData;
+        }
+    } catch (e) {
+        console.warn('Backend not available, using GitHub directly:', e.message);
+    }
+    backendMode = 'github';
+
     const token = getGithubToken();
     if (!token) {
         // Zkusíme načíst z lokálního souboru (pokud běží lokálně)
@@ -4205,35 +4374,44 @@ async function confirmSubmitPick() {
     const timestamp = new Date().toISOString();
     const player = currentPlayer;
     const round = String(currentRound);
-    const pick = { drivers: driverNames, team: selectedTeam.name, timestamp: timestamp };
+    const totalCost = (selectedDrivers.reduce((s, d) => s + Number(d.price), 0) + Number(selectedTeam.price)).toFixed(1);
 
     const race = picksData.races.find(r => String(r.round) === round);
     const raceName = race ? race.name : `R${round}`;
-    const saved = await savePicksToGitHub(`Pick: ${player} – ${raceName}`, data => {
-        if (!data.picks) data.picks = {};
-        if (!data.picks[player]) data.picks[player] = {};
-        data.picks[player][round] = pick;
-    });
+
+    let saved = false;
+    if (backendMode === 'script') {
+        try {
+            const result = await callBackend({ action: 'pick', player, round, drivers: driverNames, team: selectedTeam.name, totalCost });
+            picksData = result.data;
+            saved = true;
+        } catch (e) {
+            alert('Chyba při ukládání: ' + e.message);
+        }
+    } else {
+        const pick = { drivers: driverNames, team: selectedTeam.name, timestamp: timestamp };
+        saved = await savePicksToGitHub(`Pick: ${player} – ${raceName}`, data => {
+            if (!data.picks) data.picks = {};
+            if (!data.picks[player]) data.picks[player] = {};
+            data.picks[player][round] = pick;
+        });
+        if (saved) {
+            sendToGoogleSheets(getSheetsUrl(), {
+                timestamp: timestamp,
+                player: player,
+                race: raceName,
+                drivers: driverNames,
+                team: selectedTeam.name,
+                totalCost: totalCost
+            });
+        }
+    }
 
     if (saved) {
         overlay.style.display = 'none';
         showCharacterImages();
-
-        // Automatický export do Google Sheets
-        const sheetsUrl = getSheetsUrl();
-        if (sheetsUrl) {
-            const totalCost = selectedDrivers.reduce((s, d) => s + Number(d.price), 0) + Number(selectedTeam.price);
-            sendToGoogleSheets(sheetsUrl, {
-                timestamp: timestamp,
-                player: currentPlayer,
-                race: raceName,
-                drivers: driverNames,
-                team: selectedTeam.name,
-                totalCost: totalCost.toFixed(1)
-            });
-        }
-
-        alert(`Sestava pro ${raceName} úspěšně odeslána!`);
+        celebratePick(raceName);
+        renderDashboard();
         clearAllAnimations();
         updatePicksStatus();
         updateSubmitButton();
@@ -4364,14 +4542,19 @@ async function enablePushNotifications() {
         const json = sub.toJSON();
         const player = currentPlayer;
 
-        const saved = await saveJsonToGitHub(SUBS_FILE_PATH, `Notifications on: ${player}`, data => {
-            for (const p of Object.keys(data)) {
-                data[p] = data[p].filter(s => s.endpoint !== json.endpoint);
-                if (!data[p].length) delete data[p];
-            }
-            if (!data[player]) data[player] = [];
-            data[player].push({ endpoint: json.endpoint, keys: json.keys, added: new Date().toISOString() });
-        }, () => ({}));
+        let saved;
+        if (backendMode === 'script') {
+            saved = await callBackend({ action: 'subscribe', player, subscription: { endpoint: json.endpoint, keys: json.keys } });
+        } else {
+            saved = await saveJsonToGitHub(SUBS_FILE_PATH, `Notifications on: ${player}`, data => {
+                for (const p of Object.keys(data)) {
+                    data[p] = data[p].filter(s => s.endpoint !== json.endpoint);
+                    if (!data[p].length) delete data[p];
+                }
+                if (!data[player]) data[player] = [];
+                data[player].push({ endpoint: json.endpoint, keys: json.keys, added: new Date().toISOString() });
+            }, () => ({}));
+        }
 
         if (!saved) {
             await renderNotifyContent('Nepodařilo se uložit, zkus to prosím znovu.');
@@ -4395,12 +4578,16 @@ async function disablePushNotifications() {
         const sub = await getCurrentPushSubscription();
         if (sub) {
             const endpoint = sub.endpoint;
-            await saveJsonToGitHub(SUBS_FILE_PATH, `Notifications off: ${currentPlayer}`, data => {
-                for (const p of Object.keys(data)) {
-                    data[p] = data[p].filter(s => s.endpoint !== endpoint);
-                    if (!data[p].length) delete data[p];
-                }
-            }, () => ({}));
+            if (backendMode === 'script') {
+                await callBackend({ action: 'unsubscribe', endpoint });
+            } else {
+                await saveJsonToGitHub(SUBS_FILE_PATH, `Notifications off: ${currentPlayer}`, data => {
+                    for (const p of Object.keys(data)) {
+                        data[p] = data[p].filter(s => s.endpoint !== endpoint);
+                        if (!data[p].length) delete data[p];
+                    }
+                }, () => ({}));
+            }
             await sub.unsubscribe();
         }
         localStorage.removeItem('f1_push_player');
@@ -4408,6 +4595,131 @@ async function disablePushNotifications() {
     } catch (e) {
         await renderNotifyContent('Chyba: ' + e.message);
     }
+}
+
+function celebratePick(raceName) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `&#127937; Sestava pro <strong>${escapeHtml(raceName)}</strong> je odeslaná!`;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.classList.add('hide'), 3200);
+    setTimeout(() => toast.remove(), 3800);
+
+    if (typeof confetti !== 'function') return;
+    const colors = ['#e10600', '#ffffff', '#15151e', '#ffd400'];
+    const end = Date.now() + 1400;
+    (function frame() {
+        confetti({ particleCount: 6, angle: 60, spread: 60, origin: { x: 0, y: 0.75 }, colors, zIndex: 10001 });
+        confetti({ particleCount: 6, angle: 120, spread: 60, origin: { x: 1, y: 0.75 }, colors, zIndex: 10001 });
+        if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+    confetti({ particleCount: 120, spread: 100, startVelocity: 45, origin: { y: 0.6 }, colors, zIndex: 10001 });
+}
+
+// --- Dashboard: race card + season standings ---
+
+function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+}
+
+function formatPoints(n) {
+    return (Math.round(n * 10) / 10).toLocaleString('cs-CZ');
+}
+
+function formatCountdown(ms) {
+    const min = Math.max(0, Math.floor(ms / 60000));
+    const d = Math.floor(min / 1440), h = Math.floor(min % 1440 / 60), m = min % 60;
+    if (d > 0) return `${d} d ${h} h`;
+    if (h > 0) return `${h} h ${m} min`;
+    return `${m} min`;
+}
+
+function updateCountdown() {
+    const el = document.getElementById('race-countdown');
+    if (!el) return;
+    const left = Date.parse(el.dataset.target) - Date.now();
+    if (left <= 0) {
+        renderDashboard();
+        return;
+    }
+    el.textContent = formatCountdown(left);
+}
+
+function renderRaceCard() {
+    const race = picksData.races.find(r => String(r.round) === String(currentRound));
+    if (!race) return '';
+
+    const label = race.qualiName || 'Kvalifikace';
+    let timing;
+    if (race.qualiStart && Date.parse(race.qualiStart) > Date.now()) {
+        timing = `<div class="race-card-countdown">${label} za <strong id="race-countdown" data-target="${race.qualiStart}">${formatCountdown(Date.parse(race.qualiStart) - Date.now())}</strong></div>`;
+    } else {
+        const date = new Date(race.date);
+        timing = `<div class="race-card-countdown">Závod ${date.getDate()}. ${date.getMonth() + 1}. ${date.getFullYear()}</div>`;
+    }
+
+    const players = picksData.players || [];
+    const built = players.filter(p => isRoundSubmitted(p, race.round));
+    const chips = players.map(p => {
+        const done = built.includes(p);
+        const me = p === currentPlayer ? ' me' : '';
+        return `<span class="chip${done ? ' on' : ''}${me}">${done ? '&#10003; ' : ''}${escapeHtml(p)}</span>`;
+    }).join('');
+
+    return `<div class="dash-card race-card">
+        <div class="dash-label">R${race.round}${race.sprint ? ' &middot; Sprint' : ''}</div>
+        <div class="race-card-title">${escapeHtml(race.name)}</div>
+        ${timing}
+        <div class="race-card-built"><div class="dash-sub">Postaveno ${built.length}/${players.length}</div><div class="chips">${chips}</div></div>
+    </div>`;
+}
+
+function computeStandings(rounds) {
+    return (picksData.players || []).map(player => {
+        const total = rounds.reduce((sum, r) => {
+            const score = calculatePlayerRoundScore(player, r.round);
+            return sum + (score ? score.grandTotal : 0);
+        }, 0);
+        return { player, total };
+    }).sort((a, b) => b.total - a.total);
+}
+
+function renderStandings() {
+    const results = picksData.raceResults || {};
+    const scored = picksData.races
+        .filter(r => results[String(r.round)] && results[String(r.round)].race && Object.keys(results[String(r.round)].race).length)
+        .sort((a, b) => a.date.localeCompare(b.date));
+    if (!scored.length) return '';
+
+    const last = scored[scored.length - 1];
+    const now = computeStandings(scored);
+    const before = computeStandings(scored.slice(0, -1));
+    const prevRank = Object.fromEntries(before.map((s, i) => [s.player, i]));
+
+    const rows = now.map((s, i) => {
+        const lastScore = calculatePlayerRoundScore(s.player, last.round);
+        const move = scored.length > 1 ? prevRank[s.player] - i : 0;
+        const moveHtml = move > 0 ? `<span class="move up">&#9650;${move}</span>` : move < 0 ? `<span class="move down">&#9660;${-move}</span>` : '<span class="move">&ndash;</span>';
+        return `<tr class="${s.player === currentPlayer ? 'me' : ''}">
+            <td class="rank">${i + 1}</td>
+            <td class="name">${escapeHtml(s.player)}</td>
+            <td>${moveHtml}</td>
+            <td class="last">${lastScore ? '+' + formatPoints(lastScore.grandTotal) : ''}</td>
+            <td class="pts">${formatPoints(s.total)}</td>
+        </tr>`;
+    }).join('');
+
+    return `<div class="dash-card standings-card">
+        <div class="dash-label">Průběžné pořadí</div>
+        <div class="dash-sub">po ${escapeHtml(last.name)} &middot; ${scored.length} ${scored.length === 1 ? 'závod' : scored.length < 5 ? 'závody' : 'závodů'}</div>
+        <table class="standings"><tbody>${rows}</tbody></table>
+    </div>`;
+}
+
+function renderDashboard() {
+    const el = document.getElementById('dashboard');
+    if (!el || !picksData) return;
+    el.innerHTML = renderRaceCard() + renderStandings();
 }
 
 // --- Picks overview ---
@@ -4465,7 +4777,7 @@ function showPicksOverview() {
 
 function showSettings() {
     const overlay = document.getElementById('settings-overlay');
-    document.getElementById('settings-token').value = getGithubToken();
+    document.getElementById('settings-admin-key').value = localStorage.getItem('f1_admin_key') || '';
     document.getElementById('settings-players').value = picksData ? picksData.players.join(', ') : '';
     document.getElementById('settings-sheets-url').value = getSheetsUrl();
     document.getElementById('settings-status').textContent = '';
@@ -4474,13 +4786,15 @@ function showSettings() {
 }
 
 async function saveSettings() {
-    const token = document.getElementById('settings-token').value.trim();
+    const adminKey = document.getElementById('settings-admin-key').value.trim();
     const playersStr = document.getElementById('settings-players').value.trim();
     const sheetsUrl = document.getElementById('settings-sheets-url').value.trim();
     const statusEl = document.getElementById('settings-status');
 
-    if (token) {
-        localStorage.setItem('f1_github_token', token);
+    if (adminKey) {
+        localStorage.setItem('f1_admin_key', adminKey);
+    } else {
+        localStorage.removeItem('f1_admin_key');
     }
 
     if (sheetsUrl) {
@@ -4489,31 +4803,40 @@ async function saveSettings() {
         localStorage.removeItem('f1_sheets_url');
     }
 
-    if (playersStr && picksData) {
-        const newPlayers = playersStr.split(',').map(s => s.trim()).filter(s => s);
+    const newPlayers = playersStr.split(',').map(s => s.trim()).filter(s => s);
+    const playersChanged = picksData && newPlayers.length && newPlayers.join('|') !== (picksData.players || []).join('|');
 
-        statusEl.textContent = 'Ukládám...';
-        statusEl.style.color = '#666';
-
-        const saved = await savePicksToGitHub('Update players list', data => { data.players = newPlayers; });
-        if (saved) {
-            statusEl.textContent = 'Uloženo!';
-            statusEl.style.color = '#388e3c';
-            populatePlayerDropdown();
-        } else {
-            statusEl.textContent = 'Chyba při ukládání do GitHub';
-            statusEl.style.color = '#d32f2f';
-        }
-    } else if (token || sheetsUrl) {
-        statusEl.textContent = 'Nastavení uloženo lokálně.';
+    if (!playersChanged) {
+        statusEl.textContent = 'Nastavení uloženo.';
         statusEl.style.color = '#388e3c';
+        return;
+    }
 
-        if (token) {
-            // Zkusit znovu načíst data z GitHubu
-            await loadPicksFromGitHub();
-            populatePlayerDropdown();
-            populateRaceDropdown();
+    statusEl.textContent = 'Ukládám...';
+    statusEl.style.color = '#666';
+
+    let saved = false;
+    if (backendMode === 'script') {
+        try {
+            picksData = (await callBackend({ action: 'players', adminKey, players: newPlayers })).data;
+            saved = true;
+        } catch (e) {
+            statusEl.textContent = e.message;
+            statusEl.style.color = '#d32f2f';
+            return;
         }
+    } else {
+        saved = await savePicksToGitHub('Update players list', data => { data.players = newPlayers; });
+    }
+
+    if (saved) {
+        statusEl.textContent = 'Uloženo!';
+        statusEl.style.color = '#388e3c';
+        populatePlayerDropdown();
+        renderDashboard();
+    } else {
+        statusEl.textContent = 'Chyba při ukládání';
+        statusEl.style.color = '#d32f2f';
     }
 }
 
@@ -4766,16 +5089,35 @@ async function saveAdminResults() {
     }
 
     const raceName = (picksData.races.find(r => String(r.round) === String(round)) || {}).name || `R${round}`;
-    const saved = await savePicksToGitHub(`Results: ${raceName}`, data => {
-        if (!data.raceResults) data.raceResults = {};
-        data.raceResults[String(round)] = resultData;
-    });
+    let saved = false;
+    if (backendMode === 'script') {
+        let adminKey = localStorage.getItem('f1_admin_key');
+        if (!adminKey) {
+            adminKey = (prompt('Zadej admin klíč:') || '').trim();
+            if (adminKey) localStorage.setItem('f1_admin_key', adminKey);
+        }
+        try {
+            picksData = (await callBackend({ action: 'results', adminKey, round: String(round), result: resultData })).data;
+            saved = true;
+        } catch (e) {
+            if (e.message.includes('admin')) localStorage.removeItem('f1_admin_key');
+            statusEl.textContent = e.message;
+            statusEl.style.color = '#d32f2f';
+            return;
+        }
+    } else {
+        saved = await savePicksToGitHub(`Results: ${raceName}`, data => {
+            if (!data.raceResults) data.raceResults = {};
+            data.raceResults[String(round)] = resultData;
+        });
+    }
 
     if (saved) {
         statusEl.textContent = 'Výsledky uloženy!';
         statusEl.style.color = '#388e3c';
         populateAdminRaceSelect();
         populateResultsRaceSelect();
+        renderDashboard();
     } else {
         statusEl.textContent = 'Chyba při ukládání!';
         statusEl.style.color = '#d32f2f';
@@ -5095,6 +5437,8 @@ async function initPickSystem() {
     updateUsageBadges();
     updatePicksStatus();
     updateSubmitButton();
+    renderDashboard();
+    setInterval(updateCountdown, 30000);
 
     // Player dropdown
     document.getElementById('player-select').addEventListener('change', function() {
@@ -5104,6 +5448,7 @@ async function initPickSystem() {
         updatePicksStatus();
         updateSubmitButton();
         populateRaceDropdown();
+        renderDashboard();
     });
 
     // Race dropdown
@@ -5111,6 +5456,7 @@ async function initPickSystem() {
         currentRound = this.value;
         updatePicksStatus();
         updateSubmitButton();
+        renderDashboard();
     });
 
     // Submit pick button

@@ -1,0 +1,31 @@
+name: Upozornění na výsledky
+
+on:
+  push:
+    branches: [main]
+    paths: ['data/picks.json']
+
+concurrency:
+  group: results-notify
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install --prefix scripts --no-audit --no-fund
+      - run: node scripts/results-notify.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          BEFORE_SHA: ${{ github.event.before }}
