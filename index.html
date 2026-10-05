@@ -2324,6 +2324,26 @@
             border-bottom: none;
         }
 
+        .gt-credits {
+            font-size: 0.75em;
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 1.5;
+        }
+
+        .gt-credits summary {
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .gt-credits ul {
+            margin: 6px 0 0;
+            padding-left: 18px;
+        }
+
+        .gt-credits a {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
         .toast .toast-btn {
             display: block;
             width: 100%;
@@ -5950,7 +5970,12 @@ initPickSystem();
                     Zelená tečka je začátek úseku, šipka ukazuje směr jízdy.
                 </div>
                 <div class="gt-meta" style="justify-content:center">Tvůj rekord: ${bestScore()} b</div>
-                <button class="gt-primary" id="gt-start">Start &#127937;</button>`;
+                <button class="gt-primary" id="gt-start">Start &#127937;</button>
+                <details class="gt-credits">
+                    <summary>Zdroje map tratí</summary>
+                    Obrysy tratí vychází z map na Wikimedia Commons:
+                    <ul>${data.credits.map(c => `<li>${esc(c.track)}: <a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.author)}</a>, ${esc(c.license)}</li>`).join('')}</ul>
+                </details>`;
             document.getElementById('gt-start').addEventListener('click', newGame);
         }
 
