@@ -2242,6 +2242,10 @@
     .getActiveSpreadsheet()
     .getActiveSheet();
   var d = JSON.parse(e.postData.contents);
+  // Bez hráče nic nezapisovat (zabrání prázdným řádkům)
+  if (!d.player) {
+    return ContentService.createTextOutput('{"status":"skipped"}');
+  }
   // Hlavička (pokud je sheet prázdný)
   if (sheet.getLastRow() === 0) {
     sheet.appendRow([
@@ -3257,53 +3261,73 @@ async function loadPicksFromGitHub() {
     }
 }
 
-async function savePicksToGitHub(commitMessage) {
+// Applies `mutate` to the freshest picks.json on GitHub, so concurrent saves from other players are never overwritten.
+async function savePicksToGitHub(commitMessage, mutate) {
     const token = getGithubToken();
     if (!token) {
         alert('Nastav GitHub token v Nastavení pro ukládání picků.');
         return false;
     }
 
+    const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${PICKS_FILE_PATH}`;
     try {
-        // Vždy načti nejnovější SHA před uložením
-        const shaResp = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${PICKS_FILE_PATH}`, {
-            headers: {
-                'Authorization': `token ${token}`,
-                'Accept': 'application/vnd.github.v3+json'
+        for (let attempt = 1; attempt <= 4; attempt++) {
+            const getResp = await fetch(url, {
+                cache: 'no-store',
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+
+            let fresh, sha = null;
+            if (getResp.ok) {
+                const data = await getResp.json();
+                sha = data.sha;
+                fresh = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+            } else if (getResp.status === 404) {
+                fresh = getDefaultPicksData();
+            } else {
+                throw new Error(`GitHub API: ${getResp.status}`);
             }
-        });
 
-        if (shaResp.ok) {
-            const shaData = await shaResp.json();
-            picksSha = shaData.sha;
-        }
+            mutate(fresh);
 
-        const body = {
-            message: commitMessage || 'Update picks',
-            content: btoa(unescape(encodeURIComponent(JSON.stringify(picksData, null, 2)))),
-        };
-        if (picksSha) body.sha = picksSha;
+            const body = {
+                message: commitMessage || 'Update picks',
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(fresh, null, 2)))),
+            };
+            if (sha) body.sha = sha;
 
-        const resp = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${PICKS_FILE_PATH}`, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `token ${token}`,
-                'Content-Type': 'application/json',
-                'Accept': 'application/vnd.github.v3+json'
-            },
-            body: JSON.stringify(body)
-        });
+            const resp = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `token ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                body: JSON.stringify(body)
+            });
 
-        if (resp.ok) {
-            const result = await resp.json();
-            picksSha = result.content.sha;
-            return true;
-        } else {
-            const err = await resp.json();
+            if (resp.ok) {
+                const result = await resp.json();
+                picksSha = result.content.sha;
+                picksData = fresh;
+                return true;
+            }
+
+            // 409/422 = someone else committed in between; refetch and retry
+            if ((resp.status === 409 || resp.status === 422) && attempt < 4) {
+                await new Promise(r => setTimeout(r, 400 * attempt + Math.random() * 400));
+                continue;
+            }
+
+            const err = await resp.json().catch(() => ({}));
             console.error('GitHub save error:', err);
             alert('Chyba při ukládání: ' + (err.message || resp.status));
             return false;
         }
+        return false;
     } catch(e) {
         console.error('Chyba při ukládání:', e);
         alert('Chyba při ukládání: ' + e.message);
@@ -3601,23 +3625,19 @@ async function confirmSubmitPick() {
     confirmBtn.disabled = true;
     confirmBtn.textContent = 'Odesílám...';
 
-    // Uložit pick
-    if (!picksData.picks[currentPlayer]) {
-        picksData.picks[currentPlayer] = {};
-    }
-
     const driverNames = selectedDrivers.map(d => d.name);
     const timestamp = new Date().toISOString();
+    const player = currentPlayer;
+    const round = String(currentRound);
+    const pick = { drivers: driverNames, team: selectedTeam.name, timestamp: timestamp };
 
-    picksData.picks[currentPlayer][String(currentRound)] = {
-        drivers: driverNames,
-        team: selectedTeam.name,
-        timestamp: timestamp
-    };
-
-    const race = picksData.races.find(r => String(r.round) === String(currentRound));
-    const raceName = race ? race.name : `R${currentRound}`;
-    const saved = await savePicksToGitHub(`Pick: ${currentPlayer} – ${raceName}`);
+    const race = picksData.races.find(r => String(r.round) === round);
+    const raceName = race ? race.name : `R${round}`;
+    const saved = await savePicksToGitHub(`Pick: ${player} – ${raceName}`, data => {
+        if (!data.picks) data.picks = {};
+        if (!data.picks[player]) data.picks[player] = {};
+        data.picks[player][round] = pick;
+    });
 
     if (saved) {
         overlay.style.display = 'none';
@@ -3642,9 +3662,6 @@ async function confirmSubmitPick() {
         updatePicksStatus();
         updateSubmitButton();
         populateRaceDropdown();
-    } else {
-        // Revert
-        delete picksData.picks[currentPlayer][String(currentRound)];
     }
 
     confirmBtn.disabled = false;
@@ -3745,12 +3762,11 @@ async function saveSettings() {
 
     if (playersStr && picksData) {
         const newPlayers = playersStr.split(',').map(s => s.trim()).filter(s => s);
-        picksData.players = newPlayers;
 
         statusEl.textContent = 'Ukládám...';
         statusEl.style.color = '#666';
 
-        const saved = await savePicksToGitHub('Update players list');
+        const saved = await savePicksToGitHub('Update players list', data => { data.players = newPlayers; });
         if (saved) {
             statusEl.textContent = 'Uloženo!';
             statusEl.style.color = '#388e3c';
@@ -4020,34 +4036,17 @@ async function saveAdminResults() {
         resultData.sprintDotd = document.getElementById('admin-sprint-dotd').value || '';
     }
 
-    picksData.raceResults[String(round)] = resultData;
-
     const raceName = (picksData.races.find(r => String(r.round) === String(round)) || {}).name || `R${round}`;
-    const saved = await savePicksToGitHub(`Results: ${raceName}`);
+    const saved = await savePicksToGitHub(`Results: ${raceName}`, data => {
+        if (!data.raceResults) data.raceResults = {};
+        data.raceResults[String(round)] = resultData;
+    });
 
     if (saved) {
         statusEl.textContent = 'Výsledky uloženy!';
         statusEl.style.color = '#388e3c';
         populateAdminRaceSelect();
         populateResultsRaceSelect();
-
-        // Export to Google Sheets
-        const sheetsUrl = getSheetsUrl();
-        if (sheetsUrl) {
-            sendToGoogleSheets(sheetsUrl, {
-                type: 'race_results',
-                timestamp: new Date().toISOString(),
-                race: raceName,
-                round: round,
-                qualifying: qualifying,
-                race_result: race,
-                sprintQualifying: isSprintRound(round) ? sprintQualifying : undefined,
-                sprintRace: isSprintRound(round) ? sprintRace : undefined,
-                polePosition: polePosition,
-                fastestLap: fastestLap,
-                dotd: dotd
-            });
-        }
     } else {
         statusEl.textContent = 'Chyba při ukládání!';
         statusEl.style.color = '#d32f2f';
