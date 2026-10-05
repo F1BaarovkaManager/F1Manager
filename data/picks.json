@@ -30,9 +30,8 @@
     },
     {
       "round": 4,
-      "name": "Bahrain GP",
-      "date": "2026-04-12",
-      "cancelled": true
+      "name": "Malaysian GP",
+      "date": "2026-10-04"
     },
     {
       "round": 5,
@@ -499,7 +498,7 @@
         "team": "Ferrari",
         "timestamp": "2026-09-25T09:01:07.621Z"
       },
-      "18": {
+      "4": {
         "drivers": [
           "Hadjar",
           "Antonelli",
@@ -655,7 +654,7 @@
         "team": "Mercedes",
         "timestamp": "2026-09-25T12:17:22.259Z"
       },
-      "18": {
+      "4": {
         "drivers": [
           "Verstappen",
           "Hadjar",
@@ -833,7 +832,7 @@
         "team": "Williams",
         "timestamp": "2026-09-25T11:02:06.613Z"
       },
-      "18": {
+      "4": {
         "drivers": [
           "Verstappen",
           "Antonelli",
@@ -910,7 +909,7 @@
           "Colapinto"
         ],
         "team": "Ferrari",
-        "timestamp": "2026-06-27T15:07:10.907Z"
+        "timestamp": "2026-06-27T15:07:10.807Z"
       }
     },
     "Piňa": {
@@ -1057,7 +1056,7 @@
         "team": "Alpine",
         "timestamp": "2026-09-25T10:07:33.151Z"
       },
-      "18": {
+      "4": {
         "drivers": [
           "Verstappen",
           "Norris",
