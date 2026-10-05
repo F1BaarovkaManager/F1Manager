@@ -1730,7 +1730,7 @@
         <button class="settings-btn" id="bar-collapse-btn" title="Schovat panel" style="display:none; font-size:0.6em; width:auto; border-radius:6px; padding:0 8px;">SCHOVAT</button>
     </div>
     <!-- Tlačítko pro znovuzobrazení player-bar -->
-    <button id="bar-expand-btn" class="bar-expand-btn" style="display:none;">&#9660; Výběr</button>
+    <button id="bar-expand-btn" class="bar-expand-btn" style="display:none;">&#9660; Výběr týmu</button>
 
     <div class="container">
         <div class="layout">
@@ -2906,11 +2906,19 @@
                     }
                 }
 
+                function collapseBar() {
+                    playerBar.style.display = 'none';
+                    expandBtn.style.display = 'block';
+                }
+
                 collapseBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    playerBar.style.display = 'none';
-                    expandBtn.style.display = 'block';
+                    collapseBar();
+                });
+
+                document.getElementById('player-select').addEventListener('change', function() {
+                    if (this.value && window.innerWidth <= 767) collapseBar();
                 });
 
                 expandBtn.addEventListener('click', function(e) {
