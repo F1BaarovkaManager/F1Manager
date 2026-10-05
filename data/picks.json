@@ -8,8 +8,7 @@
     "Salvetus Motorsport",
     "F17",
     "Piňa",
-    "Vzoom",
-    "Martini Motors"
+    "Vzoom"
   ],
   "races": [
     {
@@ -329,52 +328,6 @@
         ],
         "team": "Racing Bulls",
         "timestamp": "2026-09-25T11:59:18.691Z"
-      }
-    },
-    "Martini Motors": {
-      "1": {
-        "drivers": [
-          "Verstappen",
-          "Antonelli",
-          "Lindblad",
-          "Hulkenberg",
-          "Bearman"
-        ],
-        "team": "Mercedes",
-        "timestamp": "2026-03-06T13:51:26.152Z"
-      },
-      "2": {
-        "drivers": [
-          "Hamilton",
-          "Hulkenberg",
-          "Norris",
-          "Hadjar",
-          "Gasly"
-        ],
-        "team": "Ferrari",
-        "timestamp": "2026-03-12T20:19:07.758Z"
-      },
-      "3": {
-        "drivers": [
-          "Hamilton",
-          "Leclerc",
-          "Russel",
-          "Ocon",
-          "Bortoleto"
-        ],
-        "team": "Haas",
-        "timestamp": "2026-04-04T15:48:31.104Z"
-      },
-      "6": {
-        "drivers": [
-          "Verstappen",
-          "Leclerc",
-          "Gasly",
-          "Ocon",
-          "Hulkenberg"
-        ],
-        "team": "Red Bull Racing",
-        "timestamp": "2026-05-03T17:31:26.670Z"
       }
     },
     "F17": {
