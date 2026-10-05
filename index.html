@@ -2307,6 +2307,50 @@
             border-radius: 0;
         }
 
+        .standings-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 6px 0 8px;
+        }
+
+        .standings-race {
+            flex: 1;
+            text-align: center;
+        }
+
+        .standings-race .dash-sub {
+            margin: 2px 0 0;
+        }
+
+        .standings-race-name {
+            font-weight: 800;
+            font-size: 1.05em;
+        }
+
+        .st-nav,
+        .st-nav:hover {
+            width: 40px;
+            height: 40px;
+            flex: 0 0 40px;
+            margin: 0;
+            padding: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--glass-border);
+            box-shadow: none;
+            color: #fff;
+            font-size: 1.6em;
+            line-height: 1;
+            transform: none;
+        }
+
+        .st-nav:disabled {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
         .container .standings td {
             padding: 7px 4px;
             font-size: 0.92em;
@@ -4286,8 +4330,13 @@ function populateRaceDropdown() {
     const select = document.getElementById('race-select');
     select.innerHTML = '<option value="">-- Vyber závod --</option>';
     if (picksData && picksData.races) {
-        const now = new Date();
-        let nearestRound = '';
+        const d = new Date();
+        const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        // Rounds are not in date order (R4 moved to October), so pick the next race by date
+        const nextRace = picksData.races
+            .filter(r => !r.cancelled && r.date >= today)
+            .sort((a, b) => a.date.localeCompare(b.date))[0];
+        const nearestRound = nextRace ? String(nextRace.round) : '';
 
         picksData.races.forEach(race => {
             const opt = document.createElement('option');
@@ -4301,12 +4350,6 @@ function populateRaceDropdown() {
                 opt.textContent = `R${race.round}: ${race.name} (${race.date})${submitted ? ' ✓' : ''}`;
             }
             select.appendChild(opt);
-
-            // Automaticky vybrat nejbližší budoucí závod (přeskočit zrušené)
-            const raceDate = new Date(race.date);
-            if (!nearestRound && !race.cancelled && raceDate >= new Date(now.getTime() - 2*86400000)) {
-                nearestRound = String(race.round);
-            }
         });
 
         if (!currentRound && nearestRound) {
@@ -4684,6 +4727,9 @@ function computeStandings(rounds) {
     }).sort((a, b) => b.total - a.total);
 }
 
+// Index into the scored races shown in the standings card; null = latest race
+let standingsIndex = null;
+
 function renderStandings() {
     const results = picksData.raceResults || {};
     const scored = picksData.races
@@ -4691,14 +4737,15 @@ function renderStandings() {
         .sort((a, b) => a.date.localeCompare(b.date));
     if (!scored.length) return '';
 
-    const last = scored[scored.length - 1];
-    const now = computeStandings(scored);
-    const before = computeStandings(scored.slice(0, -1));
+    const idx = standingsIndex === null ? scored.length - 1 : Math.min(Math.max(standingsIndex, 0), scored.length - 1);
+    const last = scored[idx];
+    const now = computeStandings(scored.slice(0, idx + 1));
+    const before = computeStandings(scored.slice(0, idx));
     const prevRank = Object.fromEntries(before.map((s, i) => [s.player, i]));
 
     const rows = now.map((s, i) => {
         const lastScore = calculatePlayerRoundScore(s.player, last.round);
-        const move = scored.length > 1 ? prevRank[s.player] - i : 0;
+        const move = idx > 0 ? prevRank[s.player] - i : 0;
         const moveHtml = move > 0 ? `<span class="move up">&#9650;${move}</span>` : move < 0 ? `<span class="move down">&#9660;${-move}</span>` : '<span class="move">&ndash;</span>';
         return `<tr class="${s.player === currentPlayer ? 'me' : ''}">
             <td class="rank">${i + 1}</td>
@@ -4711,7 +4758,14 @@ function renderStandings() {
 
     return `<div class="dash-card standings-card">
         <div class="dash-label">Průběžné pořadí</div>
-        <div class="dash-sub">po ${escapeHtml(last.name)} &middot; ${scored.length} ${scored.length === 1 ? 'závod' : scored.length < 5 ? 'závody' : 'závodů'}</div>
+        <div class="standings-nav">
+            <button class="st-nav" data-idx="${idx - 1}" ${idx === 0 ? 'disabled' : ''} aria-label="Předchozí závod">&#8249;</button>
+            <div class="standings-race">
+                <div class="standings-race-name">po ${escapeHtml(last.name)}</div>
+                <div class="dash-sub">${idx + 1}. z ${scored.length} odjetých závodů</div>
+            </div>
+            <button class="st-nav" data-idx="${idx + 1}" ${idx === scored.length - 1 ? 'disabled' : ''} aria-label="Další závod">&#8250;</button>
+        </div>
         <table class="standings"><tbody>${rows}</tbody></table>
     </div>`;
 }
@@ -5117,6 +5171,7 @@ async function saveAdminResults() {
         statusEl.style.color = '#388e3c';
         populateAdminRaceSelect();
         populateResultsRaceSelect();
+        standingsIndex = null;
         renderDashboard();
     } else {
         statusEl.textContent = 'Chyba při ukládání!';
@@ -5439,6 +5494,13 @@ async function initPickSystem() {
     updateSubmitButton();
     renderDashboard();
     setInterval(updateCountdown, 30000);
+
+    document.getElementById('dashboard').addEventListener('click', function(e) {
+        const nav = e.target.closest('.st-nav');
+        if (!nav || nav.disabled) return;
+        standingsIndex = Number(nav.dataset.idx);
+        renderDashboard();
+    });
 
     // Player dropdown
     document.getElementById('player-select').addEventListener('change', function() {
