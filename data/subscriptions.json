@@ -16,5 +16,15 @@
       },
       "added": "2026-10-05T09:03:04.032Z"
     }
+  ],
+  "Piňa": [
+    {
+      "endpoint": "https://web.push.apple.com/QFf99YM4zggHI6bO--07-R4nmQyhdMz1BH-owTqvcT2NP814Zb7OIq1QRbjl4xs4QMR-bssCG-VXu3zSXOLM5bvl6SGt7F25po6yBL0FygHVG85eaVHL7FXODXe0oaaXIps9jEbgg34EmJp00y2feXitzyC8klZJ5_xrJ1s0MFA",
+      "keys": {
+        "p256dh": "BDXoqFczVXZBxu2rFrPYzMX5oOJafkVDZgYuCBsN0_cFpQBTD0AKDW4_zwv04_QsdECUHEaFG9-lhz6JKgFei9A",
+        "auth": "fnjWNE8jHXhZv6-AFtF-lg"
+      },
+      "added": "2026-10-05T10:56:38.107Z"
+    }
   ]
 }
