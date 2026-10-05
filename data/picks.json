@@ -104,40 +104,54 @@
     {
       "round": 18,
       "name": "Singapore GP",
-      "date": "2026-10-11"
+      "date": "2026-10-11",
+      "qualiStart": "2026-10-09T12:30:00Z",
+      "qualiName": "Sprintová kvalifikace"
     },
     {
       "round": 19,
       "name": "United States GP",
       "date": "2026-10-25",
-      "sprint": true
+      "sprint": true,
+      "qualiStart": "2026-10-24T21:00:00Z",
+      "qualiName": "Kvalifikace"
     },
     {
       "round": 20,
       "name": "Mexico City GP",
-      "date": "2026-11-01"
+      "date": "2026-11-01",
+      "qualiStart": "2026-10-31T21:00:00Z",
+      "qualiName": "Kvalifikace"
     },
     {
       "round": 21,
       "name": "São Paulo GP",
       "date": "2026-11-08",
-      "sprint": true
+      "sprint": true,
+      "qualiStart": "2026-11-07T18:00:00Z",
+      "qualiName": "Kvalifikace"
     },
     {
       "round": 22,
       "name": "Las Vegas GP",
-      "date": "2026-11-21"
+      "date": "2026-11-21",
+      "qualiStart": "2026-11-21T04:00:00Z",
+      "qualiName": "Kvalifikace"
     },
     {
       "round": 23,
       "name": "Qatar GP",
       "date": "2026-11-29",
-      "sprint": true
+      "sprint": true,
+      "qualiStart": "2026-11-28T18:00:00Z",
+      "qualiName": "Kvalifikace"
     },
     {
       "round": 24,
       "name": "Abu Dhabi GP",
-      "date": "2026-12-06"
+      "date": "2026-12-06",
+      "qualiStart": "2026-12-05T14:00:00Z",
+      "qualiName": "Kvalifikace"
     }
   ],
   "picks": {

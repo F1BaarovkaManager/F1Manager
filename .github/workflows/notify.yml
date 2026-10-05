@@ -1,0 +1,34 @@
+name: Upozornění na kvalifikaci
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+    inputs:
+      test_player:
+        description: 'Poslat testovací notifikaci hráči (přesné jméno, nebo "all")'
+        required: true
+        default: 'all'
+
+concurrency:
+  group: ${{ github.event_name == 'workflow_dispatch' && 'notify-test' || 'notify' }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install --prefix scripts --no-audit --no-fund
+      - run: node scripts/notify.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          TEST_PLAYER: ${{ github.event.inputs.test_player }}

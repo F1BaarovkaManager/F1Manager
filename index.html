@@ -3,6 +3,12 @@
 <head>
     <title>F1 Baarovka Manager</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="F1 Baarovka">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="theme-color" content="#15151e">
     <meta charset="UTF-8">
     <style>
         /* Import F1-like font */
@@ -2131,6 +2137,7 @@
                     <button id="submit-pick-button" class="btn-submit-pick" disabled>Odeslat sestavu</button>
                     <button id="overview-button">Přehled picků</button>
                     <button id="results-button">Výsledky & Body</button>
+                    <button id="notify-button">&#128276; Upozornění</button>
                     <button class="admin-trigger" id="admin-trigger" title="Admin">&#9998;</button>
                     <button class="admin-trigger" id="mg-open-btn" title="F1 Lap Challenge">&#127937;</button>
                 </div>
@@ -2209,6 +2216,25 @@
                 <div class="confirm-buttons">
                     <button class="btn-cancel" id="confirm-cancel">Zpět</button>
                     <button class="btn-submit-final" id="confirm-yes">Odeslat!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Modal -->
+    <div id="notify-overlay" class="confirm-overlay">
+        <div class="confirm-box">
+            <div class="confirm-header">
+                <h3>&#128276; Upozornění na kvalifikaci</h3>
+            </div>
+            <div class="confirm-body">
+                <div style="font-size:0.92em; color:#444; margin-bottom:14px; line-height:1.5;">
+                    30 minut před kvalifikací (o sprintových víkendech před sprintovou kvalifikací) přijde upozornění všem.
+                    5 minut předem ještě jedno &ndash; jen těm, kdo nemají postaveno.
+                </div>
+                <div id="notify-content"></div>
+                <div class="confirm-buttons">
+                    <button class="btn-cancel" id="notify-close">Zavřít</button>
                 </div>
             </div>
         </div>
@@ -3261,15 +3287,22 @@ async function loadPicksFromGitHub() {
     }
 }
 
-// Applies `mutate` to the freshest picks.json on GitHub, so concurrent saves from other players are never overwritten.
 async function savePicksToGitHub(commitMessage, mutate) {
+    const fresh = await saveJsonToGitHub(PICKS_FILE_PATH, commitMessage, mutate, getDefaultPicksData);
+    if (!fresh) return false;
+    picksData = fresh;
+    return true;
+}
+
+// Applies `mutate` to the freshest copy of the file on GitHub, so concurrent saves from other players are never overwritten.
+async function saveJsonToGitHub(path, commitMessage, mutate, makeEmpty) {
     const token = getGithubToken();
     if (!token) {
         alert('Nastav GitHub token v Nastavení pro ukládání picků.');
-        return false;
+        return null;
     }
 
-    const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${PICKS_FILE_PATH}`;
+    const url = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${path}`;
     try {
         for (let attempt = 1; attempt <= 4; attempt++) {
             const getResp = await fetch(url, {
@@ -3286,7 +3319,7 @@ async function savePicksToGitHub(commitMessage, mutate) {
                 sha = data.sha;
                 fresh = JSON.parse(decodeURIComponent(escape(atob(data.content))));
             } else if (getResp.status === 404) {
-                fresh = getDefaultPicksData();
+                fresh = makeEmpty();
             } else {
                 throw new Error(`GitHub API: ${getResp.status}`);
             }
@@ -3310,10 +3343,8 @@ async function savePicksToGitHub(commitMessage, mutate) {
             });
 
             if (resp.ok) {
-                const result = await resp.json();
-                picksSha = result.content.sha;
-                picksData = fresh;
-                return true;
+                if (path === PICKS_FILE_PATH) picksSha = (await resp.json()).content.sha;
+                return fresh;
             }
 
             // 409/422 = someone else committed in between; refetch and retry
@@ -3325,13 +3356,13 @@ async function savePicksToGitHub(commitMessage, mutate) {
             const err = await resp.json().catch(() => ({}));
             console.error('GitHub save error:', err);
             alert('Chyba při ukládání: ' + (err.message || resp.status));
-            return false;
+            return null;
         }
-        return false;
+        return null;
     } catch(e) {
         console.error('Chyba při ukládání:', e);
         alert('Chyba při ukládání: ' + e.message);
-        return false;
+        return null;
     }
 }
 
@@ -3685,6 +3716,152 @@ async function sendToGoogleSheets(url, data) {
         console.log('Google Sheets: data sent');
     } catch (e) {
         console.warn('Google Sheets export failed:', e.message);
+    }
+}
+
+// --- Push notifications ---
+
+const VAPID_PUBLIC_KEY = 'BLEl-IJTCRtHtR7kekoRGfESPp00tPgYVyUdRSowJ7LYCiaazlZqzhOhmjjU_clvvmcFqQ1UviTLK7kWgMnWaYg';
+const SUBS_FILE_PATH = 'data/subscriptions.json';
+
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(e => console.warn('SW registration failed:', e));
+}
+
+function isIOSDevice() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
+function isStandaloneApp() {
+    return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+}
+
+function pushSupported() {
+    return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+}
+
+function vapidKeyBytes(base64) {
+    const padded = (base64 + '='.repeat((4 - base64.length % 4) % 4)).replace(/-/g, '+').replace(/_/g, '/');
+    return Uint8Array.from(atob(padded), c => c.charCodeAt(0));
+}
+
+async function getCurrentPushSubscription() {
+    const reg = await navigator.serviceWorker.ready;
+    return reg.pushManager.getSubscription();
+}
+
+async function openNotifyModal() {
+    document.getElementById('notify-overlay').style.display = 'block';
+    hideCharacterImages();
+    await renderNotifyContent();
+}
+
+async function renderNotifyContent(message) {
+    const el = document.getElementById('notify-content');
+    const box = (bg, border, html) => `<div style="background:${bg}; border:2px solid ${border}; border-radius:8px; padding:14px; line-height:1.6; font-size:0.95em;">${html}</div>`;
+    const note = message ? `<div style="margin-top:10px; text-align:center; font-weight:bold;">${message}</div>` : '';
+
+    if (!pushSupported()) {
+        if (isIOSDevice() && !isStandaloneApp()) {
+            el.innerHTML = box('#fff3e0', '#ff9800', `
+                <strong>Na iPhonu fungují upozornění jen v aplikaci z plochy:</strong>
+                <ol style="margin:8px 0 0 18px; padding:0;">
+                    <li>Pokud už ikonu na ploše máš, nejdřív ji smaž (podrž &rarr; Odstranit záložku).</li>
+                    <li>Otevři tuhle stránku v <strong>Safari</strong>.</li>
+                    <li>Ťukni na <strong>Sdílet</strong> (čtvereček se šipkou) &rarr; <strong>Přidat na plochu</strong>.</li>
+                    <li>Otevři aplikaci <strong>z plochy</strong> a ťukni znovu na &#128276; Upozornění.</li>
+                </ol>`);
+        } else {
+            el.innerHTML = box('#ffebee', '#d32f2f', 'Tento prohlížeč upozornění nepodporuje. Na iPhonu je potřeba iOS 16.4 nebo novější.');
+        }
+        return;
+    }
+
+    if (Notification.permission === 'denied') {
+        el.innerHTML = box('#ffebee', '#d32f2f', 'Upozornění jsou zablokovaná. Povol je v <strong>Nastavení iPhonu &rarr; Oznámení &rarr; F1 Baarovka</strong> a pak to zkus znovu.');
+        return;
+    }
+
+    if (!currentPlayer) {
+        el.innerHTML = box('#fff3e0', '#ff9800', 'Nejdřív nahoře vyber, za koho hraješ.');
+        return;
+    }
+
+    const sub = await getCurrentPushSubscription();
+    const subscribedAs = localStorage.getItem('f1_push_player');
+    if (sub && Notification.permission === 'granted' && subscribedAs === currentPlayer) {
+        el.innerHTML = box('#e8f5e9', '#388e3c', `&#9989; Upozornění jsou zapnutá pro <strong>${currentPlayer}</strong>.`) +
+            `<button id="notify-disable" class="btn-cancel" style="width:100%; margin-top:12px;">Vypnout upozornění</button>` + note;
+        document.getElementById('notify-disable').addEventListener('click', disablePushNotifications);
+    } else {
+        el.innerHTML = `<button id="notify-enable" style="width:100%; padding:14px; font-size:1.05em;">&#128276; Zapnout upozornění pro ${currentPlayer}</button>` + note;
+        document.getElementById('notify-enable').addEventListener('click', enablePushNotifications);
+    }
+}
+
+async function enablePushNotifications() {
+    // iOS only shows the permission prompt when it is requested directly from the tap
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+        await renderNotifyContent('Bez povolení to nepůjde &ndash; zkus to znovu a dej Povolit.');
+        return;
+    }
+
+    const btn = document.getElementById('notify-enable');
+    if (btn) { btn.disabled = true; btn.textContent = 'Zapínám...'; }
+
+    try {
+        const reg = await navigator.serviceWorker.ready;
+        const sub = await reg.pushManager.getSubscription() || await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: vapidKeyBytes(VAPID_PUBLIC_KEY)
+        });
+        const json = sub.toJSON();
+        const player = currentPlayer;
+
+        const saved = await saveJsonToGitHub(SUBS_FILE_PATH, `Notifications on: ${player}`, data => {
+            for (const p of Object.keys(data)) {
+                data[p] = data[p].filter(s => s.endpoint !== json.endpoint);
+                if (!data[p].length) delete data[p];
+            }
+            if (!data[player]) data[player] = [];
+            data[player].push({ endpoint: json.endpoint, keys: json.keys, added: new Date().toISOString() });
+        }, () => ({}));
+
+        if (!saved) {
+            await renderNotifyContent('Nepodařilo se uložit, zkus to prosím znovu.');
+            return;
+        }
+
+        localStorage.setItem('f1_push_player', player);
+        reg.showNotification('Upozornění zapnutá ✅', {
+            body: 'Před každou kvalifikací ti dáme vědět.',
+            icon: 'icons/icon-192.png'
+        });
+        await renderNotifyContent();
+    } catch (e) {
+        console.error('Push subscribe failed:', e);
+        await renderNotifyContent('Chyba: ' + e.message);
+    }
+}
+
+async function disablePushNotifications() {
+    try {
+        const sub = await getCurrentPushSubscription();
+        if (sub) {
+            const endpoint = sub.endpoint;
+            await saveJsonToGitHub(SUBS_FILE_PATH, `Notifications off: ${currentPlayer}`, data => {
+                for (const p of Object.keys(data)) {
+                    data[p] = data[p].filter(s => s.endpoint !== endpoint);
+                    if (!data[p].length) delete data[p];
+                }
+            }, () => ({}));
+            await sub.unsubscribe();
+        }
+        localStorage.removeItem('f1_push_player');
+        await renderNotifyContent('Upozornění vypnutá.');
+    } catch (e) {
+        await renderNotifyContent('Chyba: ' + e.message);
     }
 }
 
@@ -4456,6 +4633,12 @@ async function initPickSystem() {
     // Results button
     document.getElementById('results-button').addEventListener('click', function() {
         showResults();
+    });
+
+    document.getElementById('notify-button').addEventListener('click', openNotifyModal);
+    document.getElementById('notify-close').addEventListener('click', function() {
+        document.getElementById('notify-overlay').style.display = 'none';
+        showCharacterImages();
     });
 
     document.getElementById('results-race-select').addEventListener('change', function() {
