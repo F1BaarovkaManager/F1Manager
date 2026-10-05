@@ -1934,6 +1934,304 @@
                 margin: 0;
             }
         }
+
+        /* ===== GLASS THEME ===== */
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --glass-border: rgba(255, 255, 255, 0.14);
+            --glass-blur: blur(18px) saturate(160%);
+            --text: #f4f5f8;
+            --text-dim: rgba(244, 245, 248, 0.6);
+        }
+
+        html {
+            background: #07070c;
+        }
+
+        body {
+            background: transparent;
+            color: var(--text);
+        }
+
+        /* fixed layer: iOS ignores background-attachment: fixed */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background:
+                radial-gradient(ellipse 80% 45% at 0% 0%, rgba(225, 6, 0, 0.45), transparent 65%),
+                radial-gradient(ellipse 70% 40% at 100% 35%, rgba(40, 90, 255, 0.28), transparent 65%),
+                radial-gradient(ellipse 80% 45% at 30% 100%, rgba(225, 6, 0, 0.25), transparent 65%),
+                #07070c;
+        }
+
+        header {
+            background: rgba(8, 8, 14, 0.55);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 2px solid #e10600;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+            margin-bottom: 0;
+        }
+
+        h1 {
+            font-family: 'Orbitron', 'Segoe UI', Arial, sans-serif;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .player-bar {
+            background: rgba(14, 14, 24, 0.5);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .player-bar select {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+        }
+
+        .player-bar select option {
+            background: #15151e;
+        }
+
+        .bar-expand-btn {
+            background: rgba(14, 14, 24, 0.6);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+        }
+
+        .container h2 {
+            color: #fff;
+            border-bottom: none;
+            border-left: 4px solid #e10600;
+            padding: 2px 0 2px 12px;
+            font-family: 'Orbitron', 'Segoe UI', Arial, sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .container table {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+        }
+
+        .container th {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-dim);
+            font-size: 0.72em;
+            letter-spacing: 1.2px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .container td {
+            color: var(--text);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .container tr:last-child td {
+            border-bottom: none;
+        }
+
+        .container tr:hover,
+        #teamsTable tr[data-team]:hover,
+        #driversTable tr[data-driver]:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: none;
+        }
+
+        .container tr:active {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .container tr.selected {
+            background: linear-gradient(90deg, rgba(225, 6, 0, 0.32), rgba(225, 6, 0, 0.08));
+        }
+
+        .price-tag {
+            color: #ff4d4d;
+        }
+
+        .usage-badge {
+            background: rgba(255, 255, 255, 0.14);
+            color: #fff;
+        }
+
+        .container input[type="checkbox"],
+        .container input[type="radio"] {
+            -webkit-appearance: none;
+            appearance: none;
+            display: inline-grid;
+            place-content: center;
+            width: 28px;
+            height: 28px;
+            margin: 0;
+            transform: none;
+            border: 2px solid rgba(255, 255, 255, 0.35);
+            border-radius: 9px;
+            background: rgba(255, 255, 255, 0.06);
+            cursor: pointer;
+            vertical-align: middle;
+            transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+        }
+
+        .container input[type="radio"] {
+            border-radius: 50%;
+        }
+
+        .container input[type="checkbox"]:checked,
+        .container input[type="radio"]:checked {
+            background: #e10600;
+            border-color: #ff4d2e;
+            box-shadow: 0 0 14px rgba(225, 6, 0, 0.6);
+        }
+
+        .container input[type="checkbox"]:checked::after {
+            content: '';
+            width: 12px;
+            height: 6px;
+            border-left: 3px solid #fff;
+            border-bottom: 3px solid #fff;
+            transform: translateY(-2px) rotate(-45deg);
+        }
+
+        .container input[type="radio"]:checked::after {
+            content: '';
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #fff;
+        }
+
+        .container input:disabled {
+            opacity: 0.35;
+        }
+
+        .selection-area {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+            color: var(--text);
+        }
+
+        .budget {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            box-shadow: none;
+        }
+
+        .progress-container {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: none;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #e10600, #ff5a36);
+        }
+
+        .selection-area .selection-toggle {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--glass-border);
+            box-shadow: none;
+        }
+
+        .actions .btn-submit-pick {
+            background: linear-gradient(135deg, #e10600, #ff4d2e) !important;
+            box-shadow: 0 8px 26px rgba(225, 6, 0, 0.5);
+        }
+
+        .actions .btn-submit-pick:disabled {
+            background: rgba(255, 255, 255, 0.08) !important;
+            color: rgba(255, 255, 255, 0.35);
+            box-shadow: none;
+        }
+
+        .btn-secondary,
+        .btn-secondary:hover {
+            background: transparent;
+            color: #fff;
+            border: 1.5px solid rgba(255, 255, 255, 0.45);
+        }
+
+        .btn-secondary:disabled {
+            background: transparent;
+            color: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-nav,
+        .btn-nav:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-nav:hover {
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        .fixed-budget-panel {
+            background: rgba(8, 8, 14, 0.6);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .confirm-overlay,
+        .settings-overlay,
+        .overview-overlay,
+        .admin-overlay,
+        .results-overlay {
+            background: rgba(5, 5, 10, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .confirm-box,
+        .settings-box,
+        .admin-box,
+        .results-box {
+            border-radius: 20px;
+        }
+
+        .confirm-box,
+        .settings-box,
+        .overview-box,
+        .admin-box,
+        .results-box,
+        .preview-content {
+            color: #333;
+        }
+
+        @media (max-width: 767px) {
+            /* the fixed character stack sits over the left buttons; let taps through */
+            .driver-stack-item {
+                pointer-events: none;
+            }
+
+            h1 {
+                font-size: 17px;
+                letter-spacing: 1px;
+            }
+
+            .container h2 {
+                font-size: 1.2em;
+            }
+        }
     </style>
 </head>
 <body>
