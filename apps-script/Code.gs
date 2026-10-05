@@ -5,12 +5,14 @@
 var REPO = 'F1BaarovkaManager/F1Manager';
 var PICKS_PATH = 'data/picks.json';
 var SUBS_PATH = 'data/subscriptions.json';
+var GUESS_PATH = 'data/guess-scores.json';
 var SHEET_NAME = 'Picky';
 
 function doGet(e) {
   var action = (e && e.parameter && e.parameter.action) || '';
   try {
     if (action === 'data') return json_({ ok: true, data: readFile_(PICKS_PATH).data });
+    if (action === 'guess') return json_({ ok: true, data: readFile_(GUESS_PATH, {}).data });
     return json_({ ok: true });
   } catch (err) {
     return json_({ ok: false, error: String(err.message || err) });
@@ -34,6 +36,7 @@ function doPost(e) {
       case 'unsubscribe': return json_(unsubscribe_(body));
       case 'results': return json_(saveResults_(body));
       case 'players': return json_(savePlayers_(body));
+      case 'guess': return json_(saveGuess_(body));
       default: return json_({ ok: false, error: 'Neznámá akce' });
     }
   } catch (err) {
@@ -113,6 +116,22 @@ function savePlayers_(b) {
   if (!Array.isArray(b.players) || !b.players.length) throw new Error('Chybí hráči');
   var players = b.players.map(function (p) { return String(p).trim(); }).filter(String);
   var saved = updateFile_(PICKS_PATH, 'Update players list', function (data) { data.players = players; });
+  return { ok: true, data: saved };
+}
+
+function saveGuess_(b) {
+  var picks = readFile_(PICKS_PATH).data;
+  var player = String(b.player || '');
+  var score = Number(b.score), correct = Number(b.correct);
+  if ((picks.players || []).indexOf(player) === -1) throw new Error('Neznámý hráč');
+  if (!(score >= 0 && score <= 2000) || !(correct >= 0 && correct <= 5)) throw new Error('Neplatné skóre');
+  var saved = updateFile_(GUESS_PATH, 'Guess the track: ' + player + ' – ' + score + ' b', function (data) {
+    data.players = data.players || {};
+    var e = data.players[player] = data.players[player] || { best: 0, games: 0 };
+    e.games += 1;
+    e.last = score;
+    if (score > e.best) { e.best = score; e.bestCorrect = correct; e.bestAt = new Date().toISOString(); }
+  }, {});
   return { ok: true, data: saved };
 }
 

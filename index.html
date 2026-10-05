@@ -2324,6 +2324,44 @@
             border-bottom: none;
         }
 
+        .gt-board-title {
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .gt-board-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 8px;
+            margin: 0 -8px;
+            border-radius: 10px;
+        }
+
+        .gt-board-row.me {
+            background: rgba(225, 6, 0, 0.25);
+        }
+
+        .gt-board-rank {
+            width: 22px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 800;
+        }
+
+        .gt-board-title + .gt-board-row .gt-board-rank {
+            color: #ffd400;
+        }
+
+        .gt-board-name {
+            flex: 1;
+            font-weight: 600;
+        }
+
+        .gt-board-games {
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.55);
+        }
+
         .gt-credits {
             font-size: 0.75em;
             color: rgba(255, 255, 255, 0.5);
@@ -4749,6 +4787,48 @@ function celebratePick(raceName) {
     confetti({ particleCount: 120, spread: 100, startVelocity: 45, origin: { y: 0.6 }, colors, zIndex: 10001 });
 }
 
+// --- Guess the track: shared leaderboard (best score per player) ---
+
+const GUESS_FILE_PATH = 'data/guess-scores.json';
+
+function applyGuessScore(data, player, score, correct) {
+    if (!data.players) data.players = {};
+    const entry = data.players[player] || (data.players[player] = { best: 0, games: 0 });
+    entry.games += 1;
+    entry.last = score;
+    if (score > entry.best) {
+        entry.best = score;
+        entry.bestCorrect = correct;
+        entry.bestAt = new Date().toISOString();
+    }
+}
+
+async function loadGuessScores() {
+    if (backendMode === 'script') {
+        const resp = await fetch(getSheetsUrl() + '?action=guess', { cache: 'no-store' });
+        return (await resp.json()).data || {};
+    }
+    const resp = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GUESS_FILE_PATH}`, {
+        cache: 'no-store',
+        headers: { 'Authorization': `token ${getGithubToken()}`, 'Accept': 'application/vnd.github.raw+json' }
+    });
+    if (resp.status === 404) return {};
+    return resp.json();
+}
+
+async function saveGuessScore(score, correct) {
+    const player = currentPlayer;
+    if (backendMode === 'script') {
+        return (await callBackend({ action: 'guess', player, score, correct })).data;
+    }
+    const saved = await saveJsonToGitHub(GUESS_FILE_PATH, `Guess the track: ${player} – ${score} b`,
+        data => applyGuessScore(data, player, score, correct), () => ({}));
+    if (!saved) throw new Error('Skóre se nepodařilo uložit');
+    return saved;
+}
+
+window.guessLeaderboard = { load: loadGuessScores, save: saveGuessScore, player: () => currentPlayer };
+
 // --- Dashboard: race card + season standings ---
 
 function escapeHtml(s) {
@@ -5938,30 +6018,77 @@ initPickSystem();
             });
         }
 
+        const plural = (n, one, few, many) => n === 1 ? one : n >= 2 && n <= 4 ? few : many;
+
+        function renderBoard(el, scores, highlight) {
+            const entries = Object.entries((scores && scores.players) || {}).sort((a, b) => b[1].best - a[1].best);
+            if (!entries.length) {
+                el.innerHTML = '<div class="gt-meta" style="justify-content:center">Zatím tu nikdo nemá skóre &ndash; buď první!</div>';
+                return;
+            }
+            el.innerHTML = '<div class="gt-board-title">&#127942; Žebříček</div>' + entries.map(([p, e], i) => `
+                <div class="gt-board-row${p === highlight ? ' me' : ''}">
+                    <span class="gt-board-rank">${i + 1}.</span>
+                    <span class="gt-board-name">${esc(p)}</span>
+                    <span class="gt-board-games">${e.games} ${plural(e.games, 'hra', 'hry', 'her')}</span>
+                    <strong>${e.best} b</strong>
+                </div>`).join('');
+        }
+
+        async function fillBoard(el, scoresPromise, highlight) {
+            el.innerHTML = '<div class="gt-meta" style="justify-content:center">Načítám žebříček...</div>';
+            try {
+                renderBoard(el, await scoresPromise, highlight);
+            } catch (e) {
+                el.innerHTML = '<div class="gt-meta" style="justify-content:center">Žebříček se nepodařilo načíst.</div>';
+            }
+        }
+
         function showResults() {
+            const lb = window.guessLeaderboard;
+            const player = lb.player();
+            const correct = game.rounds.filter(r => r.points).length;
             const prevBest = bestScore();
-            const record = game.score > prevBest;
-            if (record) {
+            if (game.score > prevBest) {
                 try { localStorage.setItem('f1_guess_best', String(game.score)); } catch (e) {}
             }
-            const rows = game.rounds.map((r, i) => {
+            const rows = game.rounds.map(r => {
                 const t = data.tracks[r.sn.track];
                 return `<div><span>${r.points ? '&#9989;' : '&#10060;'} <span class="gt-stars">${stars(r.sn.level)}</span> ${esc(t.flag)} ${esc(t.name)}</span><strong>${r.points ? '+' + r.points : '0'}</strong></div>`;
             }).join('');
             screen.innerHTML = `
                 <div class="gt-card">
-                    <div class="gt-meta"><span>Tvoje skóre</span><span>${record ? '&#127942; Nový rekord!' : 'Rekord: ' + prevBest + ' b'}</span></div>
+                    <div class="gt-meta"><span>Tvoje skóre</span><span id="gt-record"></span></div>
                     <div class="gt-score">${game.score} b</div>
-                    <div class="gt-meta" style="justify-content:center">${game.rounds.filter(r => r.points).length} z 5 správně</div>
+                    <div class="gt-meta" style="justify-content:center">${correct} z 5 správně</div>
                 </div>
+                <div class="gt-card gt-board" id="gt-board"></div>
                 <div class="gt-card gt-rounds">${rows}</div>
                 <button class="gt-primary" id="gt-again">Hrát znovu</button>
                 <button class="gt-secondary" id="gt-done">Zavřít</button>`;
             document.getElementById('gt-again').addEventListener('click', newGame);
             document.getElementById('gt-done').addEventListener('click', close);
+
+            const recordEl = document.getElementById('gt-record');
+            if (!player) {
+                recordEl.textContent = 'Neuloženo';
+                fillBoard(document.getElementById('gt-board'), lb.load(), null);
+                document.getElementById('gt-board').insertAdjacentHTML('beforebegin',
+                    '<div class="gt-meta" style="justify-content:center">Vyber nahoře v aplikaci svůj tým a tvoje skóre se příště uloží do žebříčku.</div>');
+                return;
+            }
+            const saved = lb.save(game.score, correct);
+            fillBoard(document.getElementById('gt-board'), saved, player);
+            saved.then(scores => {
+                const me = scores && scores.players && scores.players[player];
+                if (me && me.best === game.score && game.score > 0) recordEl.innerHTML = '&#127942; Osobní rekord!';
+                else if (me) recordEl.textContent = 'Rekord: ' + me.best + ' b';
+            }).catch(() => {});
         }
 
         function showIntro() {
+            const lb = window.guessLeaderboard;
+            const player = lb.player();
             screen.innerHTML = `
                 <div class="gt-card">
                     Ukážeme ti kousek trati &ndash; jednu nebo dvě zatáčky. Hádáš ze 4 možností.<br>
@@ -5969,14 +6096,16 @@ initPickSystem();
                     Na každé kolo máš ${ROUND_SECONDS} s &ndash; čím rychleji, tím víc bodů.<br>
                     Zelená tečka je začátek úseku, šipka ukazuje směr jízdy.
                 </div>
-                <div class="gt-meta" style="justify-content:center">Tvůj rekord: ${bestScore()} b</div>
+                <div class="gt-meta" style="justify-content:center">${player ? 'Hraješ za: <strong>&nbsp;' + esc(player) + '</strong>' : 'Vyber nahoře svůj tým, ať se skóre uloží do žebříčku.'}</div>
                 <button class="gt-primary" id="gt-start">Start &#127937;</button>
+                <div class="gt-card gt-board" id="gt-board"></div>
                 <details class="gt-credits">
                     <summary>Zdroje map tratí</summary>
                     Obrysy tratí vychází z map na Wikimedia Commons:
                     <ul>${data.credits.map(c => `<li>${esc(c.track)}: <a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.author)}</a>, ${esc(c.license)}</li>`).join('')}</ul>
                 </details>`;
             document.getElementById('gt-start').addEventListener('click', newGame);
+            fillBoard(document.getElementById('gt-board'), lb.load(), player);
         }
 
         async function open() {
