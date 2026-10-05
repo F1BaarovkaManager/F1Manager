@@ -1704,6 +1704,236 @@
         #mg-leaderboard th { background: #12122a; color: #e10600; padding: 6px 12px; }
         #mg-leaderboard td { border-bottom: 1px solid #1a1a2e; padding: 5px 10px; }
         .mg-results-btns { display: flex; gap: 14px; margin-top: 18px; }
+
+        /* ===== ACTION BUTTONS ===== */
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .actions button {
+            margin: 0;
+            width: 100%;
+        }
+
+        .actions .btn-submit-pick {
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 6px 16px rgba(225, 6, 0, 0.35);
+        }
+
+        .actions .btn-submit-pick:disabled {
+            box-shadow: none;
+            color: #888;
+        }
+
+        .actions-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .actions-nav {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .btn-secondary,
+        .btn-secondary:hover {
+            background: #fff;
+            color: #15151e;
+            border: 2px solid #15151e;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .btn-secondary:disabled {
+            background: #fff;
+            color: #bbb;
+            border-color: #ddd;
+        }
+
+        .btn-nav,
+        .btn-nav:hover {
+            background: #15151e;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 4px;
+            font-size: 0.72em;
+            letter-spacing: 0.3px;
+            border-radius: 12px;
+        }
+
+        .btn-nav:hover {
+            background: #2a2a3e;
+        }
+
+        .btn-ico {
+            font-size: 1.7em;
+            line-height: 1;
+        }
+
+        .actions-extra {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .price-tag {
+            white-space: nowrap;
+        }
+
+        /* ===== PHONE LAYOUT ===== */
+        @media (max-width: 767px) {
+            button:hover {
+                transform: none;
+            }
+
+            .player-bar {
+                display: grid;
+                grid-template-columns: 1fr auto auto;
+                gap: 8px;
+                padding: 10px 12px;
+            }
+
+            .player-bar-group {
+                grid-column: 1 / -1;
+            }
+
+            .player-bar label {
+                flex: 0 0 52px;
+                margin: 0;
+                font-size: 0.68em;
+            }
+
+            .player-bar select {
+                flex: 1;
+                min-width: 0;
+                width: 100%;
+                font-size: 0.95em;
+                padding: 9px 10px;
+                border-radius: 8px;
+            }
+
+            .picks-status {
+                width: auto;
+                text-align: left;
+                display: flex;
+                align-items: center;
+                padding: 6px 10px;
+            }
+
+            .player-bar .settings-btn {
+                width: 36px;
+                height: 36px;
+                margin: 0;
+            }
+
+            .player-bar #bar-collapse-btn {
+                width: auto;
+            }
+
+            th, td {
+                padding: 8px 6px;
+            }
+
+            h2 {
+                font-size: 1.4em;
+                margin: 18px 0 10px;
+            }
+
+            .selection-area {
+                border-radius: 14px;
+            }
+
+            .budget {
+                padding: 12px 14px;
+                border-radius: 12px;
+            }
+
+            .budget div {
+                font-size: 0.95em;
+                margin: 4px 0;
+            }
+
+            .btn-nav {
+                font-size: 0.68em;
+            }
+
+            /* Přehled picků přes celou obrazovku s ukotveným sloupcem hráčů */
+            .overview-overlay {
+                padding: 0;
+            }
+
+            .overview-box {
+                margin: 0;
+                width: 100%;
+                max-width: 100%;
+                min-height: 100%;
+                border-radius: 0;
+                overflow: visible;
+            }
+
+            .overview-header {
+                padding: 14px;
+                position: sticky;
+                top: 0;
+                z-index: 5;
+            }
+
+            .overview-header h3 {
+                margin: 0;
+                font-size: 1.1em;
+            }
+
+            .overview-body {
+                padding: 0;
+            }
+
+            .overview-table {
+                overflow: visible;
+            }
+
+            .overview-table th,
+            .overview-table td {
+                padding: 6px 4px;
+            }
+
+            .overview-table td {
+                min-width: 92px;
+            }
+
+            .overview-table th:first-child,
+            .overview-table td:first-child {
+                position: sticky;
+                left: 0;
+                z-index: 2;
+                min-width: 0;
+                max-width: 84px;
+                white-space: normal;
+                font-size: 0.78em;
+                box-shadow: 2px 0 4px rgba(0, 0, 0, 0.08);
+            }
+
+            .overview-table td:first-child {
+                background: #fff;
+            }
+
+            .overview-footer {
+                position: sticky;
+                bottom: 0;
+                background: #fff;
+                z-index: 5;
+            }
+
+            .overview-footer button {
+                margin: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2133,14 +2363,22 @@
                         <!-- Sem bude dynamicky přidána karta -->
                     </div>
                     
-                    <button id="reset-button">Resetovat</button>
-                    <button id="preview-button" disabled>Náhled</button>
-                    <button id="submit-pick-button" class="btn-submit-pick" disabled>Odeslat sestavu</button>
-                    <button id="overview-button">Přehled picků</button>
-                    <button id="results-button">Výsledky & Body</button>
-                    <button id="notify-button">&#128276; Upozornění</button>
-                    <button class="admin-trigger" id="admin-trigger" title="Admin">&#9998;</button>
-                    <button class="admin-trigger" id="mg-open-btn" title="F1 Lap Challenge">&#127937;</button>
+                    <div class="actions">
+                        <button id="submit-pick-button" class="btn-submit-pick" disabled>Odeslat sestavu</button>
+                        <div class="actions-row">
+                            <button id="preview-button" class="btn-secondary" disabled>Náhled</button>
+                            <button id="reset-button" class="btn-secondary">Resetovat</button>
+                        </div>
+                        <div class="actions-row actions-nav">
+                            <button id="overview-button" class="btn-nav"><span class="btn-ico">&#128203;</span>Přehled picků</button>
+                            <button id="results-button" class="btn-nav"><span class="btn-ico">&#127942;</span>Výsledky</button>
+                            <button id="notify-button" class="btn-nav"><span class="btn-ico">&#128276;</span>Upozornění</button>
+                        </div>
+                        <div class="actions-extra">
+                            <button class="admin-trigger" id="admin-trigger" title="Admin">&#9998;</button>
+                            <button class="admin-trigger" id="mg-open-btn" title="F1 Lap Challenge">&#127937;</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2419,7 +2657,7 @@
                     <p style="text-align:center; color:#888;">Načítám data...</p>
                 </div>
             </div>
-            <div style="padding: 15px; text-align: center; border-top: 1px solid #eee;">
+            <div class="overview-footer" style="padding: 15px; text-align: center; border-top: 1px solid #eee;">
                 <button id="overview-close">Zavřít</button>
             </div>
         </div>
@@ -3916,6 +4154,13 @@ function showPicksOverview() {
     content.innerHTML = html;
     overlay.style.display = 'block';
     hideCharacterImages();
+
+    const lastPickedIdx = races.map(r => players.some(p => picks[p] && picks[p][String(r.round)])).lastIndexOf(true);
+    if (lastPickedIdx > 0) {
+        const headers = content.querySelectorAll('thead th');
+        const body = content.closest('.overview-body');
+        body.scrollLeft = headers[lastPickedIdx + 1].offsetLeft - headers[0].offsetWidth - headers[lastPickedIdx].offsetWidth;
+    }
 }
 
 // --- Settings ---
