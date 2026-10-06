@@ -63,6 +63,14 @@
         "auth": "QHmvFIZvopD8x8xpVMIhiA"
       },
       "added": "2026-10-06T16:55:40.935Z"
+    },
+    {
+      "endpoint": "https://web.push.apple.com/QAtVNuqTdwJovVPcMsRdfnv5Q85TNN_64If54Em3Xzz3G4cygPXDrmkhW7vumPNdCUljYtrPORgoUDLLOJ-Azaw4xLttnzYugVAdv0Pr5cZyNUneUU4IkCishi6qMUMBW5RASi4HjHBcri4KpxdyCiBK7z7McTKVyT3QHg8-Qa4",
+      "keys": {
+        "p256dh": "BJBMnFXM_Qr9NOqyDbNyn8doAEymvtmLBXRr5vJBBlnyRrWg7LPZlFgx5NV6QTT_gCjlWeHuIwpfALQIzeFDJRg",
+        "auth": "z1ilHhyjJ-R4cRbtXH4VmA"
+      },
+      "added": "2026-10-06T16:56:29.465Z"
     }
   ]
 }
