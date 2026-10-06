@@ -2076,5 +2076,41 @@
       "fastestLap": "Russel",
       "dotd": "Verstappen"
     }
+  },
+  "adjustments": [
+    {
+      "player": "Vzoom",
+      "points": 753.75,
+      "round": "4",
+      "note": "Návrat do hry – rozhodnutí direktoriátu"
+    }
+  ],
+  "usageAdjustments": {
+    "Vzoom": {
+      "drivers": {
+        "Albon": 1,
+        "Antonelli": 6,
+        "Bortoleto": 4,
+        "Gasly": 4,
+        "Hadjar": 1,
+        "Hamilton": 4,
+        "Hulkenberg": 2,
+        "Lawson": 3,
+        "Leclerc": 1,
+        "Lindblad": 4,
+        "Piastri": 2,
+        "Russel": 2,
+        "Sainz": 1,
+        "Verstappen": 8
+      },
+      "teams": {
+        "Alpine": 1,
+        "Ferrari": 1,
+        "McLaren": 1,
+        "Mercedes": 2,
+        "Racing Bulls": 1,
+        "Red Bull Racing": 2
+      }
+    }
   }
 }

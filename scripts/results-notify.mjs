@@ -63,7 +63,10 @@ export function buildMessages(picksData, round, score) {
     const roundScores = players.map(p => ({ p, pts: score(p, round) }))
         .filter(x => x.pts !== null)
         .sort((a, b) => b.pts - a.pts);
-    const season = players.map(p => ({ p, total: scoredRounds.reduce((s, r) => s + (score(p, r.round) || 0), 0) }))
+    const bonus = p => (picksData.adjustments || [])
+        .filter(a => a.player === p && scoredRounds.some(r => String(r.round) === String(a.round)))
+        .reduce((s, a) => s + Number(a.points || 0), 0);
+    const season = players.map(p => ({ p, total: bonus(p) + scoredRounds.reduce((s, r) => s + (score(p, r.round) || 0), 0) }))
         .sort((a, b) => b.total - a.total);
     const best = roundScores[0];
 

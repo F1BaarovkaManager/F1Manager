@@ -4294,7 +4294,7 @@ function getDriverUsage(player, driver) {
             count++;
         }
     }
-    return count;
+    return count + (((picksData.usageAdjustments || {})[player] || {}).drivers || {})[driver] || 0;
 }
 
 function getTeamUsage(player, team) {
@@ -4306,7 +4306,7 @@ function getTeamUsage(player, team) {
             count++;
         }
     }
-    return count;
+    return count + (((picksData.usageAdjustments || {})[player] || {}).teams || {})[team] || 0;
 }
 
 function isRoundSubmitted(player, round) {
@@ -4887,12 +4887,19 @@ function renderRaceCard() {
     </div>`;
 }
 
+// Manual point adjustments decided by the admins, counted from the round they are tied to
+function adjustmentPoints(player, rounds) {
+    return (picksData.adjustments || [])
+        .filter(a => a.player === player && (!rounds || rounds.some(r => String(r.round) === String(a.round))))
+        .reduce((sum, a) => sum + Number(a.points || 0), 0);
+}
+
 function computeStandings(rounds) {
     return (picksData.players || []).map(player => {
         const total = rounds.reduce((sum, r) => {
             const score = calculatePlayerRoundScore(player, r.round);
             return sum + (score ? score.grandTotal : 0);
-        }, 0);
+        }, 0) + adjustmentPoints(player, rounds);
         return { player, total };
     }).sort((a, b) => b.total - a.total);
 }
@@ -5633,7 +5640,7 @@ function renderResults(round) {
 
     const seasonStandings = {};
     players.forEach(player => {
-        seasonStandings[player] = 0;
+        seasonStandings[player] = adjustmentPoints(player);
         if (picksData.races) {
             picksData.races.forEach(race => {
                 const s = calculatePlayerRoundScore(player, race.round);
