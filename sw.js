@@ -1,6 +1,12 @@
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', event => event.waitUntil(self.clients.claim()));
 
+// GitHub Pages lets browsers cache the page for 10 minutes; always fetch the app itself fresh
+self.addEventListener('fetch', event => {
+    if (event.request.mode !== 'navigate') return;
+    event.respondWith(fetch(event.request, { cache: 'no-store' }).catch(() => fetch(event.request)));
+});
+
 self.addEventListener('push', event => {
     let data = {};
     try {
