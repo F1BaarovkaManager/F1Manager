@@ -34,6 +34,13 @@
       "last": 498,
       "bestCorrect": 3,
       "bestAt": "2026-10-05T16:34:51.303Z"
+    },
+    "Vzoom": {
+      "best": 250,
+      "games": 1,
+      "last": 250,
+      "bestCorrect": 1,
+      "bestAt": "2026-10-09T12:04:19.896Z"
     }
   }
 }
