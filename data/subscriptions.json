@@ -29,14 +29,6 @@
   ],
   "Salvetus Motorsport": [
     {
-      "endpoint": "https://fcm.googleapis.com/fcm/send/c1d0vMw9rjs:APA91bElbZVM18tkHMrzuwJNvBKEdO5U7zj81klP8HLAo_urk-6t9xHF4HvaCyip2V8iJ6lu8eRJ4xh3__D3ziis6gYBiIC08X-7mUwn9mHkt5fKZiYLEC2ElvoYJlcUVoEJd7_LYgT6",
-      "keys": {
-        "p256dh": "BOJ_SNC8J3iAUixjWITGxn6dvAGbZvuKvYmShuxtVoQ4CWcbChFKY3B7jI0LDNJnzH35PCx6WWIBDkuGCtfZvD4",
-        "auth": "f3nlvyrqSkTEUc7BuHQ3OQ"
-      },
-      "added": "2026-10-05T13:24:29.036Z"
-    },
-    {
       "endpoint": "https://fcm.googleapis.com/fcm/send/cxJsEh2cRKg:APA91bFLFUkrOZIOmTq__04UbUTImfj7fs9qCZKT-JqR599U3HWKTSOZHwFwwb-6Ei0qarDn3pMANau9ovoTNq9O4e0YQVYHmcEuYqExY7-p-M4Bq--YIpm1vttIPMefUueT_3rJw3BN",
       "keys": {
         "p256dh": "BCCGbUb_FxxC_KP3VNRwRfvkcbr8Cj4OZ7S1fGuCrnuCUQkgTfoW9PzsaVT9lgIUvKcVWm8AFPak-pxF-r0my44",
