@@ -506,6 +506,17 @@
         ],
         "team": "Ferrari",
         "timestamp": "2026-09-25T09:01:07.621Z"
+      },
+      "18": {
+        "drivers": [
+          "Verstappen",
+          "Gasly",
+          "Antonelli",
+          "Hulkenberg",
+          "Hadjar"
+        ],
+        "team": "Red Bull Racing",
+        "timestamp": "2026-10-09T12:22:24.174Z"
       }
     },
     "Salvetus Motorsport": {
