@@ -2175,7 +2175,7 @@
         "Leclerc": 2,
         "Hamilton": 6,
         "Russel": 9,
-        "Antonelli": 4,
+        "Antonelli": 3,
         "Alonso": 16,
         "Stroll": "DNF",
         "Gasly": 11,
@@ -2194,99 +2194,6 @@
       "polePosition": "Verstappen",
       "fastestLap": "Leclerc",
       "dotd": "Verstappen",
-      "sprintQualifying": {},
-      "sprintRace": {},
-      "sprintPolePosition": "",
-      "sprintFastestLap": "",
-      "sprintDotd": ""
-    }
-  },
-  "adjustments": [
-    {
-      "player": "Vzoom",
-      "points": 753.75,
-      "round": "4",
-      "note": "Návrat do hry – rozhodnutí direktoriátu"
-    }
-  ],
-  "usageAdjustments": {
-    "Vzoom": {
-      "drivers": {
-        "Albon": 1,
-        "Antonelli": 6,
-        "Bortoleto": 4,
-        "Gasly": 4,
-        "Hadjar": 1,
-        "Hamilton": 4,
-        "Hulkenberg": 2,
-        "Lawson": 3,
-        "Leclerc": 1,
-        "Lindblad": 4,
-        "Piastri": 2,
-        "Russel": 2,
-        "Sainz": 1,
-        "Verstappen": 8
-      },
-      "teams": {
-        "Alpine": 1,
-        "Ferrari": 1,
-        "McLaren": 1,
-        "Mercedes": 2,
-        "Racing Bulls": 1,
-        "Red Bull Racing": 2
-      }
-    }
-  },
-  "resultDrafts": {
-    "18": {
-      "qualifying": {
-        "Verstappen": 1,
-        "Leclerc": 2,
-        "Hamilton": 3,
-        "Antonelli": 4,
-        "Norris": 5,
-        "Russel": 6,
-        "Piastri": 7,
-        "Gasly": 8,
-        "Lawson": 9,
-        "Lindblad": 10,
-        "Hulkenberg": 11,
-        "Bearman": 12,
-        "Ocon": 13,
-        "Sainz": 14,
-        "Bortoleto": 15,
-        "Colapinto": 16,
-        "Alonso": 17,
-        "Albon": 18,
-        "Stroll": 19,
-        "Perez": 20,
-        "Bottas": 21,
-        "Hadjar": 22
-      },
-      "race": {
-        "Verstappen": 1,
-        "Leclerc": 2,
-        "Antonelli": 3,
-        "Norris": 4,
-        "Piastri": 5,
-        "Hamilton": 6,
-        "Lawson": 7,
-        "Hulkenberg": 8,
-        "Russel": 9,
-        "Hadjar": 10,
-        "Gasly": 11,
-        "Bearman": 12,
-        "Ocon": 13,
-        "Sainz": 14,
-        "Lindblad": 15,
-        "Alonso": 16,
-        "Perez": 17,
-        "Albon": 18,
-        "Bottas": 19,
-        "Stroll": "DNF",
-        "Colapinto": "DNF",
-        "Bortoleto": "DNF"
-      },
       "sprintQualifying": {
         "Verstappen": 1,
         "Russel": 2,
@@ -2335,12 +2242,45 @@
         "Perez": "DNF",
         "Stroll": "DNF"
       },
-      "polePosition": "Verstappen",
-      "fastestLap": "Leclerc",
-      "dotd": "",
       "sprintPolePosition": "Verstappen",
       "sprintFastestLap": "",
       "sprintDotd": ""
+    }
+  },
+  "adjustments": [
+    {
+      "player": "Vzoom",
+      "points": 753.75,
+      "round": "4",
+      "note": "Návrat do hry – rozhodnutí direktoriátu"
+    }
+  ],
+  "usageAdjustments": {
+    "Vzoom": {
+      "drivers": {
+        "Albon": 1,
+        "Antonelli": 6,
+        "Bortoleto": 4,
+        "Gasly": 4,
+        "Hadjar": 1,
+        "Hamilton": 4,
+        "Hulkenberg": 2,
+        "Lawson": 3,
+        "Leclerc": 1,
+        "Lindblad": 4,
+        "Piastri": 2,
+        "Russel": 2,
+        "Sainz": 1,
+        "Verstappen": 8
+      },
+      "teams": {
+        "Alpine": 1,
+        "Ferrari": 1,
+        "McLaren": 1,
+        "Mercedes": 2,
+        "Racing Bulls": 1,
+        "Red Bull Racing": 2
+      }
     }
   }
 }
