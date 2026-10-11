@@ -5221,7 +5221,13 @@ function toggleSprintSections(round) {
 function loadAdminResults(round) {
     toggleSprintSections(round);
 
-    if (!picksData || !picksData.raceResults || !picksData.raceResults[String(round)]) {
+    const saved = picksData && picksData.raceResults && picksData.raceResults[String(round)];
+    const draft = !saved && picksData && picksData.resultDrafts && picksData.resultDrafts[String(round)];
+    const statusEl = document.getElementById('admin-status');
+    statusEl.textContent = draft ? 'Předvyplněno z oficiálních výsledků – zkontroluj, doplň prázdná pole a ulož.' : '';
+    statusEl.style.color = draft ? '#e65100' : '';
+
+    if (!saved && !draft) {
         // Clear all
         ALL_DRIVERS.forEach(d => {
             const q = document.getElementById('quali-' + d);
@@ -5242,7 +5248,7 @@ function loadAdminResults(round) {
         return;
     }
 
-    const results = picksData.raceResults[String(round)];
+    const results = saved || draft;
     ALL_DRIVERS.forEach(d => {
         const q = document.getElementById('quali-' + d);
         const r = document.getElementById('race-' + d);
@@ -5340,6 +5346,7 @@ async function saveAdminResults() {
         saved = await savePicksToGitHub(`Results: ${raceName}`, data => {
             if (!data.raceResults) data.raceResults = {};
             data.raceResults[String(round)] = resultData;
+            if (data.resultDrafts) delete data.resultDrafts[String(round)];
         });
     }
 
@@ -5757,6 +5764,10 @@ async function initPickSystem() {
     document.getElementById('admin-load-results').addEventListener('click', function() {
         const round = document.getElementById('admin-race-select').value;
         if (round) loadAdminResults(round);
+    });
+
+    document.getElementById('admin-race-select').addEventListener('change', function() {
+        if (this.value) loadAdminResults(this.value);
     });
 
     document.getElementById('admin-save').addEventListener('click', function() {

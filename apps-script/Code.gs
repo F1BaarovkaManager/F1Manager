@@ -107,6 +107,7 @@ function saveResults_(b) {
   var saved = updateFile_(PICKS_PATH, 'Results: ' + race.name, function (data) {
     data.raceResults = data.raceResults || {};
     data.raceResults[round] = b.result;
+    if (data.resultDrafts) delete data.resultDrafts[round];
   });
   return { ok: true, data: saved };
 }
