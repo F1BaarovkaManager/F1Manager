@@ -4294,7 +4294,7 @@ function getDriverUsage(player, driver) {
             count++;
         }
     }
-    return count + (((picksData.usageAdjustments || {})[player] || {}).drivers || {})[driver] || 0;
+    return count + ((((picksData.usageAdjustments || {})[player] || {}).drivers || {})[driver] || 0);
 }
 
 function getTeamUsage(player, team) {
@@ -4306,7 +4306,7 @@ function getTeamUsage(player, team) {
             count++;
         }
     }
-    return count + (((picksData.usageAdjustments || {})[player] || {}).teams || {})[team] || 0;
+    return count + ((((picksData.usageAdjustments || {})[player] || {}).teams || {})[team] || 0);
 }
 
 function isRoundSubmitted(player, round) {
