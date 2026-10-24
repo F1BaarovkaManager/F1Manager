@@ -1196,6 +1196,17 @@
         ],
         "team": "Alpine",
         "timestamp": "2026-10-09T12:10:02.825Z"
+      },
+      "19": {
+        "drivers": [
+          "Verstappen",
+          "Hamilton",
+          "Russel",
+          "Hulkenberg",
+          "Gasly"
+        ],
+        "team": "Haas",
+        "timestamp": "2026-10-24T18:29:06.868Z"
       }
     }
   },
