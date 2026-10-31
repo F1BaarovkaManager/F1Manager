@@ -772,6 +772,17 @@
         ],
         "team": "Ferrari",
         "timestamp": "2026-10-24T18:28:00.700Z"
+      },
+      "20": {
+        "drivers": [
+          "Russel",
+          "Leclerc",
+          "Gasly",
+          "Colapinto",
+          "Lindblad"
+        ],
+        "team": "McLaren",
+        "timestamp": "2026-10-31T20:46:26.289Z"
       }
     },
     "Flygirl": {
