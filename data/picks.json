@@ -550,6 +550,17 @@
         ],
         "team": "Red Bull Racing",
         "timestamp": "2026-10-24T18:36:11.480Z"
+      },
+      "20": {
+        "drivers": [
+          "Norris",
+          "Antonelli",
+          "Lindblad",
+          "Hulkenberg",
+          "Gasly"
+        ],
+        "team": "McLaren",
+        "timestamp": "2026-10-31T18:39:14.634Z"
       }
     },
     "Salvetus Motorsport": {
