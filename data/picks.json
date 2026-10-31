@@ -972,6 +972,17 @@
         ],
         "team": "Racing Bulls",
         "timestamp": "2026-10-24T19:30:09.595Z"
+      },
+      "20": {
+        "drivers": [
+          "Antonelli",
+          "Leclerc",
+          "Lawson",
+          "Lindblad",
+          "Gasly"
+        ],
+        "team": "McLaren",
+        "timestamp": "2026-10-31T20:33:49.717Z"
       }
     },
     "Vzoom": {
