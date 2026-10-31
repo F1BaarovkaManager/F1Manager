@@ -1284,6 +1284,17 @@
         ],
         "team": "Haas",
         "timestamp": "2026-10-24T18:29:06.868Z"
+      },
+      "20": {
+        "drivers": [
+          "Verstappen",
+          "Leclerc",
+          "Gasly",
+          "Hulkenberg",
+          "Alonso"
+        ],
+        "team": "Mercedes",
+        "timestamp": "2026-10-31T20:36:29.773Z"
       }
     }
   },
