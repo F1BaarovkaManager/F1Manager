@@ -2968,15 +2968,15 @@
                         <td><span class="price-tag">3.0 mil.</span></td>
                         <td><input type="checkbox" data-name="Lindblad" data-price="3.0" data-flag="🇬🇧"></td>
                     </tr>
-                    <tr data-driver="Ocon" data-price="4.0" data-flag="🇫🇷">
+                    <tr data-driver="Camara" data-price="2.5" data-flag="🇧🇷">
                         <td>
                             <div class="driver-cell">
-                                <img src="2026 fotos/2026haasf1teamestoco01right.avif" alt="Ocon" class="driver-team-logo">
-                                Ocon
+                                <img src="2026 fotos/2026haasf1teamrafcam01right.webp" alt="Camara" class="driver-team-logo">
+                                Camara
                             </div>
                         </td>
-                        <td><span class="price-tag">4.0 mil.</span></td>
-                        <td><input type="checkbox" data-name="Ocon" data-price="4.0" data-flag="🇫🇷"></td>
+                        <td><span class="price-tag">2.5 mil.</span></td>
+                        <td><input type="checkbox" data-name="Camara" data-price="2.5" data-flag="🇧🇷"></td>
                     </tr>
                     <tr data-driver="Bearman" data-price="4.5" data-flag="🇬🇧">
                         <td>
@@ -3359,6 +3359,7 @@
             'Lawson': '2026 fotos/2026racingbullslialaw01right.avif',
             'Lindblad': '2026 fotos/2026racingbullsarvlin01right.avif',
             'Ocon': '2026 fotos/2026haasf1teamestoco01right.avif',
+            'Camara': '2026 fotos/2026haasf1teamrafcam01right.webp',
             'Bearman': '2026 fotos/2026haasf1teamolibea01right.avif',
             'Hulkenberg': '2026 fotos/2026audinichul01right.avif',
             'Bortoleto': '2026 fotos/2026audigabbor01right.avif',
@@ -3434,6 +3435,7 @@
             'Lawson': 'Racing Bulls',
             'Lindblad': 'Racing Bulls',
             'Ocon': 'Haas',
+            'Camara': 'Haas',
             'Bearman': 'Haas',
             'Hulkenberg': 'Audi',
             'Bortoleto': 'Audi',
@@ -5073,11 +5075,15 @@ async function saveSettings() {
 
 // --- Admin: Race Results Entry ---
 
+const FORMER_DRIVERS = ['Ocon'];
+
 const ALL_DRIVERS = [
     'Verstappen', 'Hadjar', 'Norris', 'Piastri', 'Leclerc', 'Hamilton',
     'Russel', 'Antonelli', 'Alonso', 'Stroll', 'Gasly', 'Colapinto',
-    'Albon', 'Sainz', 'Lawson', 'Lindblad', 'Ocon', 'Bearman',
-    'Hulkenberg', 'Bortoleto', 'Perez', 'Bottas'
+    'Albon', 'Sainz', 'Lawson', 'Lindblad', 'Camara', 'Bearman',
+    'Hulkenberg', 'Bortoleto', 'Perez', 'Bottas',
+    // former drivers stay so older races keep their results when re-saved
+    ...FORMER_DRIVERS
 ];
 
 function buildPositionOptions(includeSpecial) {
@@ -5159,19 +5165,19 @@ function buildAdminGrids() {
 
     ALL_DRIVERS.forEach(driver => {
         qualiHtml += `<div class="admin-grid-item">
-            <label>${driver}</label>
+            <label>${driver}${FORMER_DRIVERS.includes(driver) ? ' (už nejezdí)' : ''}</label>
             <select id="quali-${driver}" data-driver="${driver}" class="quali-select">${buildPositionOptions(false)}</select>
         </div>`;
         raceHtml += `<div class="admin-grid-item">
-            <label>${driver}</label>
+            <label>${driver}${FORMER_DRIVERS.includes(driver) ? ' (už nejezdí)' : ''}</label>
             <select id="race-${driver}" data-driver="${driver}" class="race-select">${buildPositionOptions(true)}</select>
         </div>`;
         sprintQualiHtml += `<div class="admin-grid-item">
-            <label>${driver}</label>
+            <label>${driver}${FORMER_DRIVERS.includes(driver) ? ' (už nejezdí)' : ''}</label>
             <select id="sq-${driver}" data-driver="${driver}" class="sq-select">${buildPositionOptions(false)}</select>
         </div>`;
         sprintRaceHtml += `<div class="admin-grid-item">
-            <label>${driver}</label>
+            <label>${driver}${FORMER_DRIVERS.includes(driver) ? ' (už nejezdí)' : ''}</label>
             <select id="sr-${driver}" data-driver="${driver}" class="sr-select">${buildPositionOptions(true)}</select>
         </div>`;
     });
@@ -5449,10 +5455,11 @@ function calculateDriverPoints(driver, raceResults) {
 
 function calculateTeamPoints(team, raceResults) {
     // Find both drivers of the team
-    const teamDrivers = [];
-    for (const [driver, driverTeam] of Object.entries(driverTeams)) {
-        if (driverTeam === team) teamDrivers.push(driver);
-    }
+    // Only drivers who took part in this race count, so mid-season driver swaps keep both eras right
+    const race = (raceResults && raceResults.race) || {};
+    const allTeamDrivers = Object.keys(driverTeams).filter(d => driverTeams[d] === team);
+    const raced = allTeamDrivers.filter(d => race[d] !== undefined);
+    const teamDrivers = raced.length ? raced : allTeamDrivers;
 
     if (teamDrivers.length === 0) return { total: 0, drivers: [], avg: 0 };
 

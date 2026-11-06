@@ -8,9 +8,11 @@ import { setupWebPush, readJson, sendToPlayers, removeDeadSubscriptions } from '
 
 const hasRace = results => Boolean(results && results.race && Object.keys(results.race).length);
 
-// The admin saves results in several passes, so only notify once every driver and all bonuses are in.
-const isComplete = (results, drivers) => Boolean(results && results.race &&
-    drivers.every(d => results.race[d] !== undefined && results.race[d] !== '') &&
+// The admin saves results in several passes, so only notify once the whole grid and all bonuses are in.
+// Counting entries (not names) keeps working when a driver is replaced mid-season.
+const GRID_SIZE = 22;
+const isComplete = results => Boolean(results && results.race &&
+    Object.values(results.race).filter(v => v !== undefined && v !== '').length >= GRID_SIZE &&
     results.polePosition && results.fastestLap && results.dotd);
 
 // Fixes to old races must not look like fresh results.
@@ -19,9 +21,9 @@ const isRecent = (picksData, round, now) => {
     return Boolean(race) && now - Date.parse(race.date) < 7 * 24 * 3600 * 1000;
 };
 
-export function newlyScoredRounds(before, after, drivers, now = Date.now()) {
+export function newlyScoredRounds(before, after, now = Date.now()) {
     return Object.keys(after.raceResults || {})
-        .filter(r => isComplete(after.raceResults[r], drivers) && !isComplete((before.raceResults || {})[r], drivers))
+        .filter(r => isComplete(after.raceResults[r]) && !isComplete((before.raceResults || {})[r]))
         .filter(r => isRecent(after, r, now));
 }
 
@@ -95,8 +97,8 @@ async function main() {
     }
 
     const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
-    const { drivers, score } = loadScoring(html, after);
-    const rounds = newlyScoredRounds(before, after, drivers);
+    const { score } = loadScoring(html, after);
+    const rounds = newlyScoredRounds(before, after);
     if (!rounds.length) {
         console.log('No newly completed race results.');
         return;
