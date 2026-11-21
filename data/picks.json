@@ -1049,6 +1049,17 @@
         ],
         "team": "Mercedes",
         "timestamp": "2026-11-07T17:29:34.471Z"
+      },
+      "22": {
+        "drivers": [
+          "Hadjar",
+          "Verstappen",
+          "Colapinto",
+          "Alonso",
+          "Hamilton"
+        ],
+        "team": "Ferrari",
+        "timestamp": "2026-11-21T00:27:58.951Z"
       }
     },
     "Vzoom": {
