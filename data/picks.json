@@ -372,6 +372,17 @@
         ],
         "team": "Audi",
         "timestamp": "2026-11-07T17:58:07.149Z"
+      },
+      "22": {
+        "drivers": [
+          "Verstappen",
+          "Russel",
+          "Lindblad",
+          "Lawson",
+          "Hadjar"
+        ],
+        "team": "Racing Bulls",
+        "timestamp": "2026-11-21T08:28:32.212Z"
       }
     },
     "F17": {
